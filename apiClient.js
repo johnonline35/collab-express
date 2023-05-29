@@ -7,7 +7,7 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const { google } = require("googleapis");
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const redirect_url = "collab-express-production.up.railway.app";
+const redirect_url = "https://collab-express-production.up.railway.app/";
 
 const Bottleneck = require("bottleneck");
 const limiter = new Bottleneck({
@@ -555,7 +555,7 @@ const runApp = async (userId) => {
   await analyzeMeetings(userId);
 };
 
-runApp();
+// runApp();
 
 module.exports = {
   loadClient,
