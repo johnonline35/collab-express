@@ -182,7 +182,6 @@ const getGoogleCal = async (userId) => {
 
 // Fetch future meetings
 const fetchFutureMeetings = async () => {
-  console.log("fetchFutureMeetings called");
   try {
     let { data: futureMeetings, error } = await supabase
       .from("meetings")
@@ -205,7 +204,6 @@ const fetchFutureMeetings = async () => {
 
 // Fetch past meetings
 const fetchPastMeetings = async (currentMeetingsCount) => {
-  console.log("fetchPastMeetings called");
   try {
     let { data: pastMeetings, error } = await supabase
       .from("meetings")
@@ -228,7 +226,6 @@ const fetchPastMeetings = async (currentMeetingsCount) => {
 
 // Fetch meeting details
 const fetchMeetingDetails = async (meetingId) => {
-  console.log("fetchMeetingDetails called");
   try {
     let { data: meetingDetails, error } = await supabase
       .from("meetings")
@@ -252,7 +249,6 @@ const fetchMeetingDetails = async (meetingId) => {
 
 // Fetch meeting attendees
 const fetchMeetingAttendees = async (meetingId) => {
-  console.log("fetchMeetingAttendees called");
   try {
     let { data: attendees, error } = await supabase
       .from("meeting_attendees")
