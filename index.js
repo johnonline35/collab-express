@@ -5,11 +5,13 @@ const cors = require("cors");
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use(
-  cors({
-    origin: "https://www.instantcollab.co",
-  })
-);
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: "https://www.instantcollab.co",
+//   })
+// );
 
 app.post("/", async function (req, res) {
   const { userId } = req.body;
