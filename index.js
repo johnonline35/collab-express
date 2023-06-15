@@ -9,10 +9,12 @@ const inngestFn = require("./inngest");
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use(cors());
 
 // Inngest
 app.use("/api/inngest", serve("Collab Inngest", [inngestFn]));
+
+// CORS
+app.use(cors());
 
 // Get Google Calendar + Workspace / Attendees Creation Logic Endpoint
 app.post("/", async function (req, res) {
