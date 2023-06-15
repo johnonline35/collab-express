@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // Inngest
-app.use("/api/inngest", cors(), serve("Collab Inngest", [inngestFn]));
+app.use("/api/inngest", serve(inngest, [inngestFn]));
 
 app.use(cors());
 
@@ -24,9 +24,9 @@ app.post("/", async function (req, res) {
 });
 
 // Inngest endpoint
-// app.get("/inngest-endpoint", function (req, res) {
-//   res.send("Hello from the new endpoint!");
-// });
+app.get("/inngest-endpoint", function (req, res) {
+  res.send("Hello from the new endpoint!");
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, "0.0.0.0", function () {
