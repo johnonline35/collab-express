@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json()); // Middleware to parse JSON bodies
 
 // Inngest
-// app.use("/api/inngest", cors(), serve("Collab Inngest", [inngestFn]));
+app.use("/api/inngest", cors(), serve("Collab Inngest", [inngestFn]));
 
 app.use(cors());
 
