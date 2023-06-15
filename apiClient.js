@@ -109,7 +109,7 @@ const getGoogleCal = async (userId) => {
     // Insert data into the database for each meeting
     const upsertPromises = meetings.map(async (meeting) => {
       const attendees = meeting.attendees.filter(
-        (attendee) => attendee.email.trim() !== userEmail.trim() // change this to userEmail
+        (attendee) => attendee.email.trim() !== userEmail.trim()
       );
 
       const meetingData = {
