@@ -3,7 +3,7 @@ const { checkAttendee } = require("../models/attendees");
 const {
   handlePublicDomain,
   handlePrivateDomain,
-} = require("../handlers/workspaceService");
+} = require("../handlers/workspaceHandler");
 const {
   fetchFutureMeetings,
   fetchPastMeetings,
