@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const googleCalendarApiClient = require("../api/googleCalendarApiClient");
+const { googleCalendarApiClient } = require("../api/googleCalendarApiClient");
 
 router.post("/", async (req, res) => {
   const { userId } = req.body;
