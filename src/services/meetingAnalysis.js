@@ -1,5 +1,5 @@
-const publicEmailDomains = require("../data/listOfEmailDomains");
-const checkAttendee = require("../models/attendees");
+const { publicEmailDomains } = require("../data/listOfEmailDomains");
+const { checkAttendee } = require("../models/attendees");
 const {
   handlePublicDomain,
   handlePrivateDomain,
@@ -10,7 +10,7 @@ const {
   fetchMeetingDetails,
   fetchMeetingAttendees,
 } = require("../models/meetingsModel");
-const filterCollabUserEmails = require("../services/meetingService");
+const { filterCollabUserEmails } = require("../services/meetingService");
 
 const analyzeMeetings = async (userId) => {
   try {

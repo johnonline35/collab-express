@@ -1,8 +1,8 @@
 const supabase = require("../services/database");
-const loadClient = require("../api/googleCalendar");
-const getUserEmailFromDB = require("../utils/email");
-const analyzeMeetings = require("../services/meetingAnalysis");
-const limiter = require("../utils/limiter");
+const { loadClient } = require("../api/googleCalendar");
+const { getUserEmailFromDB } = require("../utils/email");
+const { analyzeMeetings } = require("../services/meetingAnalysis");
+const { limiter } = require("../utils/limiter");
 
 // FETCH MEETINGS FROM GOOGLE CALENDAR
 const getGoogleCal = async (userId) => {
