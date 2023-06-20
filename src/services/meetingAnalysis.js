@@ -3,14 +3,14 @@ const { checkAttendee } = require("../models/attendees");
 const {
   handlePublicDomain,
   handlePrivateDomain,
-} = require("../services/workspaceService");
+} = require("../handlers/workspaceHandler");
 const {
   fetchFutureMeetings,
   fetchPastMeetings,
   fetchMeetingDetails,
   fetchMeetingAttendees,
 } = require("../models/meetingsModel");
-const { filterCollabUserEmails } = require("../services/meetingService");
+const { filterCollabUserEmails } = require("./emailFilterService");
 
 const analyzeMeetings = async (userId) => {
   try {
