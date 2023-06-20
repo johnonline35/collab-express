@@ -3,8 +3,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 // Internal Modules
-const corsMiddleware = require("../src/middleware/cors");
-const calendarRoutes = require("../src/routes/calendarRoutes");
+const corsMiddleware = require("./middleware/cors");
+const calendarRoutes = require("./routes/calendarRoutes");
 
 // Initialize dotenv
 dotenv.config();
