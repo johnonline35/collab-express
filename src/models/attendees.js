@@ -4,10 +4,12 @@ const supabase = require("../services/database");
 // Check attendee
 const checkAttendee = async (email, workspaceId) => {
   try {
+    // Fetch attendees with the given email and workspaceId
     let { data: attendees, error } = await supabase
       .from("attendees")
       .select("attendee_id")
-      .eq("attendee_email", email);
+      .eq("attendee_email", email)
+      .eq("workspace_id", workspaceId);
 
     if (error) {
       console.error("Error fetching attendee:", error);
@@ -47,5 +49,4 @@ const checkAttendee = async (email, workspaceId) => {
 
 module.exports = {
   checkAttendee,
-  // Other attendee related functions
 };
