@@ -1,4 +1,4 @@
-const supabase = require("../services/database");
+const supabase = require("./database");
 
 // Filter collab user emails
 const filterCollabUserEmails = async (emails) => {
