@@ -31,6 +31,7 @@ const getGoogleCal = async (userId) => {
   let nextPageToken = undefined;
 
   try {
+    console.log("starting try catch block");
     do {
       const response = await calendar.events.list({
         calendarId: "primary",
