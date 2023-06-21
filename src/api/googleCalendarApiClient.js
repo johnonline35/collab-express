@@ -43,6 +43,7 @@ const getGoogleCal = async (userId) => {
       });
 
       allEvents = allEvents.concat(response.data.items);
+      console.log("allEvents:", allEvents);
       nextPageToken = response.data.nextPageToken;
     } while (nextPageToken);
 
