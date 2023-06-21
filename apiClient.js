@@ -16,7 +16,7 @@ const limiter = new Bottleneck({
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-const publicEmailDomains = require("./listOfEmailDomains.js");
+const publicEmailDomains = require("./listOfEmailDomains");
 
 const oauth2Client = new google.auth.OAuth2(
   client_id,
@@ -96,7 +96,7 @@ const getGoogleCal = async (userId) => {
       });
 
       allEvents = allEvents.concat(response.data.items);
-      console.log(allEvents);
+
       nextPageToken = response.data.nextPageToken;
     } while (nextPageToken);
 
