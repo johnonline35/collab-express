@@ -125,6 +125,7 @@ const analyzeMeetings = async (userId) => {
         let domain = email.split("@")[1];
 
         if (publicEmailDomains.includes(domain)) {
+          console.log("domain:", domain);
           const workspaceId = await handlePublicDomain(email, userId);
           if (!workspaceId) continue;
 
