@@ -65,6 +65,8 @@ const analyzeMeetings = async (userId) => {
       }
     }
 
+    console.log("Function finished: analyzeMeetings");
+
     return nextMeetings;
   } catch (error) {
     console.error("Error analyzing meetings:", error);
