@@ -18,16 +18,27 @@ const assignWorkspaceLead = async (email, workspaceId) => {
       return null;
     }
 
-    // Step 1: Check if the domain is public
+    // If domain is public, update attendee_is_workspace_lead to true
     if (publicEmailDomains.includes(emailDomain)) {
-      await supabase.from("attendees").upsert([
-        {
-          attendee_id: attendees[0].attendee_id,
+      await supabase
+        .from("attendees")
+        .update({
           attendee_is_workspace_lead: true,
-        },
-      ]);
+        })
+        .eq("attendee_id", attendees[0].attendee_id);
       return;
     }
+
+    // Step 1: Check if the domain is public
+    // if (publicEmailDomains.includes(emailDomain)) {
+    //   await supabase.from("attendees").upsert([
+    //     {
+    //       attendee_id: attendees[0].attendee_id,
+    //       attendee_is_workspace_lead: true,
+    //     },
+    //   ]);
+    //   return;
+    // }
 
     // Step 2: Check domain and see if there is more than 1 result for that domain
     let { data: domainAttendees } = await supabase
@@ -70,13 +81,21 @@ const assignWorkspaceLead = async (email, workspaceId) => {
     }
 
     let leadEmail = organizerAttendee || firstPositiveResponseAttendee;
+
     if (leadEmail) {
-      await supabase.from("attendees").upsert([
-        {
-          attendee_id: attendees[0].attendee_id,
+      await supabase
+        .from("attendees")
+        .update({
           attendee_is_workspace_lead: leadEmail === email,
-        },
-      ]);
+        })
+        .eq("attendee_id", attendees[0].attendee_id);
+      // if (leadEmail) {
+      //   await supabase.from("attendees").upsert([
+      //     {
+      //       attendee_id: attendees[0].attendee_id,
+      //       attendee_is_workspace_lead: leadEmail === email,
+      //     },
+      //   ]);
 
       // Ensure only one attendee_is_workspace_lead is set to true
       await supabase
