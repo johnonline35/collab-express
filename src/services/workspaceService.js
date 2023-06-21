@@ -1,4 +1,4 @@
-const supabase = require("supabase"); // Assume supabase is imported properly
+const supabase = require("./database");
 const { publicEmailDomains } = require("../data/listOfEmailDomains");
 
 const assignWorkspaceLead = async (email, workspaceId) => {
