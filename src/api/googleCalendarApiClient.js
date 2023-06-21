@@ -15,8 +15,9 @@ const getGoogleCal = async (userId) => {
     console.error("Error: User email not found");
     return [];
   } else {
-    console.log("userEmail", userEmail);
+    console.log("userEmail:", userEmail);
   }
+  // Comment
 
   const now = new Date();
   const twentyFourMonthsAgo = new Date(now.getTime());
