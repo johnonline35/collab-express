@@ -1,4 +1,4 @@
-// const { publicEmailDomains } = require("../data/listOfEmailDomains");
+// const publicEmailDomains = require("../data/listOfEmailDomains");
 // const { checkAttendee } = require("../models/attendees");
 // const { assignWorkspaceLead } = require("../services/workspaceService"); // Import the new function
 // const {
@@ -75,7 +75,7 @@
 //   analyzeMeetings,
 // };
 
-const { publicEmailDomains } = require("../data/listOfEmailDomains");
+const publicEmailDomains = require("../data/listOfEmailDomains");
 const { checkAttendee } = require("../models/attendees");
 const {
   handlePublicDomain,
