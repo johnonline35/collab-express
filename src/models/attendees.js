@@ -2,14 +2,15 @@ const { v4: uuidv4 } = require("uuid");
 const supabase = require("../services/database");
 
 // Check attendee
-const checkAttendee = async (email, workspaceId) => {
+const checkAttendee = async (email, userId, workspaceId) => {
   try {
     // Fetch attendees with the given email and workspaceId
     let { data: attendees, error } = await supabase
       .from("attendees")
       .select("attendee_id")
       .eq("attendee_email", email)
-      .eq("workspace_id", workspaceId);
+      .eq("workspace_id", workspaceId)
+      .eq("collab_user_id", userId);
 
     if (error) {
       console.error("Error fetching attendee:", error);
@@ -25,6 +26,7 @@ const checkAttendee = async (email, workspaceId) => {
       let { data: upsertedAttendee, error: attendeeUpsertError } =
         await supabase.from("attendees").upsert([
           {
+            collab_user_id: userId,
             attendee_id: attendeeId,
             attendee_email: email,
             workspace_id: workspaceId,
