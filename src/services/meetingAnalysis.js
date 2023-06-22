@@ -57,7 +57,7 @@ const analyzeMeetings = async (userId) => {
 
         if (!workspaceId) continue;
 
-        const attendeeId = await checkAttendee(email, workspaceId);
+        const attendeeId = await checkAttendee(email, userId, workspaceId);
         if (!attendeeId) continue;
 
         // Call the assignWorkspaceLead function here
