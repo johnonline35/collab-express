@@ -9,8 +9,7 @@ const checkAttendee = async (email, userId, workspaceId) => {
       .from("attendees")
       .select("attendee_id")
       .eq("attendee_email", email)
-      .eq("workspace_id", workspaceId)
-      .eq("collab_user_id", userId);
+      .eq("workspace_id", workspaceId);
 
     if (error) {
       console.error("Error fetching attendee:", error);
