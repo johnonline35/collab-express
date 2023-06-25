@@ -1,4 +1,4 @@
-const publicEmailDomains = require("../data/listOfEmailDomains");
+const fetchPublicEmailDomains = require("../data/listOfEmailDomains");
 const { checkAttendee } = require("../models/attendees");
 const { assignWorkspaceLead } = require("../services/workspaceService"); // Import the new function
 const {
@@ -49,7 +49,7 @@ const analyzeMeetings = async (userId) => {
         let domain = email.split("@")[1];
 
         let workspaceId;
-        if (publicEmailDomains.includes(domain)) {
+        if (fetchPublicEmailDomains.includes(domain)) {
           workspaceId = await handlePublicDomain(email, userId);
         } else {
           workspaceId = await handlePrivateDomain(email, userId);
@@ -77,7 +77,7 @@ module.exports = {
   analyzeMeetings,
 };
 
-// const publicEmailDomains = require("../data/listOfEmailDomains");
+// const fetchPublicEmailDomains = require("../data/listOfEmailDomains");
 // const { checkAttendee } = require("../models/attendees");
 // const {
 //   handlePublicDomain,
@@ -126,7 +126,7 @@ module.exports = {
 //       for (let email of emails) {
 //         let domain = email.split("@")[1];
 
-//         if (publicEmailDomains.includes(domain)) {
+//         if (fetchPublicEmailDomains.includes(domain)) {
 //           console.log("domain:", domain);
 //           const workspaceId = await handlePublicDomain(email, userId);
 //           if (!workspaceId) continue;
