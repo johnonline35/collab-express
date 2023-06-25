@@ -15,6 +15,7 @@ const { filterCollabUserEmails } = require("./emailFilterService");
 
 const analyzeMeetings = async (userId) => {
   try {
+    const publicEmailDomains = await fetchPublicEmailDomains();
     let nextMeetings = [];
 
     // 1. Find the next meetings from time = now, from the calendar start_dateTime
@@ -49,7 +50,7 @@ const analyzeMeetings = async (userId) => {
         let domain = email.split("@")[1];
 
         let workspaceId;
-        if (fetchPublicEmailDomains.includes(domain)) {
+        if (publicEmailDomains.includes(domain)) {
           workspaceId = await handlePublicDomain(email, userId);
         } else {
           workspaceId = await handlePrivateDomain(email, userId);
