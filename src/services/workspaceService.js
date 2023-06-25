@@ -1,5 +1,5 @@
 const supabase = require("./database");
-const publicEmailDomains = require("../data/listOfEmailDomains");
+const fetchPublicEmailDomains = require("../data/listOfEmailDomains");
 
 const assignWorkspaceLead = async (email, workspaceId) => {
   try {
@@ -19,7 +19,7 @@ const assignWorkspaceLead = async (email, workspaceId) => {
     }
 
     // If domain is public, update attendee_is_workspace_lead to true
-    if (publicEmailDomains.includes(emailDomain)) {
+    if (fetchPublicEmailDomains.includes(emailDomain)) {
       await supabase
         .from("attendees")
         .update({
