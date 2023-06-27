@@ -113,17 +113,18 @@ const getGoogleCal = async (userId) => {
             }
           })
         );
+        meeting.workspace_id = workspaceId;
+        console.log("Appended workspaceId to meeting:", meeting);
       } catch (error) {
         console.error("Upsert process error:", error);
       }
     });
 
-    await analyzeMeetings(userId);
     await Promise.all(upsertPromises);
 
     // Log filtered meetings
     // console.log(JSON.stringify(meetings, null, 2));
-
+    await analyzeMeetings(userId);
     return meetings;
   } catch (error) {
     console.error("The API returned an error:", error);
