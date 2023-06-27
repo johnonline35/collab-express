@@ -118,11 +118,12 @@ const getGoogleCal = async (userId) => {
       }
     });
 
+    await analyzeMeetings(userId);
     await Promise.all(upsertPromises);
 
     // Log filtered meetings
     // console.log(JSON.stringify(meetings, null, 2));
-    await analyzeMeetings(userId);
+
     return meetings;
   } catch (error) {
     console.error("The API returned an error:", error);
