@@ -118,47 +118,23 @@ const getGoogleCal = async (userId) => {
 
     await Promise.all(upsertPromises);
 
-    // Log filtered meetings
-    // console.log(JSON.stringify(meetings, null, 2));
     console.log("Starting analyzeMeetings...");
-    await analyzeMeetings(userId);
+    const analyzedMeetings = await analyzeMeetings(userId);
     console.log("analyzeMeetings finished.");
 
-    // Fetch the workspace_id after analyzeMeetings
-    const workspaceId = await fetchWorkspaceId(userId);
-    console.log("Fetched workspace_id:", workspaceId);
+    // Update the workspace_id for each meeting in the response
+    const updatedMeetings = meetings.map((meeting) => {
+      const analyzedMeeting = analyzedMeetings.find((m) => m.id === meeting.id);
+      if (analyzedMeeting && analyzedMeeting.workspace_id) {
+        meeting.workspace_id = analyzedMeeting.workspace_id;
+      }
+      return meeting;
+    });
 
-    return meetings;
+    return updatedMeetings;
   } catch (error) {
     console.error("The API returned an error:", error);
     return [];
-  }
-};
-
-const fetchWorkspaceId = async (userId) => {
-  // Fetch the workspace_id using userId
-  // You can modify this code to retrieve the workspace_id based on your database schema and logic
-  try {
-    const { data, error } = await supabase
-      .from("workspaces")
-      .select("workspace_id")
-      .eq("collab_user_id", userId)
-      .limit(1);
-
-    if (error) {
-      console.error("Error fetching workspace_id:", error);
-      return null;
-    }
-
-    if (data.length > 0) {
-      return data[0].workspace_id;
-    } else {
-      console.error("Workspace not found for user:", userId);
-      return null;
-    }
-  } catch (error) {
-    console.error("Error fetching workspace_id:", error);
-    return null;
   }
 };
 
