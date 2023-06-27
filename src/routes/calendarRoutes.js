@@ -6,13 +6,17 @@ router.post("/", async (req, res) => {
   const { userId } = req.body;
   console.log(userId); // Log the userId sent from your getMeetings function
   try {
-    const { workspace_id, meetings } =
-      await googleCalendarApiClient.getGoogleCal(userId); // Pass userId to your getGoogleCal function
+    const meetingsData = await googleCalendarApiClient.getGoogleCal(userId); // Pass userId to your getGoogleCal function
 
     // Create the response object
     const response = {
-      workspace_id: workspace_id,
-      meetings: meetings,
+      workspace_id: meetingsData.workspace_id,
+      meetings: meetingsData.meetings.map((meeting) => {
+        return {
+          ...meeting,
+          workspace_id: meeting.workspace_id || meetingsData.workspace_id,
+        };
+      }),
     };
 
     console.log("response:", response);
