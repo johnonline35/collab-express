@@ -131,7 +131,14 @@ const getGoogleCal = async (userId) => {
       return meeting;
     });
 
-    return updatedMeetings;
+    // Return the updated meetings along with the first workspace_id
+    const response = {
+      workspace_id:
+        updatedMeetings.length > 0 ? updatedMeetings[0].workspace_id : null,
+      meetings: updatedMeetings,
+    };
+
+    return response;
   } catch (error) {
     console.error("The API returned an error:", error);
     return [];
