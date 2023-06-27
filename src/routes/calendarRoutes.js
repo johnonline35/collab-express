@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
       workspace_id: meetings.length > 0 ? meetings[0].workspace_id : null,
       meetings: meetings,
     };
-
+    console.log("response:", response);
     res.json(response); // Send the response including workspace_id and meetings data
   } catch (error) {
     console.error(error);
