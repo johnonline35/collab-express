@@ -12,6 +12,7 @@ const {
   fetchMeetingAttendees,
 } = require("../models/meetingsModel");
 const { filterCollabUserEmails } = require("./emailFilterService");
+const supabase = require("./database");
 
 const analyzeMeetings = async (userId) => {
   try {
@@ -52,16 +53,22 @@ const analyzeMeetings = async (userId) => {
         let workspaceId;
         if (publicEmailDomains.includes(domain)) {
           workspaceId = await handlePublicDomain(email, userId);
-          if (workspaceId) {
-            // Append the workspaceId to the meeting object
-            meeting.workspace_id = workspaceId;
-          }
         } else {
           workspaceId = await handlePrivateDomain(email, userId);
-          if (workspaceId) {
-            // Append the workspaceId to the meeting object
-            meeting.workspace_id = workspaceId;
-          }
+        }
+
+        if (workspaceId) {
+          // Append the workspaceId to the meeting object
+          meeting.workspace_id = workspaceId;
+
+          // Upsert the workspaceId into the meetings table
+          const { error } = await supabase
+            .from("meetings")
+            .upsert([{ id: meeting.id, workspace_id: workspaceId }], {
+              onConflict: "id",
+            });
+
+          if (error) console.log("Error upserting workspace_id:", error);
         }
 
         if (!workspaceId) continue;
@@ -81,6 +88,76 @@ const analyzeMeetings = async (userId) => {
     console.error("Error analyzing meetings:", error);
   }
 };
+
+// const analyzeMeetings = async (userId) => {
+//   try {
+//     const publicEmailDomains = await fetchPublicEmailDomains();
+//     let nextMeetings = [];
+
+//     // 1. Find the next meetings from time = now, from the calendar start_dateTime
+//     const futureMeetings = await fetchFutureMeetings();
+//     nextMeetings = nextMeetings.concat(futureMeetings);
+
+//     // If fewer than 8 meetings are fetched, find meetings from the past
+//     if (nextMeetings.length < 8) {
+//       const pastMeetings = await fetchPastMeetings(nextMeetings.length);
+//       nextMeetings = nextMeetings.concat(pastMeetings);
+//     }
+
+//     // For each meeting, create a list of creator_email, organizer_email, and attendee emails
+//     for (let meeting of nextMeetings) {
+//       const meetingDetails = await fetchMeetingDetails(meeting.id);
+//       if (!meetingDetails) continue;
+
+//       const attendees = await fetchMeetingAttendees(meeting.id);
+//       if (!attendees) continue;
+
+//       // Create an array of all emails for the current meeting
+//       let emails = [
+//         meetingDetails[0].creator_email,
+//         meetingDetails[0].organizer_email,
+//         ...attendees.map((attendee) => attendee.email),
+//       ];
+
+//       // Filter out emails that match with collab_user
+//       emails = await filterCollabUserEmails(emails);
+
+//       for (let email of emails) {
+//         let domain = email.split("@")[1];
+
+//         let workspaceId;
+//         if (publicEmailDomains.includes(domain)) {
+//           workspaceId = await handlePublicDomain(email, userId);
+//           if (workspaceId) {
+//             // Append the workspaceId to the meeting object
+//             meeting.workspace_id = workspaceId;
+//           }
+//         } else {
+//           workspaceId = await handlePrivateDomain(email, userId);
+//           if (workspaceId) {
+//             // Append the workspaceId to the meeting object
+//             meeting.workspace_id = workspaceId;
+
+//           }
+//         }
+
+//         if (!workspaceId) continue;
+
+//         const attendeeId = await checkAttendee(email, userId, workspaceId);
+//         if (!attendeeId) continue;
+
+//         // Call the assignWorkspaceLead function here
+//         await assignWorkspaceLead(email, workspaceId);
+//       }
+//     }
+
+//     console.log("Function finished: analyzeMeetings");
+
+//     return nextMeetings;
+//   } catch (error) {
+//     console.error("Error analyzing meetings:", error);
+//   }
+// };
 
 module.exports = {
   analyzeMeetings,
