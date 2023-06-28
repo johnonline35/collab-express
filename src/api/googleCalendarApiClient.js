@@ -66,6 +66,8 @@ const getGoogleCal = async (userId) => {
         organizer_email: meeting.organizer.email,
         start_dateTime: meeting.start.dateTime,
         end_dateTime: meeting.end.dateTime,
+        start_time_zone: meeting.start.timeZone,
+        end_time_zone: meeting.end.timeZone,
         collab_user_id: userId,
       };
 
