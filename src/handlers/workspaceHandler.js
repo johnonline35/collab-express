@@ -27,16 +27,23 @@ function createWorkspaceName(leadEmail, publicEmailDomains) {
   let domainName = domain.split(".")[0];
 
   let baseName;
+  let meetingAttendeeEmail, workspaceDomain;
   if (publicEmailDomains.includes(domain)) {
     baseName = user;
+    meetingAttendeeEmail = leadEmail;
   } else {
     baseName = domainName;
+    workspaceDomain = domain;
   }
 
   // Capitalize the first letter of the base name
   let workspaceName = baseName.charAt(0).toUpperCase() + baseName.slice(1);
 
-  return workspaceName;
+  return {
+    workspaceName,
+    meetingAttendeeEmail,
+    workspaceDomain,
+  };
 }
 
 module.exports = { assignWorkspaceLead, createWorkspaceName };

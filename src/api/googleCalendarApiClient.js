@@ -62,6 +62,7 @@ const getGoogleCal = async (userId) => {
       const meetingData = {
         id: meeting.id,
         summary: meeting.summary,
+        description: meeting.description,
         creator_email: meeting.creator.email,
         organizer_email: meeting.organizer.email,
         start_dateTime: meeting.start.dateTime,
