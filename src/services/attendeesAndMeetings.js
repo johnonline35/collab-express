@@ -91,10 +91,11 @@ async function updateAttendeesAndMeetings(
   }
 
   if (attendeesToInsert.length > 0) {
-    let insertResult = await supabase
+    let { data: insertResult, error } = await supabase
       .from("attendees")
       .upsert(attendeesToInsert);
     console.log("Insert attendees result:", insertResult);
+    if (error) console.log("Error inserting attendees:", error);
   }
 
   if (meetingsToUpdate.length > 0) {
@@ -104,7 +105,7 @@ async function updateAttendeesAndMeetings(
           .from("meetings")
           .update({ workspace_id: meeting.workspace_id })
           .eq("id", meeting.id);
-        console.log("Update meeting result:", updateResult);
+        // console.log("Update meeting result:", updateResult);
         return updateResult;
       })
     );
@@ -115,7 +116,7 @@ async function updateAttendeesAndMeetings(
       .from("workspaces")
       .upsert(workspacesToCreate);
     if (error) console.log("Error in creating workspace: ", error);
-    else console.log("Workspaces created successfully: ", data);
+    // else console.log("Workspaces created successfully: ", data);
   }
 }
 
