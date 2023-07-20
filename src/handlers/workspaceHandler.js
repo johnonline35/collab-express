@@ -1,202 +1,42 @@
-const { v4: uuidv4 } = require("uuid");
-const supabase = require("../services/database");
-
-const handlePublicDomain = async (email, userId) => {
-  const domain = email.split("@")[1];
-  console.log("handlePublicDomain email:", email);
-  console.log("handlePublicDomain domain:", domain);
-  let workspaceName = email
-    .split("@")[0]
-    .replace(".", " ")
-    .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
-
-  let { data, error } = await supabase
-    .from("workspaces")
-    .select("workspace_id")
-    .eq("meeting_attendee_email", email);
-
-  console.log("handlePublicDomain data:", data);
-  console.log("handlePublicDomain error:", error);
-
-  if (error) {
-    console.error("Error fetching workspace:", error);
-    return null;
-  }
-
-  let workspaceId;
-  if (data.length === 0) {
-    // Workspace not found, create a new one
-    workspaceId = uuidv4();
-
-    let workspaceData = {
-      workspace_id: workspaceId,
-      meeting_attendee_email: email,
-      workspace_name: workspaceName,
-      collab_user_id: userId, // Use userId here
-    };
-
-    let { data: upsertData, error: workspaceUpsertError } = await supabase
-      .from("workspaces")
-      .upsert([workspaceData]);
-
-    if (workspaceUpsertError) {
-      console.error("Error upserting workspace:", workspaceUpsertError);
-      return null;
+// This function assigns the attendee_is_workspace_lead flag based on the given rules
+function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
+  // Iterate over attendees amd use cascading logic
+  for (let attendee of attendeesForThisMeeting) {
+    if (attendee.email === meeting.organizer_email) {
+      return attendee;
     }
-  } else {
-    workspaceId = data[0].workspace_id;
-  }
 
-  console.log("handlePublicDomain workspaceId:", workspaceId);
-  return workspaceId;
-};
-
-const handlePrivateDomain = async (email, userId) => {
-  const domain = email.split("@")[1];
-  console.log("handlePrivateDomain email:", email);
-  console.log("handlePrivateDomain domain:", domain);
-  let workspaceName = domain.split(".")[0];
-  workspaceName =
-    workspaceName.charAt(0).toUpperCase() + workspaceName.slice(1); // Capitalize the first letter
-
-  let { data, error } = await supabase
-    .from("workspaces")
-    .select("workspace_id")
-    .eq("domain", domain);
-
-  console.log("handlePrivateDomain data:", data);
-  console.log("handlePrivateDomain error:", error);
-
-  if (error) {
-    console.error("Error fetching workspace:", error);
-    return null;
-  }
-
-  let workspaceId;
-  if (data.length === 0) {
-    // Workspace not found, create a new one
-    workspaceId = uuidv4();
-
-    let workspaceData = {
-      workspace_id: workspaceId,
-      workspace_name: workspaceName,
-      domain: domain,
-      collab_user_id: userId,
-    };
-
-    let { data: upsertData, error: workspaceUpsertError } = await supabase
-      .from("workspaces")
-      .upsert([workspaceData]);
-
-    if (workspaceUpsertError) {
-      console.error("Error upserting workspace:", workspaceUpsertError);
-      return null;
+    if (attendee.email === meeting.creator_email) {
+      return attendee;
     }
-  } else {
-    workspaceId = data[0].workspace_id;
+
+    if (attendee.response_status === "accepted") {
+      return attendee;
+    }
   }
 
-  console.log("handlePrivateDomain workspaceId:", workspaceId);
-  return workspaceId;
-};
+  // If no suitable lead is found, assign the first attendee
+  return attendeesForThisMeeting[0];
+}
 
-module.exports = {
-  handlePublicDomain,
-  handlePrivateDomain,
-};
+function createWorkspaceName(leadEmail, publicEmailDomains) {
+  // Split the email address into user and domain
+  let [user, domain] = leadEmail.split("@");
 
-// const handlePublicDomain = async (email, userId) => {
-//   const domain = email.split("@")[1];
-//   console.log("handlePublicDomain email:", email);
-//   console.log("handlePublicDomain domain:", domain);
-//   let workspaceName = email
-//     .split("@")[0]
-//     .replace(".", " ")
-//     .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase());
+  // Split the domain name to exclude the extension
+  let domainName = domain.split(".")[0];
 
-//   let { data, error } = await supabase
-//     .from("workspaces")
-//     .select("workspace_id")
-//     .eq("meeting_attendee_email", email);
+  let baseName;
+  if (publicEmailDomains.includes(domain)) {
+    baseName = user;
+  } else {
+    baseName = domainName;
+  }
 
-//   if (error) {
-//     console.error("Error fetching workspace:", error);
-//     return null;
-//   }
+  // Capitalize the first letter of the base name
+  let workspaceName = baseName.charAt(0).toUpperCase() + baseName.slice(1);
 
-//   let workspaceId;
-//   if (data.length === 0) {
-//     // Workspace not found, create a new one
-//     workspaceId = uuidv4();
+  return workspaceName;
+}
 
-//     let workspaceData = {
-//       workspace_id: workspaceId,
-//       meeting_attendee_email: email,
-//       workspace_name: workspaceName,
-//       collab_user_id: userId, // Use userId here
-//     };
-
-//     let { data: upsertData, error: workspaceUpsertError } = await supabase
-//       .from("workspaces")
-//       .upsert([workspaceData]);
-
-//     if (workspaceUpsertError) {
-//       console.error("Error upserting workspace:", workspaceUpsertError);
-//       return null;
-//     }
-//   } else {
-//     workspaceId = data[0].workspace_id;
-//   }
-
-//   return workspaceId;
-// };
-
-// const handlePrivateDomain = async (email, userId) => {
-//   const domain = email.split("@")[1];
-//   console.log("handlePrivateDomain email:", email);
-//   console.log("handlePrivateDomain domain:", domain);
-//   let workspaceName = domain.split(".")[0];
-//   workspaceName =
-//     workspaceName.charAt(0).toUpperCase() + workspaceName.slice(1); // Capitalize the first letter
-
-//   let { data, error } = await supabase
-//     .from("workspaces")
-//     .select("workspace_id")
-//     .eq("domain", domain);
-
-//   if (error) {
-//     console.error("Error fetching workspace:", error);
-//     return null;
-//   }
-
-//   let workspaceId;
-//   if (data.length === 0) {
-//     // Workspace not found, create a new one
-//     workspaceId = uuidv4();
-
-//     let workspaceData = {
-//       workspace_id: workspaceId,
-//       workspace_name: workspaceName,
-//       domain: domain,
-//       collab_user_id: userId,
-//     };
-
-//     let { data: upsertData, error: workspaceUpsertError } = await supabase
-//       .from("workspaces")
-//       .upsert([workspaceData]);
-
-//     if (workspaceUpsertError) {
-//       console.error("Error upserting workspace:", workspaceUpsertError);
-//       return null;
-//     }
-//   } else {
-//     workspaceId = data[0].workspace_id;
-//   }
-
-//   return workspaceId;
-// };
-
-// module.exports = {
-//   handlePublicDomain,
-//   handlePrivateDomain,
-// };
+module.exports = { assignWorkspaceLead, createWorkspaceName };

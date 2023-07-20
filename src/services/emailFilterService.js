@@ -1,40 +1,37 @@
-const supabase = require("./database");
+const supabase = require("./database"); // assuming the supabase instance is also needed here
 
-// Filter collab user emails
-const filterCollabUserEmails = async (emails) => {
-  try {
-    let filteredEmails = await Promise.all(
-      emails.map(async (email) => {
-        let { data: collabUsers, error } = await supabase
-          .from("collab_users")
-          .select("collab_user_email")
-          .eq("collab_user_email", email);
+// This function will retrieve the email and domain of the collab user
+async function getUserEmailAndDomain(userId) {
+  let { data, error } = await supabase
+    .from("collab_users")
+    .select("collab_user_email")
+    .eq("id", userId)
+    .single();
 
-        if (error) {
-          console.error("Error checking collab_users:", error);
-          return email; // In case of error, include the email
-        }
-
-        // If the email doesn't match with any collab_user_email, include it
-        if (collabUsers.length === 0) {
-          return email;
-        }
-
-        // If the email matches with a collab_user_email, exclude it
-        return null;
-      })
-    );
-
-    // Remove any null values (which correspond to matching collab_user_emails)
-    filteredEmails = filteredEmails.filter((email) => email !== null);
-
-    return filteredEmails;
-  } catch (error) {
-    console.error("Error in filterCollabUserEmails:", error);
-    return [];
+  if (error) {
+    console.error("Error fetching collab user email:", error);
+    return null;
   }
-};
 
-module.exports = {
-  filterCollabUserEmails,
-};
+  let domain = data.collab_user_email.split("@")[1];
+  return { email: data.collab_user_email, domain };
+}
+
+// This function filters the attendees based on their email domain
+function filterAttendees(attendees, publicEmailDomains, userDetails) {
+  let filteredAttendees = [];
+  for (let attendee of attendees) {
+    let attendeeDomain = attendee.email.split("@")[1];
+
+    if (publicEmailDomains.includes(attendeeDomain)) {
+      if (attendee.email !== userDetails.email) {
+        filteredAttendees.push(attendee);
+      }
+    } else if (attendeeDomain !== userDetails.domain) {
+      filteredAttendees.push(attendee);
+    }
+  }
+  return filteredAttendees;
+}
+
+module.exports = { getUserEmailAndDomain, filterAttendees };

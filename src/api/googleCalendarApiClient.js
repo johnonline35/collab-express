@@ -18,13 +18,13 @@ const getGoogleCal = async (userId) => {
   }
 
   const now = new Date();
-  const twentyFourMonthsAgo = new Date(now.getTime());
-  twentyFourMonthsAgo.setMonth(now.getMonth() - 1);
-  const timeMin = twentyFourMonthsAgo.toISOString();
+  const xMonthsAgo = new Date(now.getTime());
+  xMonthsAgo.setMonth(now.getMonth() - 6);
+  const timeMin = xMonthsAgo.toISOString();
 
-  const twoMonthsFromNow = new Date(now.getTime());
-  twoMonthsFromNow.setMonth(now.getMonth() + 2);
-  const timeMax = twoMonthsFromNow.toISOString();
+  const xMonthsFromNow = new Date(now.getTime());
+  xMonthsFromNow.setMonth(now.getMonth() + 4);
+  const timeMax = xMonthsFromNow.toISOString();
 
   let allEvents = [];
   let nextPageToken = undefined;
@@ -173,13 +173,13 @@ module.exports = {
 //   // Comment
 
 //   const now = new Date();
-//   const twentyFourMonthsAgo = new Date(now.getTime());
-//   twentyFourMonthsAgo.setMonth(now.getMonth() - 1);
-//   const timeMin = twentyFourMonthsAgo.toISOString();
+//   const xMonthsAgo = new Date(now.getTime());
+//   xMonthsAgo.setMonth(now.getMonth() - 1);
+//   const timeMin = xMonthsAgo.toISOString();
 
-//   const twoMonthsFromNow = new Date(now.getTime());
-//   twoMonthsFromNow.setMonth(now.getMonth() + 2);
-//   const timeMax = twoMonthsFromNow.toISOString();
+//   const xMonthsFromNow = new Date(now.getTime());
+//   xMonthsFromNow.setMonth(now.getMonth() + 2);
+//   const timeMax = xMonthsFromNow.toISOString();
 
 //   let allEvents = [];
 //   let nextPageToken = undefined;
