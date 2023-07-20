@@ -8,7 +8,7 @@ const getGoogleCal = async (userId) => {
   console.log(userId);
   const calendar = await loadClient(userId);
 
-  // Fetch user email from database
+  // Fetch user email from database:
   const userEmail = await getUserEmailFromDB(userId);
   if (!userEmail) {
     console.error("Error: User email not found");
