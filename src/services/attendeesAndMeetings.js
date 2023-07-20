@@ -53,7 +53,7 @@ async function updateAttendeesAndMeetings(
 
       if (!existingWorkspace) {
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
-        workspaceName = createWorkspaceName(
+        let workspaceInfo = createWorkspaceName(
           leadAssigned.email,
           publicEmailDomains
         );
@@ -61,11 +61,12 @@ async function updateAttendeesAndMeetings(
 
         workspacesToCreate.push({
           workspace_id: workspaceId,
-          workspace_name: workspaceName,
+          workspace_name: workspaceInfo.workspaceName,
           collab_user_id: userId,
+          meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
+          domain: workspaceInfo.workspaceDomain,
         });
       }
-
       attendeesForThisMeeting.forEach((attendee) => {
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
