@@ -156,31 +156,46 @@ const updateMeetingDescription = async (
 ) => {
   const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
+  console.log("Processing workspace_id:", workspace_id);
+  console.log(
+    "workspace_attendee_enable_calendar_link is",
+    workspace_attendee_enable_calendar_link ? "enabled" : "disabled"
+  );
+
   if (workspace_attendee_enable_calendar_link) {
     try {
+      console.log("Loading Google Calendar client...");
       // Load the Google Calendar client
       const calendar = await loadClient(collab_user_id);
+      console.log("Google Calendar client loaded.");
 
+      console.log("Fetching meeting data...");
       // Fetch meeting data from the 'meetings' table
       const { data: meetingData } = await supabase
         .from("meetings")
         .select("*")
         .eq("workspace_id", workspace_id);
+      console.log("Fetched meeting data:", meetingData);
 
       // Loop through each meeting
       for (let meeting of meetingData) {
+        console.log("Processing meeting:", meeting);
         // Fetch the Google Calendar event
+        console.log("Fetching Google Calendar event...");
         const event = await calendar.events.get({
           calendarId: "primary",
           eventId: meeting.id,
         });
+        console.log("Fetched Google Calendar event:", event);
 
         // Prepend the link to the existing description
         const newDescription =
           workspaceLink + "\n" + (event.data.description || "");
+        console.log("New description:", newDescription);
 
         // Update the Google Calendar event
         event.data.description = newDescription;
+        console.log("Updating Google Calendar event...");
         const response = await calendar.events.update({
           calendarId: "primary",
           eventId: meeting.id,
@@ -193,11 +208,10 @@ const updateMeetingDescription = async (
       console.error("The API returned an error: ", error);
     }
   } else {
-    // Add the code block to run when workspace_attendee_enable_calendar_link is false
     console.log(
-      "Meeting not updated: ",
-      "workspace_attendee_enable_calendar_link is false"
+      "workspace_attendee_enable_calendar_link is disabled. Skipping update."
     );
+    // Add the code block to run when workspace_attendee_enable_calendar_link is false
   }
 };
 
