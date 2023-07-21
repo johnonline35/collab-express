@@ -39,8 +39,8 @@ router.post("/update-meeting-description", async (req, res) => {
 
   try {
     await googleCalendarApiClient.updateMeetingDescription(
-      collab_user_id, // userId
       workspace_id, // workspaceId
+      collab_user_id, // userId
       workspace_attendee_enable_calendar_link // enableCalendarLink
     );
     res.status(200).send("Meeting Description Updated Successfully");
