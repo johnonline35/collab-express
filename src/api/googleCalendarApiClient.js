@@ -156,47 +156,50 @@ const updateMeetingDescription = async (
 ) => {
   const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
-  if (workspace_attendee_enable_calendar_link) {
-    try {
-      // Load the Google Calendar client
-      const calendar = await loadClient(collab_user_id);
+  try {
+    // Load the Google Calendar client
+    const calendar = await loadClient(collab_user_id);
 
-      // Fetch meeting data from the 'meetings' table
-      const { data: meetingData } = await supabase
-        .from("meetings")
-        .select("*")
-        .eq("workspace_id", workspace_id);
+    // Fetch meeting data from the 'meetings' table
+    const { data: meetingData } = await supabase
+      .from("meetings")
+      .select("*")
+      .eq("workspace_id", workspace_id);
 
-      // Loop through each meeting
-      for (let meeting of meetingData) {
-        // Fetch the Google Calendar event
+    // Loop through each meeting
+    for (let meeting of meetingData) {
+      // Fetch the Google Calendar event
+      const event = await calendar.events.get({
+        calendarId: "primary",
+        eventId: meeting.id,
+      });
 
-        const event = await calendar.events.get({
-          calendarId: "primary",
-          eventId: meeting.id,
-        });
-
+      // Check if link needs to be added or removed
+      if (workspace_attendee_enable_calendar_link) {
         // Prepend the link to the existing description
         const newDescription =
           workspaceLink + "\n" + (event.data.description || "");
 
         // Update the Google Calendar event
         event.data.description = newDescription;
-
-        const response = await calendar.events.update({
-          calendarId: "primary",
-          eventId: meeting.id,
-          resource: event.data,
-        });
+      } else {
+        // Remove the link from the description
+        const workspaceLinkRegEx = new RegExp(workspaceLink + "\n", "g");
+        event.data.description = event.data.description.replace(
+          workspaceLinkRegEx,
+          ""
+        );
       }
-    } catch (error) {
-      console.error("The API returned an error: ", error);
+
+      // Update the Google Calendar event
+      const response = await calendar.events.update({
+        calendarId: "primary",
+        eventId: meeting.id,
+        resource: event.data,
+      });
     }
-  } else {
-    console.log(
-      "workspace_attendee_enable_calendar_link is disabled. Skipping update."
-    );
-    // Add the code block to run when workspace_attendee_enable_calendar_link is false
+  } catch (error) {
+    console.error("The API returned an error: ", error);
   }
 };
 
