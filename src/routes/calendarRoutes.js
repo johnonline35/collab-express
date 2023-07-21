@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const googleCalendarApiClient = require("../api/googleCalendarApiClient");
 
+// Fetch the Google calendar api endpoint
 router.post("/", async (req, res) => {
   const { userId } = req.body;
   console.log(userId); // Log the userId sent from your getMeetings function
@@ -25,6 +26,24 @@ router.post("/", async (req, res) => {
     console.error(error);
     res.status(500).send("Error fetching meetings");
   }
+});
+
+// Update the meeting description endpoint
+router.post("/update-meeting-description", async (req, res) => {
+  console.log("reqBody:", req.body);
+  const { userId, workspaceId, enableCalendarLink } = req.body;
+
+  // try {
+  //   await googleCalendarApiClient.updateMeetingDescription(
+  //     userId,
+  //     workspaceId,
+  //     enableCalendarLink
+  //   );
+  //   res.status(200).send("Meeting Description Updated Successfully");
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).send("Error updating meeting description");
+  // }
 });
 
 module.exports = router;
