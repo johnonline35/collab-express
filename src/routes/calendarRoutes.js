@@ -31,19 +31,23 @@ router.post("/", async (req, res) => {
 // Update the meeting description endpoint
 router.post("/update-meeting-description", async (req, res) => {
   console.log("reqBody:", req.body);
-  const { userId, workspaceId, enableCalendarLink } = req.body;
+  const {
+    workspace_id,
+    collab_user_id,
+    workspace_attendee_enable_calendar_link,
+  } = req.body.record;
 
-  // try {
-  //   await googleCalendarApiClient.updateMeetingDescription(
-  //     userId,
-  //     workspaceId,
-  //     enableCalendarLink
-  //   );
-  //   res.status(200).send("Meeting Description Updated Successfully");
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).send("Error updating meeting description");
-  // }
+  try {
+    await googleCalendarApiClient.updateMeetingDescription(
+      collab_user_id, // userId
+      workspace_id, // workspaceId
+      workspace_attendee_enable_calendar_link // enableCalendarLink
+    );
+    res.status(200).send("Meeting Description Updated Successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating meeting description");
+  }
 });
 
 module.exports = router;
