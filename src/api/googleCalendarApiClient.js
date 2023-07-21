@@ -3,6 +3,7 @@ const { loadClient } = require("../api/googleCalendar");
 const { getUserEmailFromDB } = require("../utils/email");
 const { analyzeMeetings } = require("../services/meetingAnalysis");
 const limiter = require("../utils/limiter");
+const { collabWorkspaceLinkToAppend } = require("../data/collabUrls");
 
 const getGoogleCal = async (userId) => {
   console.log(userId);
@@ -148,55 +149,55 @@ const getGoogleCal = async (userId) => {
   }
 };
 
-const updateMeetingDescription = async (userId, workspaceId, link) => {
-  try {
-    // Load the Google Calendar client
-    const calendar = await loadClient(userId);
+const updateMeetingDescription = async (
+  workspace_id,
+  collab_user_id,
+  workspace_attendee_enable_calendar_link
+) => {
+  const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
-    // Fetch workspace data from the 'workspaces' table
-    const { data: workspaceData } = await supabase
-      .from("workspaces")
-      .select(
-        "workspace_id, collab_user_id, workspace_attendee_enable_calendar_link"
-      )
-      .eq("workspace_id", workspaceId)
-      .eq("collab_user_id", userId);
+  if (workspace_attendee_enable_calendar_link) {
+    try {
+      // Load the Google Calendar client
+      const calendar = await loadClient(collab_user_id);
 
-    // Check if the workspace_attendee_enable_calendar_link attribute is true
-    if (!workspaceData[0].workspace_attendee_enable_calendar_link) {
-      console.log("Link insertion not enabled for this workspace");
-      return;
+      // Fetch meeting data from the 'meetings' table
+      const { data: meetingData } = await supabase
+        .from("meetings")
+        .select("*")
+        .eq("workspace_id", workspace_id);
+
+      // Loop through each meeting
+      for (let meeting of meetingData) {
+        // Fetch the Google Calendar event
+        const event = await calendar.events.get({
+          calendarId: "primary",
+          eventId: meeting.id,
+        });
+
+        // Prepend the link to the existing description
+        const newDescription =
+          workspaceLink + "\n" + (event.data.description || "");
+
+        // Update the Google Calendar event
+        event.data.description = newDescription;
+        const response = await calendar.events.update({
+          calendarId: "primary",
+          eventId: meeting.id,
+          resource: event.data,
+        });
+
+        console.log("Meeting updated: ", response.data);
+      }
+    } catch (error) {
+      console.error("The API returned an error: ", error);
     }
-
-    // Fetch meeting data from the 'meetings' table
-    const { data: meetingData } = await supabase
-      .from("meetings")
-      .select("*")
-      .eq("workspace_id", workspaceData[0].workspace_id);
-
-    // Loop through each meeting
-    for (let meeting of meetingData) {
-      // Fetch the Google Calendar event
-      const event = await calendar.events.get({
-        calendarId: "primary",
-        eventId: meeting.id,
-      });
-
-      // Prepend the link to the existing description
-      const newDescription = link + "\n" + (event.data.description || "");
-
-      // Update the Google Calendar event
-      event.data.description = newDescription;
-      const response = await calendar.events.update({
-        calendarId: "primary",
-        eventId: meeting.id,
-        resource: event.data,
-      });
-
-      console.log("Meeting updated: ", response.data);
-    }
-  } catch (error) {
-    console.error("The API returned an error: ", error);
+  } else {
+    // Add the code block to run when workspace_attendee_enable_calendar_link is false
+    console.log(
+      "Meeting not updated: ",
+      "workspace_attendee_enable_calendar_link is false"
+    );
   }
 };
 
