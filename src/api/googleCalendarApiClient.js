@@ -184,7 +184,7 @@ const updateMeetingDescription = async (
         event.data.description = newDescription;
       } else {
         // Remove the link from the description
-        const workspaceLinkRegEx = new RegExp(workspaceLink + "\n", "g");
+        const workspaceLinkRegEx = new RegExp(workspaceLink + "\n\n", "g");
         event.data.description = event.data.description.replace(
           workspaceLinkRegEx,
           ""
