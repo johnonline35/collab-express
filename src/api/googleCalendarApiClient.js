@@ -178,7 +178,7 @@ const updateMeetingDescription = async (
       if (workspace_attendee_enable_calendar_link) {
         // Prepend the link to the existing description
         const newDescription =
-          workspaceLink + "\n" + (event.data.description || "");
+          workspaceLink + "\n\n" + (event.data.description || "");
 
         // Update the Google Calendar event
         event.data.description = newDescription;
