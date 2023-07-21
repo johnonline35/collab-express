@@ -148,8 +148,61 @@ const getGoogleCal = async (userId) => {
   }
 };
 
+const updateMeetingDescription = async (userId, workspaceId, link) => {
+  try {
+    // Load the Google Calendar client
+    const calendar = await loadClient(userId);
+
+    // Fetch workspace data from the 'workspaces' table
+    const { data: workspaceData } = await supabase
+      .from("workspaces")
+      .select(
+        "workspace_id, collab_user_id, workspace_attendee_enable_calendar_link"
+      )
+      .eq("workspace_id", workspaceId)
+      .eq("collab_user_id", userId);
+
+    // Check if the workspace_attendee_enable_calendar_link attribute is true
+    if (!workspaceData[0].workspace_attendee_enable_calendar_link) {
+      console.log("Link insertion not enabled for this workspace");
+      return;
+    }
+
+    // Fetch meeting data from the 'meetings' table
+    const { data: meetingData } = await supabase
+      .from("meetings")
+      .select("*")
+      .eq("workspace_id", workspaceData[0].workspace_id);
+
+    // Loop through each meeting
+    for (let meeting of meetingData) {
+      // Fetch the Google Calendar event
+      const event = await calendar.events.get({
+        calendarId: "primary",
+        eventId: meeting.id,
+      });
+
+      // Prepend the link to the existing description
+      const newDescription = link + "\n" + (event.data.description || "");
+
+      // Update the Google Calendar event
+      event.data.description = newDescription;
+      const response = await calendar.events.update({
+        calendarId: "primary",
+        eventId: meeting.id,
+        resource: event.data,
+      });
+
+      console.log("Meeting updated: ", response.data);
+    }
+  } catch (error) {
+    console.error("The API returned an error: ", error);
+  }
+};
+
 module.exports = {
   getGoogleCal,
+  updateMeetingDescription,
 };
 
 // const supabase = require("../services/database");
