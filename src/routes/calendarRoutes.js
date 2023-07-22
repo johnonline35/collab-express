@@ -14,13 +14,17 @@ router.post("/", async (req, res) => {
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
 
     // Check if a Google Calendar watch is already set up
-    const isWatchSetup = await checkIfWatchIsSetup(userId); // You should implement this function
+    const isWatchSetup = await checkIfWatchIsSetup(userId);
+
+    if (isWatchSetup) {
+      console.log("Watch is already set up, exiting set up watch function");
+    }
 
     if (!isWatchSetup) {
       // Set up the Google Calendar watch
       await watchGoogleCalendar(userId);
-      // Set the flag in your database indicating a watch is set up
-      await setWatchSetup(userId); // You should implement this function
+      // Set the flag database indicating a watch is set up
+      await setWatchSetup(userId);
     }
 
     // Create the response object
