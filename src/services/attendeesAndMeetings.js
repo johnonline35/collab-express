@@ -51,6 +51,7 @@ async function updateAttendeesAndMeetings(
         }
       }
 
+      // If there is no existing workspace, then define a workspace lead, and create a workspace
       if (!existingWorkspace) {
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
         let workspaceInfo = createWorkspaceName(
