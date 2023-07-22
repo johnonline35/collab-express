@@ -57,16 +57,41 @@ async function updateAttendeesAndMeetings(
           leadAssigned.email,
           publicEmailDomains
         );
-        workspaceId = uuidv4();
 
-        workspacesToCreate.push({
-          workspace_id: workspaceId,
-          workspace_name: workspaceInfo.workspaceName,
-          collab_user_id: userId,
-          meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
-          domain: workspaceInfo.workspaceDomain,
-        });
+        // Check if leadAssigned already has a workspace_id
+        let existingLeadWorkspace = existingAttendeesMap.get(
+          leadAssigned.email
+        )?.workspace_id;
+
+        workspaceId = existingLeadWorkspace ? existingLeadWorkspace : uuidv4();
+
+        // Only push new workspace to be created if it's a new workspace_id
+        if (!existingLeadWorkspace) {
+          workspacesToCreate.push({
+            workspace_id: workspaceId,
+            workspace_name: workspaceInfo.workspaceName,
+            collab_user_id: userId,
+            meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
+            domain: workspaceInfo.workspaceDomain,
+          });
+        }
       }
+      //   if (!existingWorkspace) {
+      //     leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
+      //     let workspaceInfo = createWorkspaceName(
+      //       leadAssigned.email,
+      //       publicEmailDomains
+      //     );
+      //     workspaceId = uuidv4();
+
+      //     workspacesToCreate.push({
+      //       workspace_id: workspaceId,
+      //       workspace_name: workspaceInfo.workspaceName,
+      //       collab_user_id: userId,
+      //       meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
+      //       domain: workspaceInfo.workspaceDomain,
+      //     });
+      //   }
       attendeesForThisMeeting.forEach((attendee) => {
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
