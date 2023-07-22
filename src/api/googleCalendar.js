@@ -1,6 +1,6 @@
 const { google } = require("googleapis");
 const { CLIENT_ID, CLIENT_SECRET, REDIRECT_URL } = require("../config");
-const { getRefreshTokenFromDB } = require("../utils/email");
+const { getRefreshTokenFromDB } = require("../utils/database");
 
 const oauth2Client = new google.auth.OAuth2(
   CLIENT_ID,

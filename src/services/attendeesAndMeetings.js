@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
-const supabase = require("./database");
+const supabase = require("../db/supabase");
 const {
   assignWorkspaceLead,
   createWorkspaceName,

@@ -1,4 +1,4 @@
-const supabase = require("../services/database");
+const supabase = require("../db/supabase");
 
 const fetchPublicEmailDomains = async () => {
   const { data, error } = await supabase

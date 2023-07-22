@@ -1,4 +1,4 @@
-const supabase = require("./database");
+const supabase = require("../db/supabase");
 const { updateAttendeesAndMeetings } = require("./attendeesAndMeetings"); // Update the import statement
 const fetchPublicEmailDomains = require("../data/listOfEmailDomains");
 const {
