@@ -176,13 +176,23 @@ const updateMeetingDescription = async (
 
       // Check if link needs to be added or removed
       if (workspace_attendee_enable_calendar_link) {
-        // Prepend the link to the existing description
+        // Create a hyperlink and prepend it to the existing description
+        const hyperlink = `<a href="${workspaceLink}">Collab Workspace</a>`;
         const newDescription =
-          workspaceLink + "\n\n" + (event.data.description || "");
+          hyperlink + "<br/><br/>" + (event.data.description || "");
 
         // Update the Google Calendar event
         event.data.description = newDescription;
-      } else {
+      }
+      // if (workspace_attendee_enable_calendar_link) {
+      //   // Prepend the link to the existing description
+      //   const newDescription =
+      //     workspaceLink + "\n\n" + (event.data.description || "");
+
+      //   // Update the Google Calendar event
+      //   event.data.description = newDescription;
+      // }
+      else {
         // Remove the link from the description
         const workspaceLinkRegEx = new RegExp(workspaceLink, "g");
         event.data.description = event.data.description.replace(
