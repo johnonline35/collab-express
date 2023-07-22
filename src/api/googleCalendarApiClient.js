@@ -1,6 +1,6 @@
-const supabase = require("../services/database");
+const supabase = require("../db/supabase");
 const { loadClient } = require("../api/googleCalendar");
-const { getUserEmailFromDB } = require("../utils/email");
+const { getUserEmailFromDB } = require("../utils/database");
 const { analyzeMeetings } = require("../services/meetingAnalysis");
 const limiter = require("../utils/limiter");
 const { collabWorkspaceLinkToAppend } = require("../data/collabUrls");

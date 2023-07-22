@@ -1,4 +1,4 @@
-const supabase = require("./database"); // assuming the supabase instance is also needed here
+const supabase = require("../db/supabase"); // assuming the supabase instance is also needed here
 
 // This function will retrieve the email and domain of the collab user
 async function getUserEmailAndDomain(userId) {
