@@ -185,13 +185,22 @@ const updateMeetingDescription = async (
         event.data.description = newDescription;
       } else {
         // Remove the hyperlink from the description
-        const hyperlinkToRemove = `<a href="${workspaceLink}">Collab Workspace</a>`;
-        const workspaceLinkRegEx = new RegExp(
-          hyperlinkToRemove.replace(/[.*+\-?^${}()|[\]\\]/g, "\\$&"),
+        const hyperlinkRegEx = new RegExp(
+          `<a href="${workspaceLink.replace(
+            /[.*+\-?^${}()|[\]\\]/g,
+            "\\$&"
+          )}">Collab Workspace</a>`,
           "g"
         );
         event.data.description = event.data.description.replace(
-          workspaceLinkRegEx,
+          hyperlinkRegEx,
+          ""
+        );
+
+        // Remove any remaining line breaks after a hyperlink
+        const lineBreaksRegEx = new RegExp("<br/><br/>", "g");
+        event.data.description = event.data.description.replace(
+          lineBreaksRegEx,
           ""
         );
       }
