@@ -42,6 +42,8 @@ const getGoogleCal = async (userId) => {
         pageToken: nextPageToken,
       });
 
+      console.log(response.data.items);
+
       allEvents = allEvents.concat(response.data.items);
 
       nextPageToken = response.data.nextPageToken;
