@@ -96,7 +96,9 @@ router.post("/update-meeting-description", async (req, res) => {
 // Webhook endpoint called by Google Calendar when there is a calendar change event
 router.post("/google-calendar-watch", async (req, res) => {
   const resourceId = req.headers["x-goog-resource-id"];
-  console.log("Change detected in event: " + resourceId);
+  const userId = await getUserIdByResourceId(resourceId);
+  const meetingsData = await getGoogleCal(userId);
+  // Insert/update these meetings data into your database
 
   // Here you should fetch this event from the Google Calendar API and update your database accordingly.
 
