@@ -104,6 +104,28 @@ const setWatchSetup = async (userId) => {
   }
 };
 
+// Save the resourceId and channelId for a user
+async function saveGoogleCalendarWatchDetailsForUser(
+  userId,
+  resourceId,
+  channelId
+) {
+  const { error } = await supabase
+    .from("collab_users")
+    .update({
+      goog_cal_resource_id: resourceId,
+      goog_cal_channel_id: channelId,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error saving Google Calendar watch details:", error);
+    return false;
+  }
+
+  return true;
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -112,4 +134,5 @@ module.exports = {
   saveSyncTokenForUser,
   loadSyncTokenForUser,
   saveUserTimeZone,
+  saveGoogleCalendarWatchDetailsForUser,
 };

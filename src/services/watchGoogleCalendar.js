@@ -1,8 +1,11 @@
 const { loadClient } = require("../api/googleCalendar");
-const { getUserEmailFromDB } = require("../utils/database");
 const { v4: uuidv4 } = require("uuid");
 const { railwayCalendarWatchEndpoint } = require("../data/collabUrls");
-const { loadSyncTokenForUser } = require("../utils/database");
+const {
+  getUserEmailFromDB,
+  loadSyncTokenForUser,
+  saveGoogleCalendarWatchDetailsForUser,
+} = require("../utils/database");
 
 async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);
@@ -35,7 +38,11 @@ async function watchGoogleCalendar(userId) {
   }
 
   console.log("Google Calendar watch set up successfully", res.data);
-  //, res.data
+
+  const resourceId = res.data.resourceId;
+  const channelId = res.data.id;
+
+  await saveGoogleCalendarWatchDetailsForUser(userId, resourceId, channelId);
 }
 
 module.exports = {

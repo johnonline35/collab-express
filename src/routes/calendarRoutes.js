@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
       const res = await calendar.channels.stop({
         requestBody: {
           // The channel id and resource id of the subscription to stop.
-          id: "c1ce2eb5-e1b3-442f-8963-b489ad16766f",
+          id: "0ac760c7-9b69-4702-bd8e-9693dddb7d24",
           resourceId: "B4QUT0gYpjwyGlH8ZMKptjJ5JbM",
         },
       });
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
         };
       }),
     };
-    // stopWatch(userId);
+    stopWatch(userId);
     // console.log("response:", response);
     res.json(response); // Send the response including workspace_id and meetings data
   } catch (error) {
@@ -115,7 +115,7 @@ router.post("/google-calendar-watch", async (req, res) => {
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
   const channelId = req.headers["x-goog-channel-id"];
-  console.log("Called Google calendar watch endpoint reqHeaders", reqHeaders);
+  // console.log("Called Google calendar watch endpoint reqHeaders", reqHeaders);
   console.log("Called Google calendar watch endpoint channelId", channelId);
   console.log("Called Google calendar watch endpoint resourceId", resourceId);
   console.log(
