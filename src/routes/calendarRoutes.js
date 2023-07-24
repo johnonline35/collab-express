@@ -4,6 +4,7 @@ const googleCalendarApiClient = require("../api/googleCalendarApiClient");
 const { watchGoogleCalendar } = require("../services/watchGoogleCalendar");
 const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
+const { updateGoogleCal } = require("../api/googleCalendarApiClient");
 
 // Fetch the Google calendar api endpoint
 router.post("/", async (req, res) => {
