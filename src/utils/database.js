@@ -126,6 +126,28 @@ async function saveGoogleCalendarWatchDetailsForUser(
   return true;
 }
 
+// Fetch the resourceId and channelId for a user
+async function fetchGoogleCalendarWatchDetailsForUser(userId) {
+  const { data, error } = await supabase
+    .from("collab_users")
+    .select("goog_cal_resource_id, goog_cal_channel_id")
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error fetching Google Calendar watch details:", error);
+    return null;
+  }
+
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  return {
+    resourceId: data[0].goog_cal_resource_id,
+    channelId: data[0].goog_cal_channel_id,
+  };
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -135,4 +157,5 @@ module.exports = {
   loadSyncTokenForUser,
   saveUserTimeZone,
   saveGoogleCalendarWatchDetailsForUser,
+  fetchGoogleCalendarWatchDetailsForUser,
 };
