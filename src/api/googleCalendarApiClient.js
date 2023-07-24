@@ -22,14 +22,14 @@ const getGoogleCal = async (userId) => {
     console.log("userEmail:", userEmail);
   }
 
-  const now = new Date();
-  const xMonthsAgo = new Date(now.getTime());
-  xMonthsAgo.setMonth(now.getMonth() - 6);
-  const timeMin = xMonthsAgo.toISOString();
+  // const now = new Date();
+  // const xMonthsAgo = new Date(now.getTime());
+  // xMonthsAgo.setMonth(now.getMonth() - 6);
+  // const timeMin = xMonthsAgo.toISOString();
 
-  const xMonthsFromNow = new Date(now.getTime());
-  xMonthsFromNow.setMonth(now.getMonth() + 4);
-  const timeMax = xMonthsFromNow.toISOString();
+  // const xMonthsFromNow = new Date(now.getTime());
+  // xMonthsFromNow.setMonth(now.getMonth() + 4);
+  // const timeMax = xMonthsFromNow.toISOString();
 
   let allEvents = [];
   let nextPageToken = undefined;
@@ -44,8 +44,8 @@ const getGoogleCal = async (userId) => {
       do {
         const response = await calendar.events.list({
           calendarId: "primary",
-          timeMin: timeMin,
-          timeMax: timeMax,
+          // timeMin: timeMin,
+          // timeMax: timeMax,
           singleEvents: true,
           orderBy: "startTime",
           pageToken: nextPageToken,
