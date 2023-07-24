@@ -169,6 +169,7 @@ const getGoogleCal = async (userId) => {
     };
 
     try {
+      console.log("userId, nextSyncToken:", userId, nextSyncToken);
       await saveSyncTokenForUser(userId, nextSyncToken);
     } catch (error) {
       console.error("Error saving sync token:", error);
