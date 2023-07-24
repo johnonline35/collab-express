@@ -1,12 +1,13 @@
 const supabase = require("../db/supabase");
 const { loadClient } = require("../api/googleCalendar");
-const { getUserEmailFromDB } = require("../utils/database");
 const { analyzeMeetings } = require("../services/meetingAnalysis");
 const limiter = require("../utils/limiter");
 const { collabWorkspaceLinkToAppend } = require("../data/collabUrls");
 const {
+  getUserEmailFromDB,
   saveSyncTokenForUser,
   loadSyncTokenForUser,
+  saveUserTimeZone,
 } = require("../utils/database");
 
 const getGoogleCal = async (userId) => {
