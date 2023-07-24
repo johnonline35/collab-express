@@ -6,7 +6,7 @@ const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
 
-// Fetch the Google calendar api endpoint
+// Fetch the Google calendar for the initial sync
 router.post("/", async (req, res) => {
   const { userId } = req.body;
   console.log(userId); // Log the userId sent from your getMeetings function
