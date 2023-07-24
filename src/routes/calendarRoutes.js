@@ -123,24 +123,14 @@ router.post("/google-calendar-watch", async (req, res) => {
   const userId = channelToken.split("=")[1];
   console.log("google-calendar-watch userId:", userId);
 
-  // Insert/update these meetings data into your database
-
-  // Here you should fetch this event from the Google Calendar API and update your database accordingly.
-
-  // For example, you can fetch the userId related to this resourceId,
-  // then call your existing googleCalendarApiClient.getGoogleCal function to refresh the data
-
-  // Remember to handle the error properly
-  // try {
-  //   // Use the extracted userId for further processing
-  //   const meetingsData = await getGoogleCal(userId);
-  //   // Insert/update these meetings data into your database
-
-  //   res.sendStatus(200);
-  // } catch (error) {
-  //   console.error("Error in google calendar watch: ", error);
-  //   res.sendStatus(500);
-  // }
+  try {
+    const updateStatus = await updateGoogleCal(userId);
+    console.log("updateStatus:", updateStatus);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error in google calendar watch: ", error);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
