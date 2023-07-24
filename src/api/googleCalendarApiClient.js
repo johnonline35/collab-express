@@ -36,7 +36,7 @@ const getGoogleCal = async (userId) => {
         const response = await calendar.events.list({
           calendarId: "primary",
           singleEvents: true,
-          orderBy: "startTime",
+
           pageToken: nextPageToken,
         });
 
