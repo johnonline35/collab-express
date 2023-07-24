@@ -36,7 +36,7 @@ const getGoogleCal = async (userId) => {
   let nextSyncToken = undefined;
 
   try {
-    console.log("starting try catch block");
+    // console.log("starting try catch block");
     let syncToken = await loadSyncTokenForUser(userId);
 
     if (!syncToken) {
@@ -100,7 +100,7 @@ const getGoogleCal = async (userId) => {
       };
 
       try {
-        console.log("Upserting meeting data:", meetingData);
+        // console.log("Upserting meeting data:", meetingData);
         // Wait for the meeting upsert to complete before upserting attendees
         const { data: upsertMeetingData, error: upsertMeetingError } =
           await limiter.schedule(() =>
@@ -114,7 +114,7 @@ const getGoogleCal = async (userId) => {
           return;
         }
 
-        console.log("Upsert Meeting Data:", upsertMeetingData);
+        // console.log("Upsert Meeting Data:", upsertMeetingData);
 
         // Now that the meeting has been upserted, upsert attendees
         await Promise.all(
@@ -137,7 +137,7 @@ const getGoogleCal = async (userId) => {
             if (upsertAttendeeError) {
               console.error("Upsert Attendee Error:", upsertAttendeeError);
             } else {
-              console.log("Upsert Attendee Data:", upsertAttendeeData);
+              // console.log("Upsert Attendee Data:", upsertAttendeeData);
             }
           })
         );
