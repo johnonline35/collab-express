@@ -14,7 +14,7 @@ async function watchGoogleCalendar(userId) {
     id: uuidv4(), // id for the channel; unique for each watch request
     type: "web_hook",
     address: railwayCalendarWatchEndpoint, // your webhook
-    token: `userId=${userId}`, // token carrying the userId
+    token: "userId=" + userId, // token carrying the userId
     params: {
       ttl: "604800000", // time to live in seconds; adjust as needed
     },
