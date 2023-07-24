@@ -28,7 +28,6 @@ const getGoogleCal = async (userId) => {
   let nextSyncToken = undefined;
 
   try {
-    // console.log("starting try catch block");
     let syncToken = await loadSyncTokenForUser(userId);
 
     if (!syncToken) {
