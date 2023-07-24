@@ -1,5 +1,39 @@
 const supabase = require("../db/supabase");
 
+// Save the syncToken for a user
+async function saveSyncTokenForUser(userId, syncToken) {
+  const { data, error } = await supabase
+    .from("collab_user")
+    .update({ sync_token: syncToken })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error saving syncToken:", error);
+    return false;
+  }
+
+  return true;
+}
+
+// Load the syncToken for a user
+async function loadSyncTokenForUser(userId) {
+  const { data, error } = await supabase
+    .from("collab_user")
+    .select("sync_token")
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error loading syncToken:", error);
+    return null;
+  }
+
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  return data[0].sync_token;
+}
+
 const getRefreshTokenFromDB = async (userId) => {
   const { data, error } = await supabase
     .from("collab_users")
@@ -60,4 +94,6 @@ module.exports = {
   getUserEmailFromDB,
   checkIfWatchIsSetup,
   setWatchSetup,
+  saveSyncTokenForUser,
+  loadSyncTokenForUser,
 };

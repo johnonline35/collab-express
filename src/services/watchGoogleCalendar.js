@@ -14,7 +14,8 @@ async function watchGoogleCalendar(userId) {
       type: "web_hook",
       address: railwayCalendarWatchEndpoint, // your webhook
       params: {
-        ttl: "432000000", // time to live in seconds; adjust as needed
+        ttl: "604800000", // time to live in seconds; adjust as needed
+        syncToken: await loadSyncTokenForUser(userId), // add the sync token here
       },
     },
   });
