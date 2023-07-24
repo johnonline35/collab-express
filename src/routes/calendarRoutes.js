@@ -73,7 +73,10 @@ router.post("/", async (req, res) => {
 
 // Update the meeting description endpoint
 router.post("/update-meeting-description", async (req, res) => {
-  console.log("reqBody:", req.body);
+  console.log(
+    "update-meeting-description (from calendar link toggle) reqBody:",
+    req.body
+  );
   const {
     workspace_id,
     collab_user_id,

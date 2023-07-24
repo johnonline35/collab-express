@@ -33,7 +33,7 @@ async function watchGoogleCalendar(userId) {
     throw new Error("Failed to set up Google Calendar watch");
   }
 
-  console.log("Google Calendar watch set up successfully");
+  console.log("Google Calendar watch set up successfully", res.data);
   //, res.data
 }
 
