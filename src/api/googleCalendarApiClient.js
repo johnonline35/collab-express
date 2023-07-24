@@ -55,6 +55,7 @@ const getGoogleCal = async (userId) => {
 
         nextPageToken = response.data.nextPageToken;
         nextSyncToken = response.data.nextSyncToken;
+        console.log("userId, nextSyncToken:", userId, nextSyncToken);
       } while (nextPageToken);
     } else {
       // For fetching changes afterwards
@@ -169,7 +170,6 @@ const getGoogleCal = async (userId) => {
     };
 
     try {
-      console.log("userId, nextSyncToken:", userId, nextSyncToken);
       await saveSyncTokenForUser(userId, nextSyncToken);
     } catch (error) {
       console.error("Error saving sync token:", error);
