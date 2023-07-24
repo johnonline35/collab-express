@@ -78,6 +78,14 @@ const getGoogleCal = async (userId) => {
 
         nextPageToken = response.data.nextPageToken;
         nextSyncToken = response.data.nextSyncToken;
+
+        if (nextSyncToken) {
+          try {
+            await saveSyncTokenForUser(userId, nextSyncToken);
+          } catch (error) {
+            console.error("Error saving sync token:", error);
+          }
+        }
       } while (nextPageToken);
     }
 
