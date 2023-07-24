@@ -100,11 +100,16 @@ router.post("/update-meeting-description", async (req, res) => {
 router.post("/google-calendar-watch", async (req, res) => {
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
-  console.log("Called Google calendar watch endpoint", resourceId);
+  console.log(
+    "Called Google calendar watch endpoint channelToken",
+    channelToken
+  );
 
+  // If the X-Goog-Channel-Token header is missing or not formatted as expected, handle it gracefully
   if (!channelToken || !channelToken.includes("userId=")) {
     console.error("Invalid or missing X-Goog-Channel-Token");
-    res.sendStatus(400); // Bad request
+    // Still respond with a 200 status to prevent Google from trying to resend the notification
+    res.sendStatus(200);
     return;
   }
 
