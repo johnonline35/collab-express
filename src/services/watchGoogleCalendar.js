@@ -2,6 +2,7 @@ const { loadClient } = require("../api/googleCalendar");
 const { getUserEmailFromDB } = require("../utils/database");
 const { v4: uuidv4 } = require("uuid");
 const { railwayCalendarWatchEndpoint } = require("../data/collabUrls");
+const { loadSyncTokenForUser } = require("../utils/database");
 
 async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);
