@@ -36,7 +36,6 @@ const getGoogleCal = async (userId) => {
         const response = await calendar.events.list({
           calendarId: "primary",
           singleEvents: true,
-
           pageToken: nextPageToken,
         });
 
@@ -426,15 +425,18 @@ const updateGoogleCal = async (userId) => {
 
     await Promise.all(
       attendees.map(async (attendee) => {
-        // Update only if existing
-        const { data: attendeeData, error: attendeeError } = await supabase
+        // Upsert
+        const { error: attendeeError } = await supabase
           .from("meeting_attendees")
-          .update({
-            email: attendee.email,
-            organizer: attendee.organizer || false,
-            response_status: attendee.responseStatus,
-          })
-          .match({ meeting_id: meeting.id });
+          .upsert(
+            {
+              meeting_id: meeting.id,
+              email: attendee.email,
+              organizer: attendee.organizer || false,
+              response_status: attendee.responseStatus,
+            },
+            { conflictFields: ["meeting_id", "email"] }
+          );
         if (attendeeError) {
           console.error("Error updating Attendee:", attendeeError);
         }
