@@ -7,17 +7,24 @@ async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);
   const calendar = await loadClient(userId);
 
+  const syncToken = await loadSyncTokenForUser(userId);
+
+  let requestBody = {
+    id: uuidv4(), // id for the channel; unique for each watch request
+    type: "web_hook",
+    address: railwayCalendarWatchEndpoint, // your webhook
+    params: {
+      ttl: "604800000", // time to live in seconds; adjust as needed
+    },
+  };
+
+  if (syncToken) {
+    requestBody.params.syncToken = syncToken;
+  }
+
   const res = await calendar.events.watch({
     calendarId: userEmail, // the user's email address serves as the calendarId
-    requestBody: {
-      id: uuidv4(), // id for the channel; unique for each watch request
-      type: "web_hook",
-      address: railwayCalendarWatchEndpoint, // your webhook
-      params: {
-        ttl: "604800000", // time to live in seconds; adjust as needed
-        syncToken: await loadSyncTokenForUser(userId), // add the sync token here
-      },
-    },
+    requestBody: requestBody,
   });
 
   if (res.status !== 200) {
