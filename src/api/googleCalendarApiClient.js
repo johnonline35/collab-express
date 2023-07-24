@@ -50,6 +50,16 @@ const getGoogleCal = async (userId) => {
 
         nextPageToken = response.data.nextPageToken;
         nextSyncToken = response.data.nextSyncToken;
+
+        // Save sync token right after receiving it
+        if (nextSyncToken) {
+          try {
+            await saveSyncTokenForUser(userId, nextSyncToken);
+          } catch (error) {
+            console.error("Error saving sync token:", error);
+          }
+        }
+
         console.log("userId, nextSyncToken:", userId, nextSyncToken);
       } while (nextPageToken);
     } else {
@@ -165,12 +175,6 @@ const getGoogleCal = async (userId) => {
         updatedMeetings.length > 0 ? updatedMeetings[0].workspace_id : null,
       meetings: updatedMeetings,
     };
-
-    try {
-      await saveSyncTokenForUser(userId, nextSyncToken);
-    } catch (error) {
-      console.error("Error saving sync token:", error);
-    }
 
     return response;
   } catch (error) {
