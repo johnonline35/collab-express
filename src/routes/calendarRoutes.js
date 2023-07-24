@@ -28,18 +28,6 @@ router.post("/", async (req, res) => {
       await setWatchSetup(userId);
     }
 
-    async function stopWatch(userId) {
-      const calendar = await loadClient(userId);
-      const res = await calendar.channels.stop({
-        requestBody: {
-          // The channel id and resource id of the subscription to stop.
-          id: "0ac760c7-9b69-4702-bd8e-9693dddb7d24",
-          resourceId: "B4QUT0gYpjwyGlH8ZMKptjJ5JbM",
-        },
-      });
-      console.log("stopWatch:", res);
-    }
-
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,

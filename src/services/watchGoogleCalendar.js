@@ -5,6 +5,7 @@ const {
   getUserEmailFromDB,
   loadSyncTokenForUser,
   saveGoogleCalendarWatchDetailsForUser,
+  fetchGoogleCalendarWatchDetailsForUser,
 } = require("../utils/database");
 
 async function watchGoogleCalendar(userId) {
@@ -45,20 +46,28 @@ async function watchGoogleCalendar(userId) {
   await saveGoogleCalendarWatchDetailsForUser(userId, resourceId, channelId);
 }
 
+async function stopWatchGoogleCalendar(userId) {
+  const watchDetails = await fetchGoogleCalendarWatchDetailsForUser(userId);
+  if (!watchDetails) {
+    console.error("No watch details found for user", userId);
+    return;
+  }
+
+  const { resourceId, channelId } = watchDetails;
+  const calendar = await loadClient(userId);
+
+  const res = await calendar.channels.stop({
+    requestBody: {
+      // The channel id and resource id of the subscription to stop.
+      id: channelId,
+      resourceId: resourceId,
+    },
+  });
+
+  console.log("stopWatch:", res);
+}
+
 module.exports = {
   watchGoogleCalendar,
+  stopWatchGoogleCalendar,
 };
-
-// Looking at your logs, it seems like your watchGoogleCalendar function and getGoogleCal function are successfully executing. The logs show the Google Calendar watch set up successfully message and a list of meeting data obtained from the Google Calendar API.
-
-// However, the workspace_id is coming up as undefined in your meeting objects. This might be because the workspace_id is not available in the Google Calendar event data. You might want to check how you're obtaining or assigning workspace_id.
-
-// Here's a potential issue:
-
-// If the workspace_id is not part of the original Google Calendar event data, you may need to have some kind of mapping between the Google Calendar events and your internal concept of a workspace. This might be something that you manage in your own database.
-
-// You could map a user (or a user's Google account) to a workspace in your system, and when you fetch events from their Google Calendar, you can add the workspace_id to the event data on your side, before sending the response.
-
-// If workspace_id is supposed to be a part of the Google Calendar event data (perhaps in the event description or another field), make sure the workspace_id is correctly included and retrieved from the Google Calendar event data.
-
-// Given the log output, it seems like there might be a disconnection or an error in how you're assigning or fetching the workspace_id. Please verify and correct that.
