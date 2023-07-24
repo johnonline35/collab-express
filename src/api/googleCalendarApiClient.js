@@ -11,7 +11,7 @@ const {
 } = require("../utils/database");
 
 const getGoogleCal = async (userId) => {
-  console.log(userId);
+  console.log("Just called getGoogleCal, here is the userId:", userId);
   const calendar = await loadClient(userId);
 
   // Fetch user email from database:
