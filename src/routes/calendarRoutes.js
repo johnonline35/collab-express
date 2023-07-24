@@ -99,9 +99,19 @@ router.post("/update-meeting-description", async (req, res) => {
 // Webhook endpoint called by Google Calendar when there is a calendar change event
 router.post("/google-calendar-watch", async (req, res) => {
   const resourceId = req.headers["x-goog-resource-id"];
+  const channelToken = req.headers["x-goog-channel-token"];
   console.log("Called Google calendar watch endpoint", resourceId);
-  // const userId = await getUserIdByResourceId(resourceId);
-  // const meetingsData = await getGoogleCal(userId);
+
+  if (!channelToken || !channelToken.includes("userId=")) {
+    console.error("Invalid or missing X-Goog-Channel-Token");
+    res.sendStatus(400); // Bad request
+    return;
+  }
+
+  // Extract the userId from the channel token
+  const userId = channelToken.split("=")[1];
+  console.log("google-calendar-watch userId:", userId);
+
   // Insert/update these meetings data into your database
 
   // Here you should fetch this event from the Google Calendar API and update your database accordingly.
@@ -111,7 +121,8 @@ router.post("/google-calendar-watch", async (req, res) => {
 
   // Remember to handle the error properly
   // try {
-  //   const userId = await getUserIdByResourceId(resourceId); // You should implement this function
+  //   // Use the extracted userId for further processing
+  //   const meetingsData = await getGoogleCal(userId);
   //   // Insert/update these meetings data into your database
 
   //   res.sendStatus(200);
