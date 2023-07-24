@@ -34,6 +34,21 @@ async function loadSyncTokenForUser(userId) {
   return data[0].sync_token;
 }
 
+// Update the timezone for a user
+async function saveUserTimeZone(userId, timeZone) {
+  const { data, error } = await supabase
+    .from("collab_users")
+    .update({ collab_user_timezone: timeZone })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error saving user time zone:", error);
+    return false;
+  }
+
+  return true;
+}
+
 const getRefreshTokenFromDB = async (userId) => {
   const { data, error } = await supabase
     .from("collab_users")
@@ -96,4 +111,5 @@ module.exports = {
   setWatchSetup,
   saveSyncTokenForUser,
   loadSyncTokenForUser,
+  saveUserTimeZone,
 };
