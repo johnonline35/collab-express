@@ -3,6 +3,7 @@ const router = express.Router();
 const googleCalendarApiClient = require("../api/googleCalendarApiClient");
 const { watchGoogleCalendar } = require("../services/watchGoogleCalendar");
 const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
+const { loadClient } = require("../api/googleCalendar");
 
 // Fetch the Google calendar api endpoint
 router.post("/", async (req, res) => {
@@ -27,6 +28,18 @@ router.post("/", async (req, res) => {
       await setWatchSetup(userId);
     }
 
+    async function stopWatch(userId) {
+      const calendar = await loadClient(userId);
+      const res = await calendar.channels.stop({
+        requestBody: {
+          // The channel id and resource id of the subscription to stop.
+          id: "c1ce2eb5-e1b3-442f-8963-b489ad16766f",
+          resourceId: "B4QUT0gYpjwyGlH8ZMKptjJ5JbM",
+        },
+      });
+      console.log("stopWatch:", res);
+    }
+
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,
@@ -37,7 +50,7 @@ router.post("/", async (req, res) => {
         };
       }),
     };
-
+    stopWatch(userId);
     // console.log("response:", response);
     res.json(response); // Send the response including workspace_id and meetings data
   } catch (error) {
