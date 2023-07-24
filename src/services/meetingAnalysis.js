@@ -7,11 +7,11 @@ const {
 } = require("./emailFilterService"); // Import the functions
 
 async function analyzeMeetings(userId) {
-  console.log("Running analyzeMeetings for user id:", userId);
+  // console.log("Running analyzeMeetings for user id:", userId);
 
   // Fetch the list of public email domains
   let publicEmailDomains = await fetchPublicEmailDomains();
-  console.log("Public email domains fetched:", publicEmailDomains);
+  // console.log("Public email domains fetched:", publicEmailDomains);
 
   // Fetch the user's email and domain information once
   const userDetails = await getUserEmailAndDomain(userId);
@@ -40,13 +40,13 @@ async function analyzeMeetings(userId) {
     `
     )
     .eq("collab_user_id", userId);
-  console.log("User meetings fetched:", meetings);
+  // console.log("User meetings fetched:", meetings);
 
   // Sort meetings by start_dateTime
   meetings.sort(
     (a, b) => new Date(a.start_dateTime) - new Date(b.start_dateTime)
   );
-  console.log("Meetings sorted by start dateTime:", meetings);
+  // console.log("Meetings sorted by start dateTime:", meetings);
 
   // Prepare list of attendee emails and meeting attendees map for quick lookup
   const attendeeEmails = new Set();
@@ -66,11 +66,11 @@ async function analyzeMeetings(userId) {
       publicEmailDomains,
       userDetails
     );
-    console.log(
-      "Filtered attendees for meeting:",
-      meeting.id,
-      filteredAttendees
-    );
+    // console.log(
+    //   "Filtered attendees for meeting:",
+    //   meeting.id,
+    //   filteredAttendees
+    // );
     meeting.meeting_attendees = filteredAttendees;
 
     // Add attendees' emails to the set for batch querying
@@ -93,7 +93,7 @@ async function analyzeMeetings(userId) {
     .from("attendees")
     .select("*")
     .in("attendee_email", Array.from(attendeeEmails));
-  console.log("Existing attendees fetched:", existingAttendees);
+  // console.log("Existing attendees fetched:", existingAttendees);
 
   // Update attendees and meetings in batch
   await updateAttendeesAndMeetings(
