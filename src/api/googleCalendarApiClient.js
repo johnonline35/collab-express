@@ -337,6 +337,110 @@ const getGoogleCal = async (userId) => {
 //   }
 // };
 
+const updateGoogleCal = async (userId) => {
+  console.log("Just called updateGoogleCal, here is the userId:", userId);
+  const calendar = await loadClient(userId);
+
+  const userEmail = await getUserEmailFromDB(userId);
+  if (!userEmail) {
+    console.error("Error: User email not found");
+    return [];
+  } else {
+    console.log("userEmail:", userEmail);
+  }
+
+  let allEvents = [];
+  let nextPageToken = undefined;
+  let nextSyncToken = undefined;
+
+  let syncToken = await loadSyncTokenForUser(userId);
+
+  if (!syncToken) {
+    console.error("Error: sync token not found");
+    return [];
+  }
+
+  // For fetching changes afterwards
+  do {
+    const response = await calendar.events.list({
+      calendarId: "primary",
+      syncToken: syncToken,
+      singleEvents: true,
+      pageToken: nextPageToken,
+    });
+
+    console.log("response.data2", response.data);
+
+    allEvents = allEvents.concat(response.data.items);
+
+    nextPageToken = response.data.nextPageToken;
+    nextSyncToken = response.data.nextSyncToken;
+
+    if (nextSyncToken) {
+      try {
+        await saveSyncTokenForUser(userId, nextSyncToken);
+      } catch (error) {
+        console.error("Error saving sync token:", error);
+      }
+    }
+  } while (nextPageToken);
+
+  const meetings = allEvents.filter(
+    (event) =>
+      event.attendees &&
+      event.attendees.length > 1 &&
+      event.attendees.length < 11
+  );
+
+  // Insert data into the database for each meeting
+  const updatePromises = meetings.map(async (meeting) => {
+    // Update only if existing
+    const { data: meetingData, error: meetingError } = await supabase
+      .from("meetings")
+      .update({
+        summary: meeting.summary,
+        description: meeting.description,
+        creator_email: meeting.creator.email,
+        organizer_email: meeting.organizer.email,
+        start_dateTime: meeting.start.dateTime,
+        end_dateTime: meeting.end.dateTime,
+        start_time_zone: meeting.start.timeZone,
+        end_time_zone: meeting.end.timeZone,
+        collab_user_id: userId,
+      })
+      .match({ id: meeting.id });
+
+    if (meetingError) {
+      console.error("Error updating Meeting:", meetingError);
+    }
+
+    const attendees = meeting.attendees.filter(
+      (attendee) => attendee.email.trim() !== userEmail.trim()
+    );
+
+    await Promise.all(
+      attendees.map(async (attendee) => {
+        // Update only if existing
+        const { data: attendeeData, error: attendeeError } = await supabase
+          .from("meeting_attendees")
+          .update({
+            email: attendee.email,
+            organizer: attendee.organizer || false,
+            response_status: attendee.responseStatus,
+          })
+          .match({ meeting_id: meeting.id });
+        if (attendeeError) {
+          console.error("Error updating Attendee:", attendeeError);
+        }
+      })
+    );
+  });
+
+  await Promise.all(updatePromises);
+
+  return "Updated meetings and attendees successfully";
+};
+
 const updateMeetingDescription = async (
   workspace_id,
   collab_user_id,
@@ -407,6 +511,7 @@ const updateMeetingDescription = async (
 
 module.exports = {
   getGoogleCal,
+  updateGoogleCal,
   updateMeetingDescription,
 };
 
