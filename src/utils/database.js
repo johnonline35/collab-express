@@ -3,7 +3,7 @@ const supabase = require("../db/supabase");
 // Save the syncToken for a user
 async function saveSyncTokenForUser(userId, syncToken) {
   const { data, error } = await supabase
-    .from("collab_user")
+    .from("collab_users")
     .update({ sync_token: syncToken })
     .eq("id", userId);
 
@@ -18,7 +18,7 @@ async function saveSyncTokenForUser(userId, syncToken) {
 // Load the syncToken for a user
 async function loadSyncTokenForUser(userId) {
   const { data, error } = await supabase
-    .from("collab_user")
+    .from("collab_users")
     .select("sync_token")
     .eq("id", userId);
 
