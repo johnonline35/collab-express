@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
         };
       }),
     };
-    stopWatch(userId);
+    // stopWatch(userId);
     // console.log("response:", response);
     res.json(response); // Send the response including workspace_id and meetings data
   } catch (error) {
