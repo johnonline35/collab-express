@@ -89,11 +89,19 @@ async function analyzeMeetings(userId) {
   );
 
   // Fetch all matching attendees in a single query
-  const { data: existingAttendees } = await supabase
-    .from("attendees")
-    .select("*")
-    .in("attendee_email", Array.from(attendeeEmails));
-  // console.log("Existing attendees fetched:", existingAttendees);
+  let existingAttendees = [];
+  if (attendeeEmails.size > 0) {
+    const result = await supabase
+      .from("attendees")
+      .select("*")
+      .in("attendee_email", Array.from(attendeeEmails));
+
+    if (result.data) {
+      existingAttendees = result.data;
+    } else {
+      console.error("Error retrieving existing attendees:", result.error);
+    }
+  }
 
   // Update attendees and meetings in batch
   await updateAttendeesAndMeetings(
