@@ -32,13 +32,9 @@ router.post("/", async (req, res) => {
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,
-      meetings: meetingsData.meetings.map((meeting) => {
-        return {
-          ...meeting,
-          workspace_id: meeting.workspace_id || meetingsData.workspace_id,
-        };
-      }),
+      meetings: meetingsData.meetings,
     };
+
     // stopWatch(userId);
     // console.log("response:", response);
     res.json(response); // Send the response including workspace_id and meetings data
