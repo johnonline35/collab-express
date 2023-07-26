@@ -62,17 +62,19 @@ async function analyzeMeetings(userId) {
       { email: meeting.organizer_email },
     ];
 
+    console.log("Attendees for meeting ID", meeting.id, ":", attendees);
+
     // Filter attendees based on their email domains
     const filteredAttendees = filterAttendees(
       attendees,
       publicEmailDomains,
       userDetails
     );
-    console.log(
-      "Filtered attendees for meeting:",
-      meeting.id,
-      filteredAttendees
-    );
+    // console.log(
+    //   "Filtered attendees for meeting:",
+    //   meeting.id,
+    //   filteredAttendees
+    // );
     meeting.meeting_attendees = filteredAttendees;
 
     // Add attendees' emails to the set for batch querying
