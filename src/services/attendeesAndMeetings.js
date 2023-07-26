@@ -111,21 +111,43 @@ async function updateAttendeesAndMeetings(
       //     });
       //   }
       attendeesForThisMeeting.forEach((attendee) => {
+        const attendeeDomain = attendee.email.split("@")[1];
+
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
             workspace_id: workspaceId,
             attendee_email: attendee.email,
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
-            attendee_domain: attendee.email.split("@")[1],
+            attendee_domain: attendeeDomain,
           });
           existingAttendeesMap.set(attendee.email, attendee);
-          const attendeeDomain = attendee.email.split("@")[1];
           if (!publicEmailDomains.includes(attendeeDomain)) {
             existingDomainsMap.set(attendeeDomain, workspaceId);
           }
+        } else {
+          // update workspace_id for existing attendees
+          const existingAttendee = existingAttendeesMap.get(attendee.email);
+          existingAttendee.workspace_id = workspaceId;
         }
       });
+
+      //   attendeesForThisMeeting.forEach((attendee) => {
+      //     if (!existingAttendeesMap.has(attendee.email)) {
+      //       attendeesToInsert.push({
+      //         collab_user_id: userId,
+      //         workspace_id: workspaceId,
+      //         attendee_email: attendee.email,
+      //         attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
+      //         attendee_domain: attendee.email.split("@")[1],
+      //       });
+      //       existingAttendeesMap.set(attendee.email, attendee);
+      //       const attendeeDomain = attendee.email.split("@")[1];
+      //       if (!publicEmailDomains.includes(attendeeDomain)) {
+      //         existingDomainsMap.set(attendeeDomain, workspaceId);
+      //       }
+      //     }
+      //   });
 
       meetingsToUpdate.push({
         id: meeting.id,
