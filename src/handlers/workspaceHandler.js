@@ -4,24 +4,24 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
     throw new Error("No attendees available to assign as lead.");
   }
 
-  // console.log(`Meeting ID: ${meeting.id}`);
+  console.log(`Meeting ID: ${meeting.id}`);
 
   // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
-    // console.log(`Checking attendee: ${JSON.stringify(attendee)}`);
+    console.log(`Checking attendee: ${JSON.stringify(attendee)}`);
 
     if (attendee.email === meeting.organizer_email) {
-      // console.log(`Assigned lead (organizer): ${JSON.stringify(attendee)}`);
+      console.log(`Assigned lead (organizer): ${JSON.stringify(attendee)}`);
       return attendee;
     }
 
     if (attendee.email === meeting.creator_email) {
-      // console.log(`Assigned lead (creator): ${JSON.stringify(attendee)}`);
+      console.log(`Assigned lead (creator): ${JSON.stringify(attendee)}`);
       return attendee;
     }
 
     if (attendee.response_status === "accepted") {
-      // console.log(`Assigned lead (accepted): ${JSON.stringify(attendee)}`);
+      console.log(`Assigned lead (accepted): ${JSON.stringify(attendee)}`);
       return attendee;
     }
   }
