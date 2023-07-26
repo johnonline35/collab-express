@@ -107,6 +107,11 @@ async function analyzeMeetings(userId) {
     }
   }
 
+  console.log(
+    "existingAttendees array in order before next function:",
+    existingAttendees
+  );
+
   // Fetch all matching attendees in a single query
   // let existingAttendees = [];
   // if (attendeeEmails.size > 0) {
