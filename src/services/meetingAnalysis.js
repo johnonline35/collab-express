@@ -22,30 +22,32 @@ async function analyzeMeetings(userId) {
     .from("meetings")
     .select(
       `
-      id,
-      summary,
-      creator_email,
-      organizer_email,
-      start_dateTime,
-      end_dateTime,
-      start_time_zone,
-      end_time_zone,
-      collab_user_id,
-      meeting_attendees:meeting_attendees!meeting_id (
-        meeting_id,
-        email,
-        organizer,
-        response_status
-      )
-    `
+    id,
+    summary,
+    creator_email,
+    organizer_email,
+    start_dateTime,
+    end_dateTime,
+    start_time_zone,
+    end_time_zone,
+    collab_user_id,
+    meeting_attendees:meeting_attendees!meeting_id (
+      meeting_id,
+      email,
+      organizer,
+      response_status
     )
-    .eq("collab_user_id", userId);
+  `
+    )
+    .eq("collab_user_id", userId)
+    .order("start_dateTime", { ascending: true });
+
   // console.log("User meetings fetched:", meetings);
 
   // Sort meetings by start_dateTime
-  meetings.sort(
-    (a, b) => new Date(a.start_dateTime) - new Date(b.start_dateTime)
-  );
+  // meetings.sort(
+  //   (a, b) => new Date(a.start_dateTime) - new Date(b.start_dateTime)
+  // );
   // console.log("Meetings sorted by start dateTime:", meetings);
 
   // Prepare list of attendee emails and meeting attendees map for quick lookup
