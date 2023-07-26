@@ -88,20 +88,37 @@ async function analyzeMeetings(userId) {
     Array.from(attendeeEmails)
   );
 
-  // Fetch all matching attendees in a single query
+  // Fetch all matching attendees in chunks
   let existingAttendees = [];
-  if (attendeeEmails.size > 0) {
+  const chunkSize = 100; // Adjust as necessary
+  const attendeeEmailsArray = Array.from(attendeeEmails);
+  for (let i = 0; i < attendeeEmailsArray.length; i += chunkSize) {
+    const chunk = attendeeEmailsArray.slice(i, i + chunkSize);
     const result = await supabase
       .from("attendees")
       .select("*")
-      .in("attendee_email", Array.from(attendeeEmails));
-
+      .in("attendee_email", chunk);
     if (result.data) {
-      existingAttendees = result.data;
+      existingAttendees = existingAttendees.concat(result.data);
     } else {
       console.error("Error retrieving existing attendees:", result.error);
     }
   }
+
+  // Fetch all matching attendees in a single query
+  // let existingAttendees = [];
+  // if (attendeeEmails.size > 0) {
+  //   const result = await supabase
+  //     .from("attendees")
+  //     .select("*")
+  //     .in("attendee_email", Array.from(attendeeEmails));
+
+  //   if (result.data) {
+  //     existingAttendees = result.data;
+  //   } else {
+  //     console.error("Error retrieving existing attendees:", result.error);
+  //   }
+  // }
 
   // Update attendees and meetings in batch
   await updateAttendeesAndMeetings(
