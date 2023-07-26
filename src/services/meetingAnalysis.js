@@ -56,6 +56,9 @@ async function analyzeMeetings(userId) {
 
   for (let meeting of meetings) {
     console.log(`Meeting object: ${JSON.stringify(meeting)}`);
+    console.log(
+      `Meeting attendees: ${JSON.stringify(meeting.meeting_attendees)}`
+    );
 
     // Add creator and organizer to the attendees list
     let attendees = [
