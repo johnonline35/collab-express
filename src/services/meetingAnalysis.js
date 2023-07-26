@@ -70,11 +70,11 @@ async function analyzeMeetings(userId) {
       publicEmailDomains,
       userDetails
     );
-    console.log(
-      "Filtered attendees for meeting:",
-      meeting.id,
-      filteredAttendees
-    );
+    // console.log(
+    //   "Filtered attendees for meeting:",
+    //   meeting.id,
+    //   filteredAttendees
+    // );
     meeting.meeting_attendees = filteredAttendees;
 
     // Add attendees' emails to the set for batch querying
