@@ -171,6 +171,7 @@ const getGoogleCal = async (userId) => {
 
     // Verify a few records...
     const lastMeeting = meetings[meetings.length - 1];
+    console.log("lastMeeting and id:", lastMeeting, lastMeeting.id);
     const { data: savedMeeting, error: fetchMeetingError } = await supabase
       .from("meetings")
       .select("*")
