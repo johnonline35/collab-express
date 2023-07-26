@@ -121,7 +121,7 @@ const getGoogleCal = async (userId) => {
       };
 
       try {
-        // console.log("Upserting meeting data:", meetingData);
+        console.log("Upserting meeting data:", meetingData.start_dateTime);
         // Wait for the meeting upsert to complete before upserting attendees
         const { data: upsertMeetingData, error: upsertMeetingError } =
           await limiter.schedule(() =>
