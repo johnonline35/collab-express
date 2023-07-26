@@ -169,6 +169,21 @@ const getGoogleCal = async (userId) => {
 
     await Promise.all(upsertPromises);
 
+    // Verify a few records...
+    const lastMeeting = meetings[meetings.length - 1];
+    const { data: savedMeeting, error: fetchMeetingError } = await supabase
+      .from("meetings")
+      .select("*")
+      .eq("id", lastMeeting.id);
+
+    if (fetchMeetingError) {
+      console.error("Error fetching meeting:", fetchMeetingError);
+    } else if (!savedMeeting || savedMeeting.length === 0) {
+      console.error(`Meeting with ID ${lastMeeting.id} not found in database`);
+    } else {
+      console.log(`Verified meeting with ID ${lastMeeting.id} in database`);
+    }
+
     console.log("Starting analyzeMeetings...");
     const analyzedMeetings = await analyzeMeetings(userId);
     console.log("analyzeMeetings finished.");
