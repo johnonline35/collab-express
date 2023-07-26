@@ -20,18 +20,44 @@ async function getUserEmailAndDomain(userId) {
 // This function filters the attendees based on their email domain
 function filterAttendees(attendees, publicEmailDomains, userDetails) {
   let filteredAttendees = [];
+  // Add unwanted domains to this list
+  const unwantedDomains = [
+    "resource.calendar.google.com",
+    "group.calendar.google.com",
+  ];
+
   for (let attendee of attendees) {
     let attendeeDomain = attendee.email.split("@")[1];
 
-    if (publicEmailDomains.includes(attendeeDomain)) {
-      if (attendee.email !== userDetails.email) {
+    // Check if the attendee's email domain is not in the list of unwanted domains
+    if (!unwantedDomains.includes(attendeeDomain)) {
+      if (publicEmailDomains.includes(attendeeDomain)) {
+        if (attendee.email !== userDetails.email) {
+          filteredAttendees.push(attendee);
+        }
+      } else if (attendeeDomain !== userDetails.domain) {
         filteredAttendees.push(attendee);
       }
-    } else if (attendeeDomain !== userDetails.domain) {
-      filteredAttendees.push(attendee);
     }
   }
+
   return filteredAttendees;
 }
+
+// function filterAttendees(attendees, publicEmailDomains, userDetails) {
+//   let filteredAttendees = [];
+//   for (let attendee of attendees) {
+//     let attendeeDomain = attendee.email.split("@")[1];
+
+//     if (publicEmailDomains.includes(attendeeDomain)) {
+//       if (attendee.email !== userDetails.email) {
+//         filteredAttendees.push(attendee);
+//       }
+//     } else if (attendeeDomain !== userDetails.domain) {
+//       filteredAttendees.push(attendee);
+//     }
+//   }
+//   return filteredAttendees;
+// }
 
 module.exports = { getUserEmailAndDomain, filterAttendees };
