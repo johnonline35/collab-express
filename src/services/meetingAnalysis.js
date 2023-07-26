@@ -90,7 +90,7 @@ async function analyzeMeetings(userId) {
 
   // Fetch all matching attendees in chunks
   let existingAttendees = [];
-  const chunkSize = 100; // Adjust as necessary
+  const chunkSize = 200; // Adjust as necessary
   const attendeeEmailsArray = Array.from(attendeeEmails);
   for (let i = 0; i < attendeeEmailsArray.length; i += chunkSize) {
     const chunk = attendeeEmailsArray.slice(i, i + chunkSize);
