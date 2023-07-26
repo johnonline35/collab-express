@@ -1,5 +1,8 @@
 // This function assigns the attendee_is_workspace_lead flag based on the given rules
 function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
+  if (!attendeesForThisMeeting || attendeesForThisMeeting.length === 0) {
+    throw new Error("No attendees available to assign as lead.");
+  }
   // Iterate over attendees amd use cascading logic
   for (let attendee of attendeesForThisMeeting) {
     if (attendee.email === meeting.organizer_email) {
@@ -20,6 +23,10 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 }
 
 function createWorkspaceName(leadEmail, publicEmailDomains) {
+  // Ensure leadEmail is valid
+  if (!leadEmail.includes("@")) {
+    throw new Error("Invalid leadEmail. Unable to create workspace name");
+  }
   // Split the email address into user and domain
   let [user, domain] = leadEmail.split("@");
 
