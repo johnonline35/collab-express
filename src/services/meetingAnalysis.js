@@ -63,7 +63,7 @@ async function analyzeMeetings(userId) {
     // Add creator and organizer to the attendees list
     let attendees = [
       ...meeting.meeting_attendees,
-      // { email: meeting.creator_email },
+      // { email: meeting.creator_email }
       // { email: meeting.organizer_email },
     ];
 
