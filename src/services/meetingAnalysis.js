@@ -68,11 +68,11 @@ async function analyzeMeetings(userId) {
       publicEmailDomains,
       userDetails
     );
-    // console.log(
-    //   "Filtered attendees for meeting:",
-    //   meeting.id,
-    //   filteredAttendees
-    // );
+    console.log(
+      "Filtered attendees for meeting:",
+      meeting.id,
+      filteredAttendees
+    );
     meeting.meeting_attendees = filteredAttendees;
 
     // Add attendees' emails to the set for batch querying
@@ -83,12 +83,12 @@ async function analyzeMeetings(userId) {
     // Map meeting ID to its attendees for later use
     meetingAttendeesMap.set(meeting.id, filteredAttendees);
   }
-  console.log(
-    "Filtered attendees:",
-    attendeeEmails.size,
-    "Emails:",
-    Array.from(attendeeEmails)
-  );
+  // console.log(
+  //   "Filtered attendees:",
+  //   attendeeEmails.size,
+  //   "Emails:",
+  //   Array.from(attendeeEmails)
+  // );
 
   // Fetch all matching attendees in chunks
   let existingAttendees = [];
@@ -107,10 +107,10 @@ async function analyzeMeetings(userId) {
     }
   }
 
-  console.log(
-    "existingAttendees array in order before next function:",
-    existingAttendees
-  );
+  // console.log(
+  //   "existingAttendees array in order before next function:",
+  //   existingAttendees
+  // );
 
   // Fetch all matching attendees in a single query
   // let existingAttendees = [];

@@ -39,7 +39,7 @@ const getGoogleCal = async (userId) => {
           pageToken: nextPageToken,
         });
 
-        console.log("response.data", response.data);
+        // console.log("response.data", response.data);
 
         if (response.data.nextSyncToken) {
           console.log("nextSyncToken", response.data.nextSyncToken);
@@ -77,7 +77,7 @@ const getGoogleCal = async (userId) => {
           pageToken: nextPageToken,
         });
 
-        console.log("response.data2", response.data);
+        // console.log("response.data2", response.data);
 
         allEvents = allEvents.concat(response.data.items);
 
