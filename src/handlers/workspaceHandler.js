@@ -3,22 +3,35 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
   if (!attendeesForThisMeeting || attendeesForThisMeeting.length === 0) {
     throw new Error("No attendees available to assign as lead.");
   }
-  // Iterate over attendees amd use cascading logic
+
+  console.log(`Meeting ID: ${meeting.id}`);
+
+  // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
+    console.log(`Checking attendee: ${JSON.stringify(attendee)}`);
+
     if (attendee.email === meeting.organizer_email) {
+      console.log(`Assigned lead (organizer): ${JSON.stringify(attendee)}`);
       return attendee;
     }
 
     if (attendee.email === meeting.creator_email) {
+      console.log(`Assigned lead (creator): ${JSON.stringify(attendee)}`);
       return attendee;
     }
 
     if (attendee.response_status === "accepted") {
+      console.log(`Assigned lead (accepted): ${JSON.stringify(attendee)}`);
       return attendee;
     }
   }
 
   // If no suitable lead is found, assign the first attendee
+  console.log(
+    `Assigned lead (first attendee): ${JSON.stringify(
+      attendeesForThisMeeting[0]
+    )}`
+  );
   return attendeesForThisMeeting[0];
 }
 
