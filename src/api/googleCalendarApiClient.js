@@ -35,7 +35,7 @@ const getGoogleCal = async (userId) => {
       do {
         const response = await calendar.events.list({
           calendarId: "primary",
-          singleEvents: true,
+          singleEvents: false,
           pageToken: nextPageToken,
         });
 
@@ -73,7 +73,7 @@ const getGoogleCal = async (userId) => {
         const response = await calendar.events.list({
           calendarId: "primary",
           syncToken: syncToken,
-          singleEvents: true,
+          singleEvents: false,
           pageToken: nextPageToken,
         });
 
@@ -274,7 +274,7 @@ const updateGoogleCal = async (userId) => {
     const response = await calendar.events.list({
       calendarId: "primary",
       syncToken: syncToken,
-      singleEvents: true,
+      singleEvents: false,
       pageToken: nextPageToken,
     });
 
