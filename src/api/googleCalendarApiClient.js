@@ -113,11 +113,11 @@ const getGoogleCal = async (userId) => {
       }
 
       // Check if the meeting started more than 5 years ago
-      const fiveYearsAgo = new Date();
-      fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 1);
-      if (eventDateTime.getTime() < fiveYearsAgo.getTime()) {
-        return false;
-      }
+      // const fiveYearsAgo = new Date();
+      // fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 1);
+      // if (eventDateTime.getTime() < fiveYearsAgo.getTime()) {
+      //   return false;
+      // }
 
       return true;
     });
