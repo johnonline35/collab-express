@@ -65,7 +65,7 @@ const getGoogleCal = async (userId) => {
           }
         }
 
-        console.log("userId, nextSyncToken:", userId, nextSyncToken);
+        console.log("userId:", userId, "nextSyncToken:", nextSyncToken);
       } while (nextPageToken);
     } else {
       // For fetching changes afterwards
@@ -94,7 +94,7 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
-    // This would be inside the try block after fetching allEvents
+    // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
       if (
         !event.attendees ||
