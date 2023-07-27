@@ -94,12 +94,40 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
-    const meetings = allEvents.filter(
-      (event) =>
-        event.attendees &&
-        event.attendees.length > 1 &&
-        event.attendees.length < 11
-    );
+    // This would be inside the try block after fetching allEvents
+    const meetings = allEvents.filter((event) => {
+      if (
+        !event.attendees ||
+        event.attendees.length <= 1 ||
+        event.attendees.length >= 11
+      ) {
+        return false;
+      }
+
+      // Check if the meeting starts more than 6 months from now
+      const eventDateTime = new Date(event.start.dateTime);
+      const sixMonthsFromNow = new Date();
+      sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+      if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
+        return false;
+      }
+
+      // Check if the meeting started more than 5 years ago
+      const fiveYearsAgo = new Date();
+      fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 5);
+      if (eventDateTime.getTime() < fiveYearsAgo.getTime()) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // const meetings = allEvents.filter(
+    //   (event) =>
+    //     event.attendees &&
+    //     event.attendees.length > 1 &&
+    //     event.attendees.length < 11
+    // );
 
     // Insert data into the database for each meeting
     const upsertPromises = meetings.map(async (meeting) => {
