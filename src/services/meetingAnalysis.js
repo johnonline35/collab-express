@@ -67,7 +67,7 @@ async function analyzeMeetings(userId) {
       // { email: meeting.organizer_email },
     ];
 
-    // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
+    console.log("Attendees for meeting ID", meeting.id, ":", attendees);
 
     // Filter attendees based on their email domains
     const filteredAttendees = filterAttendees(
@@ -97,7 +97,7 @@ async function analyzeMeetings(userId) {
   //   Array.from(attendeeEmails)
   // );
 
-  // Fetch all matching attendees in chunks
+  // Fetch all existing collab attendees, so that the new meetings and meeting attendees can be filtered against them. A new collab attendee from a meeting is only created if it does not exist in this list:
   let existingAttendees = [];
   const chunkSize = 200; // Adjust as necessary
   const attendeeEmailsArray = Array.from(attendeeEmails);
@@ -106,7 +106,9 @@ async function analyzeMeetings(userId) {
     const result = await supabase
       .from("attendees")
       .select("*")
+      .eq("collab_user_id", userId)
       .in("attendee_email", chunk);
+
     if (result.data) {
       existingAttendees = existingAttendees.concat(result.data);
     } else {

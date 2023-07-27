@@ -141,6 +141,8 @@ async function updateAttendeesAndMeetings(
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
             attendee_domain: attendee.email.split("@")[1],
           });
+          // CHANCHAL:
+          // CONSOLE LOG THIS TO SEE WHAT IS HAPPENING
           existingAttendeesMap.set(attendee.email, attendee);
           const attendeeDomain = attendee.email.split("@")[1];
           if (!publicEmailDomains.includes(attendeeDomain)) {
