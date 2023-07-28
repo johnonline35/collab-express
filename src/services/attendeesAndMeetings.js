@@ -47,14 +47,23 @@ async function updateAttendeesAndMeetings(
   const workspacesToCreate = [];
 
   for (let meeting of meetings) {
+    console.log("Processing meeting ID:", meeting.id);
+
     const attendeesForThisMeeting = meetingAttendeesMap.get(meeting.id);
 
     if (attendeesForThisMeeting.length > 0) {
+      console.log("Processing meeting with attendees");
+
       let workspaceId;
       let leadAssigned = null;
       let existingWorkspace = null;
 
       for (let attendee of attendeesForThisMeeting) {
+        console.log(
+          "Processing attendee for workspace existence check:",
+          attendee
+        );
+
         const attendeeDomain = attendee.email.split("@")[1];
         if (
           existingAttendeesMap.has(attendee.email) ||
@@ -64,6 +73,13 @@ async function updateAttendeesAndMeetings(
             ? existingAttendeesMap.get(attendee.email).workspace_id
             : existingDomainsMap.get(attendeeDomain);
           existingWorkspace = true;
+          console.log(
+            "Existing workspace found for attendee:",
+            attendee,
+            "Workspace ID:",
+            workspaceId
+          );
+
           break;
         }
       }
