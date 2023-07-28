@@ -21,12 +21,12 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
     if (attendee.email === meeting.organizer_email) {
       organizers.push(attendee);
-      console.log(`Organizer found: ${JSON.stringify(attendee)}`);
+      // console.log(`Organizer found: ${JSON.stringify(attendee)}`);
     }
 
     if (attendee.email === meeting.creator_email) {
       creators.push(attendee);
-      console.log(`Creator found: ${JSON.stringify(attendee)}`);
+      // console.log(`Creator found: ${JSON.stringify(attendee)}`);
     }
 
     if (attendee.response_status === "accepted") {
