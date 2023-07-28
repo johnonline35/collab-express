@@ -96,7 +96,7 @@ async function updateAttendeesAndMeetings(
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
-        // console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
+        console.log("Processing attendee:", attendee);
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
@@ -105,8 +105,8 @@ async function updateAttendeesAndMeetings(
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
             attendee_domain: attendee.email.split("@")[1],
           });
-          // CHANCHAL:
-          // CONSOLE LOG THIS TO SEE WHAT IS HAPPENING
+          console.log("Attendee pushed to 'attendeesToInsert':", attendee);
+
           existingAttendeesMap.set(attendee.email, attendee);
           const attendeeDomain = attendee.email.split("@")[1];
           if (!publicEmailDomains.includes(attendeeDomain)) {
@@ -116,6 +116,11 @@ async function updateAttendeesAndMeetings(
       });
 
       meetingsToUpdate.push({
+        id: meeting.id,
+        workspace_id: workspaceId,
+      });
+
+      console.log("Updated meeting:", {
         id: meeting.id,
         workspace_id: workspaceId,
       });
