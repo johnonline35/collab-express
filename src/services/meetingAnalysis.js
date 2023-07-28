@@ -72,7 +72,7 @@ async function analyzeMeetings(userId) {
       // { email: meeting.organizer_email },
     ];
 
-    console.log("Attendees for meeting ID", meeting.id, ":", attendees);
+    // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
 
     // Filter attendees based on their email domains
     const filteredAttendees = filterAttendees(

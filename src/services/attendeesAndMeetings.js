@@ -96,14 +96,21 @@ async function updateAttendeesAndMeetings(
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
-        console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
+        // Extract domain from email
+        let domain = attendee.email.split("@")[1];
+
+        // Check if the domain is "felicis.com"
+        if (domain === "felicis.com") {
+          console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
+        }
+
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
             workspace_id: workspaceId,
             attendee_email: attendee.email,
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
-            attendee_domain: attendee.email.split("@")[1],
+            attendee_domain: domain,
           });
           // CHANCHAL:
           // CONSOLE LOG THIS TO SEE WHAT IS HAPPENING
