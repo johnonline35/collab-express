@@ -35,7 +35,7 @@ async function updateAttendeesAndMeetings(
   const existingDomainsMap = new Map();
 
   existingAttendees.forEach((attendee) => {
-    console.log(attendee); // Debugging line to verify attendee data
+    console.log("existingAttendees.forEach((attendee):", attendee); // Debugging line to verify attendee data
     existingAttendeesMap.set(attendee.attendee_email, attendee);
     const attendeeDomain = attendee.attendee_email.split("@")[1];
     if (!publicEmailDomains.includes(attendeeDomain)) {
