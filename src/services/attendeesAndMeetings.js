@@ -61,7 +61,7 @@ async function updateAttendeesAndMeetings(
       for (let attendee of attendeesForThisMeeting) {
         console.log(
           "Processing attendee for workspace existence check:",
-          attendee
+          attendee.email
         );
 
         const attendeeDomain = attendee.email.split("@")[1];
@@ -75,7 +75,7 @@ async function updateAttendeesAndMeetings(
           existingWorkspace = true;
           console.log(
             "Existing workspace found for attendee:",
-            attendee,
+            attendee.email,
             "Workspace ID:",
             workspaceId
           );
