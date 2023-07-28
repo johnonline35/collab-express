@@ -70,7 +70,7 @@ async function analyzeMeetings(userId) {
       });
     }
 
-    // Populate 'attendees' with the list of meeting attendees
+    // Populate 'attendees' with the list of meeting attendees ok
     attendees.push(...meeting.meeting_attendees);
 
     // let attendees = [
