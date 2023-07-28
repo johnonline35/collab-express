@@ -17,7 +17,7 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
   // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
-    console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
+    // console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
 
     if (attendee.email === meeting.organizer_email) {
       organizers.push(attendee);
@@ -31,17 +31,17 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
     if (attendee.response_status === "accepted") {
       acceptedAttendees.push(attendee);
-      console.log(`Accepted attendee found: ${JSON.stringify(attendee)}`);
+      // console.log(`Accepted attendee found: ${JSON.stringify(attendee)}`);
     }
 
     if (attendee.response_status === "needsAction") {
       needsActionAttendees.push(attendee);
-      console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
+      // console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
     }
 
     if (attendee.response_status === "declined") {
       declinedAttendees.push(attendee);
-      console.log(`Attendee declined: ${JSON.stringify(attendee)}`);
+      // console.log(`Attendee declined: ${JSON.stringify(attendee)}`);
     }
   }
 
