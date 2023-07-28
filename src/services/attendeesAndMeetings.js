@@ -124,8 +124,11 @@ async function updateAttendeesAndMeetings(
           console.log(
             "Here is the attendee:",
             workspaceInfo.meetingAttendeeEmail,
-            "and workspace created:",
-            workspaceId
+            ".. or the domain:",
+            workspaceInfo.workspaceDomain,
+            "and workspaceId created:",
+            workspaceId,
+            `and lead assigned: ${leadAssigned.email}`
           );
         } else {
           console.log("Using existing workspace for lead");
@@ -142,7 +145,14 @@ async function updateAttendeesAndMeetings(
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
             attendee_domain: attendee.email.split("@")[1],
           });
-          console.log("Attendee pushed to 'attendeesToInsert':", attendee);
+          console.log(
+            "Attendee pushed to 'attendeesToInsert':",
+            attendee.email,
+            "attendee_is_workspace_lead:",
+            attendee.email === leadAssigned?.email,
+            "workspaceId:",
+            workspaceId
+          );
 
           existingAttendeesMap.set(attendee.email, attendee);
           const attendeeDomain = attendee.email.split("@")[1];
