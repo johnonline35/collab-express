@@ -69,6 +69,10 @@ async function analyzeMeetings(userId) {
         response_status: "creator",
       });
     }
+
+    // Populate 'attendees' with the list of meeting attendees
+    attendees.push(...meeting.meeting_attendees);
+
     // let attendees = [
     //   ...meeting.meeting_attendees,
     //   {
