@@ -52,7 +52,9 @@ async function updateAttendeesAndMeetings(
     const attendeesForThisMeeting = meetingAttendeesMap.get(meeting.id);
 
     if (attendeesForThisMeeting.length > 0) {
-      console.log("Processing meeting with attendees");
+      console.log(
+        `This meeting has ${attendeesForThisMeeting.length} attendees`
+      );
 
       let workspaceId;
       let leadAssigned = null;
@@ -76,7 +78,7 @@ async function updateAttendeesAndMeetings(
           console.log(
             "Existing workspace found for attendee:",
             attendee.email,
-            "Workspace ID:",
+            "With Workspace ID:",
             workspaceId
           );
 
@@ -86,21 +88,31 @@ async function updateAttendeesAndMeetings(
 
       // If there is no existing workspace, then define a workspace lead, and create a workspace
       if (!existingWorkspace) {
+        console.log("No existing workspace found - assigning workspace lead");
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
+        console.log(`Workspace lead assigned: ${leadAssigned}`);
         let workspaceInfo = createWorkspaceName(
           leadAssigned.email,
           publicEmailDomains
         );
+
+        console.log("Checking if workspace lead already has a workspace");
 
         // Check if leadAssigned already has a workspace_id
         let existingLeadWorkspace = existingAttendeesMap.get(
           leadAssigned.email
         )?.workspace_id;
 
+        console.log(
+          `Workspace lead existing workspace ID: ${existingLeadWorkspace}`
+        );
+
         workspaceId = existingLeadWorkspace ? existingLeadWorkspace : uuidv4();
 
         // Only push new workspace to be created if it's a new workspace_id
         if (!existingLeadWorkspace) {
+          console.log("No existing workspace for lead, creating new workspace");
+
           workspacesToCreate.push({
             workspace_id: workspaceId,
             workspace_name: workspaceInfo.workspaceName,
@@ -108,11 +120,13 @@ async function updateAttendeesAndMeetings(
             meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
             domain: workspaceInfo.workspaceDomain,
           });
+        } else {
+          console.log("Using existing workspace for lead");
         }
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
-        console.log("Processing attendee:", attendee);
+        console.log("Processing attendee:", attendee.email);
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
