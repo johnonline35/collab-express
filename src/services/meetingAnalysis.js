@@ -53,6 +53,7 @@ async function analyzeMeetings(userId) {
   // Prepare list of attendee emails and meeting attendees map for quick lookup
   const attendeeEmails = new Set();
   const meetingAttendeesMap = new Map();
+  const attendees = [];
 
   for (let meeting of meetings) {
     const creatorExists = meeting.meeting_attendees.some(
