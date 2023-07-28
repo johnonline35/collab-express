@@ -1,71 +1,120 @@
 // This function assigns the attendee_is_workspace_lead flag based on the given rules
-
 function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
   if (!attendeesForThisMeeting || attendeesForThisMeeting.length === 0) {
     throw new Error("No attendees available to assign as lead.");
   }
 
-  // console.log(`Meeting ID: ${meeting.id}`);
-  // console.log("attendeesForThisMeeting:", attendeesForThisMeeting);
+  console.log(`Meeting ID: ${meeting.id}`);
 
-  let organizers = [];
-  let creators = [];
-  let acceptedAttendees = [];
-  let needsActionAttendees = [];
-  let declinedAttendees = [];
-  let firstAttendee = attendeesForThisMeeting[0];
+  let organizer = null;
+  let creator = null;
+  let accepted = null;
+  let firstAttendee = null;
 
   // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
-    // console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
+    console.log(`Checking attendee: ${JSON.stringify(attendee)}`);
 
-    if (attendee.email === meeting.organizer_email) {
-      organizers.push(attendee);
-      // console.log(`Organizer found: ${JSON.stringify(attendee)}`);
-    }
+    if (!firstAttendee) firstAttendee = attendee; // Set the first attendee if not set
 
-    if (attendee.email === meeting.creator_email) {
-      creators.push(attendee);
-      // console.log(`Creator found: ${JSON.stringify(attendee)}`);
-    }
-
-    if (attendee.response_status === "accepted") {
-      acceptedAttendees.push(attendee);
-      // console.log(`Accepted attendee found: ${JSON.stringify(attendee)}`);
-    }
-
-    if (attendee.response_status === "needsAction") {
-      needsActionAttendees.push(attendee);
-      // console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
-    }
-
-    if (attendee.response_status === "declined") {
-      declinedAttendees.push(attendee);
-      // console.log(`Attendee declined: ${JSON.stringify(attendee)}`);
+    if (attendee.email === meeting.organizer_email && !organizer) {
+      console.log(`Potential lead (organizer): ${JSON.stringify(attendee)}`);
+      organizer = attendee;
+    } else if (attendee.email === meeting.creator_email && !creator) {
+      console.log(`Potential lead (creator): ${JSON.stringify(attendee)}`);
+      creator = attendee;
+    } else if (attendee.response_status === "accepted" && !accepted) {
+      console.log(`Potential lead (accepted): ${JSON.stringify(attendee)}`);
+      accepted = attendee;
     }
   }
 
   // Assign lead based on priority
-  if (organizers.length > 0) {
-    console.log(`Assigned lead (organizer): ${JSON.stringify(organizers[0])}`);
-    return organizers[0];
-  } else if (creators.length > 0) {
-    console.log(`Assigned lead (creator): ${JSON.stringify(creators[0])}`);
-    return creators[0];
-  } else if (acceptedAttendees.length > 0) {
-    console.log(
-      `Assigned lead (accepted): ${JSON.stringify(acceptedAttendees[0])}`
-    );
-    return acceptedAttendees[0];
+  if (organizer) {
+    console.log(`Assigned lead (organizer): ${JSON.stringify(organizer)}`);
+    return organizer;
+  } else if (creator) {
+    console.log(`Assigned lead (creator): ${JSON.stringify(creator)}`);
+    return creator;
+  } else if (accepted) {
+    console.log(`Assigned lead (accepted): ${JSON.stringify(accepted)}`);
+    return accepted;
   } else if (firstAttendee) {
     console.log(
       `Assigned lead (first attendee): ${JSON.stringify(firstAttendee)}`
     );
     return firstAttendee;
+  } else {
+    throw new Error("No suitable lead found");
   }
-
-  throw new Error("No suitable lead found");
 }
+
+// function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
+//   if (!attendeesForThisMeeting || attendeesForThisMeeting.length === 0) {
+//     throw new Error("No attendees available to assign as lead.");
+//   }
+
+//   // console.log(`Meeting ID: ${meeting.id}`);
+//   // console.log("attendeesForThisMeeting:", attendeesForThisMeeting);
+
+//   let organizers = [];
+//   let creators = [];
+//   let acceptedAttendees = [];
+//   let needsActionAttendees = [];
+//   let declinedAttendees = [];
+//   let firstAttendee = attendeesForThisMeeting[0];
+
+//   // Iterate over attendees and use cascading logic
+//   for (let attendee of attendeesForThisMeeting) {
+//     // console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
+
+//     if (attendee.email === meeting.organizer_email) {
+//       organizers.push(attendee);
+//       // console.log(`Organizer found: ${JSON.stringify(attendee)}`);
+//     }
+
+//     if (attendee.email === meeting.creator_email) {
+//       creators.push(attendee);
+//       // console.log(`Creator found: ${JSON.stringify(attendee)}`);
+//     }
+
+//     if (attendee.response_status === "accepted") {
+//       acceptedAttendees.push(attendee);
+//       // console.log(`Accepted attendee found: ${JSON.stringify(attendee)}`);
+//     }
+
+//     if (attendee.response_status === "needsAction") {
+//       needsActionAttendees.push(attendee);
+//       // console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
+//     }
+
+//     if (attendee.response_status === "declined") {
+//       declinedAttendees.push(attendee);
+//       // console.log(`Attendee declined: ${JSON.stringify(attendee)}`);
+//     }
+//   }
+
+//   // Assign lead based on priority
+//   if (organizers.length > 0) {
+//     console.log(`Assigned lead (organizer): ${JSON.stringify(organizers[0])}`);
+//     return organizers[0];
+//   } else if (creators.length > 0) {
+//     console.log(`Assigned lead (creator): ${JSON.stringify(creators[0])}`);
+//     return creators[0];
+//   } else if (acceptedAttendees.length > 0) {
+//     console.log(
+//       `Assigned lead (accepted): ${JSON.stringify(acceptedAttendees[0])}`
+//     );
+//     return acceptedAttendees[0];
+//   } else if (firstAttendee) {
+//     console.log(
+//       `Assigned lead (first attendee): ${JSON.stringify(firstAttendee)}`
+//     );
+//     return firstAttendee;
+//   }
+
+//   throw new Error("No suitable lead found");
+// }
 
 function createWorkspaceName(leadEmail, publicEmailDomains) {
   // Ensure leadEmail is valid
