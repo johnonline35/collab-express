@@ -63,11 +63,16 @@ async function analyzeMeetings(userId) {
     // Add creator and organizer to the attendees list
     let attendees = [
       ...meeting.meeting_attendees,
-      { email: meeting.creator_email }, // This needs to be remembered as there is no creator flag
+      {
+        meeting_id: meeting_id,
+        email: meeting.creator_email,
+        organizer: false,
+        response_status: "creator",
+      }, // This needs to be remembered as there is no creator flag
       // { email: meeting.organizer_email },
     ];
 
-    // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
+    console.log("Attendees for meeting ID", meeting.id, ":", attendees);
 
     // Filter attendees based on their email domains
     const filteredAttendees = filterAttendees(
