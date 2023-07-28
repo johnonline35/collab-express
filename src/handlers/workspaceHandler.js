@@ -5,8 +5,8 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
     throw new Error("No attendees available to assign as lead.");
   }
 
-  console.log(`Meeting ID: ${meeting.id}`);
-  console.log("attendeesForThisMeeting:", attendeesForThisMeeting);
+  // console.log(`Meeting ID: ${meeting.id}`);
+  // console.log("attendeesForThisMeeting:", attendeesForThisMeeting);
 
   let organizers = [];
   let creators = [];
