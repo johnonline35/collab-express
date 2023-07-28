@@ -96,36 +96,21 @@ async function updateAttendeesAndMeetings(
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
-        // Extract domain from email
-        let domain = attendee.email.split("@")[1];
-
-        // Check if the domain is "felicis.com"
-        if (domain === "felicis.com") {
-          console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
-        }
-
+        // console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
             workspace_id: workspaceId,
             attendee_email: attendee.email,
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
-            attendee_domain: domain,
+            attendee_domain: attendee.email.split("@")[1],
           });
-
-          // Update the existingAttendeesMap
+          // CHANCHAL:
+          // CONSOLE LOG THIS TO SEE WHAT IS HAPPENING
           existingAttendeesMap.set(attendee.email, attendee);
-
-          // If the attendeeDomain is not a public email domain, set it in existingDomainsMap
-          if (!publicEmailDomains.includes(domain)) {
-            existingDomainsMap.set(domain, workspaceId);
-          }
-
-          // Log only for "felicis.com"
-          if (domain === "felicis.com") {
-            console.log("Attendee added to 'attendeesToInsert':", attendee);
-            console.log("Updated existingAttendeesMap:", existingAttendeesMap);
-            console.log("Updated existingDomainsMap:", existingDomainsMap);
+          const attendeeDomain = attendee.email.split("@")[1];
+          if (!publicEmailDomains.includes(attendeeDomain)) {
+            existingDomainsMap.set(attendeeDomain, workspaceId);
           }
         }
       });
