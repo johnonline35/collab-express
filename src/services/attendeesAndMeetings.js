@@ -90,7 +90,7 @@ async function updateAttendeesAndMeetings(
       if (!existingWorkspace) {
         console.log("No existing workspace found - assigning workspace lead");
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
-        console.log(`Workspace lead assigned: ${leadAssigned}`);
+        console.log(`Workspace lead assigned: ${leadAssigned.email}`); // logs the email of the lead
         let workspaceInfo = createWorkspaceName(
           leadAssigned.email,
           publicEmailDomains
@@ -120,6 +120,13 @@ async function updateAttendeesAndMeetings(
             meeting_attendee_email: workspaceInfo.meetingAttendeeEmail,
             domain: workspaceInfo.workspaceDomain,
           });
+
+          console.log(
+            "Here is the attendee:",
+            workspaceInfo.meetingAttendeeEmail,
+            "and workspace created:",
+            workspaceId
+          );
         } else {
           console.log("Using existing workspace for lead");
         }
