@@ -112,12 +112,20 @@ async function updateAttendeesAndMeetings(
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
             attendee_domain: domain,
           });
-          // CHANCHAL:
-          // CONSOLE LOG THIS TO SEE WHAT IS HAPPENING
+
+          // Update the existingAttendeesMap
           existingAttendeesMap.set(attendee.email, attendee);
-          const attendeeDomain = attendee.email.split("@")[1];
-          if (!publicEmailDomains.includes(attendeeDomain)) {
-            existingDomainsMap.set(attendeeDomain, workspaceId);
+
+          // If the attendeeDomain is not a public email domain, set it in existingDomainsMap
+          if (!publicEmailDomains.includes(domain)) {
+            existingDomainsMap.set(domain, workspaceId);
+          }
+
+          // Log only for "felicis.com"
+          if (domain === "felicis.com") {
+            console.log("Attendee added to 'attendeesToInsert':", attendee);
+            console.log("Updated existingAttendeesMap:", existingAttendeesMap);
+            console.log("Updated existingDomainsMap:", existingDomainsMap);
           }
         }
       });
