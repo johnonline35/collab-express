@@ -31,11 +31,11 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
   // Assign lead based on priority
   if (creator) {
-    console.log(`Assigned lead (organizer): ${JSON.stringify(organizer)}`);
-    return organizer;
-  } else if (organizer) {
     console.log(`Assigned lead (creator): ${JSON.stringify(creator)}`);
     return creator;
+  } else if (organizer) {
+    console.log(`Assigned lead (organizer): ${JSON.stringify(organizer)}`);
+    return organizer;
   } else if (accepted) {
     console.log(`Assigned lead (accepted): ${JSON.stringify(accepted)}`);
     return accepted;
