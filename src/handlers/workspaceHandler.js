@@ -6,36 +6,56 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
   console.log(`Meeting ID: ${meeting.id}`);
 
-  let lead = null;
+  let organizers = [];
+  let creators = [];
+  let acceptedAttendees = [];
+  let needsActionAttendees = [];
+  let declinedAttendees = [];
   let firstAttendee = attendeesForThisMeeting[0];
 
+  // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
     console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
 
     if (attendee.email === meeting.organizer_email) {
-      console.log(`Found lead (organizer): ${JSON.stringify(attendee)}`);
-      lead = attendee;
-      break;
+      organizers.push(attendee);
+      console.log(`Organizer found: ${JSON.stringify(attendee)}`);
     }
 
-    if (attendee.email === meeting.creator_email && lead === null) {
-      console.log(`Found lead (creator): ${JSON.stringify(attendee)}`);
-      lead = attendee;
-      continue;
+    if (attendee.email === meeting.creator_email) {
+      creators.push(attendee);
+      console.log(`Creator found: ${JSON.stringify(attendee)}`);
     }
 
-    if (attendee.response_status === "accepted" && lead === null) {
-      console.log(`Found lead (accepted): ${JSON.stringify(attendee)}`);
-      lead = attendee;
+    if (attendee.response_status === "accepted") {
+      acceptedAttendees.push(attendee);
+      console.log(`Accepted attendee found: ${JSON.stringify(attendee)}`);
+    }
+
+    if (attendee.response_status === "needsAction") {
+      needsActionAttendees.push(attendee);
+      console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
+    }
+
+    if (attendee.response_status === "declined") {
+      declinedAttendees.push(attendee);
+      console.log(`Attendee declined: ${JSON.stringify(attendee)}`);
     }
   }
 
-  if (lead !== null) {
-    console.log(`Assigned lead: ${JSON.stringify(lead)}`);
-    return lead;
-  }
-
-  if (firstAttendee) {
+  // Assign lead based on priority
+  if (organizers.length > 0) {
+    console.log(`Assigned lead (organizer): ${JSON.stringify(organizers[0])}`);
+    return organizers[0];
+  } else if (creators.length > 0) {
+    console.log(`Assigned lead (creator): ${JSON.stringify(creators[0])}`);
+    return creators[0];
+  } else if (acceptedAttendees.length > 0) {
+    console.log(
+      `Assigned lead (accepted): ${JSON.stringify(acceptedAttendees[0])}`
+    );
+    return acceptedAttendees[0];
+  } else if (firstAttendee) {
     console.log(
       `Assigned lead (first attendee): ${JSON.stringify(firstAttendee)}`
     );
