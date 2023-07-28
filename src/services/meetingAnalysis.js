@@ -53,15 +53,16 @@ async function analyzeMeetings(userId) {
   // Prepare list of attendee emails and meeting attendees map for quick lookup
   const attendeeEmails = new Set();
   const meetingAttendeesMap = new Map();
-  const attendees = [];
+  let attendees = [];
 
   for (let meeting of meetings) {
-    const creatorExists = meeting.meeting_attendees.some(
+    // Check if the creator is already an attendee
+    const isCreatorAnAttendee = meeting.meeting_attendees.some(
       (attendee) => attendee.email === meeting.creator_email
     );
 
-    // Add creator and organizer to the attendees list
-    if (!creatorExists) {
+    // If the creator is not an attendee, add them to the attendees list
+    if (!isCreatorAnAttendee) {
       meeting.meeting_attendees.push({
         meeting_id: meeting.id,
         email: meeting.creator_email,
@@ -70,21 +71,25 @@ async function analyzeMeetings(userId) {
       });
     }
 
-    // Populate 'meetingAttendees' with the list of meeting attendees ok
-    const meetingAttendees = meeting.meeting_attendees;
+    // Populate 'attendees' with the list of meeting attendees
+    attendees.push(...meeting.meeting_attendees);
 
-    // Add meeting attendees to main 'attendees' list
-    attendees.push(...meetingAttendees);
+    // for (let meeting of meetings) {
+    //   // console.log(`Meeting object: ${JSON.stringify(meeting)}`);
+    //   // console.log(
+    //   //   `Meeting attendees: ${JSON.stringify(meeting.meeting_attendees)}`
+    //   // );
 
-    // let attendees = [
-    //   ...meeting.meeting_attendees,
-    //   {
-    //     meeting_id: meeting.id,
-    //     email: meeting.creator_email,
-    //     organizer: false,
-    //     response_status: "creator",
-    //   },
-    // ];
+    //   // Add creator and organizer to the attendees list
+    //   let attendees = [
+    //     ...meeting.meeting_attendees,
+    //     {
+    //       meeting_id: meeting.id,
+    //       email: meeting.creator_email,
+    //       organizer: false,
+    //       response_status: "creator",
+    //     },
+    //   ];
 
     // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
 
