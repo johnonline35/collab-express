@@ -55,21 +55,28 @@ async function analyzeMeetings(userId) {
   const meetingAttendeesMap = new Map();
 
   for (let meeting of meetings) {
-    // console.log(`Meeting object: ${JSON.stringify(meeting)}`);
-    // console.log(
-    //   `Meeting attendees: ${JSON.stringify(meeting.meeting_attendees)}`
-    // );
+    const creatorExists = meeting.meeting_attendees.some(
+      (attendee) => attendee.email === meeting.creator_email
+    );
 
     // Add creator and organizer to the attendees list
-    let attendees = [
-      ...meeting.meeting_attendees,
-      {
+    if (!creatorExists) {
+      meeting.meeting_attendees.push({
         meeting_id: meeting.id,
         email: meeting.creator_email,
         organizer: false,
         response_status: "creator",
-      },
-    ];
+      });
+    }
+    // let attendees = [
+    //   ...meeting.meeting_attendees,
+    //   {
+    //     meeting_id: meeting.id,
+    //     email: meeting.creator_email,
+    //     organizer: false,
+    //     response_status: "creator",
+    //   },
+    // ];
 
     // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
 
