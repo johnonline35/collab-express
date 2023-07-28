@@ -70,8 +70,11 @@ async function analyzeMeetings(userId) {
       });
     }
 
-    // Populate 'attendees' with the list of meeting attendees ok
-    attendees.push(...meeting.meeting_attendees);
+    // Populate 'meetingAttendees' with the list of meeting attendees ok
+    const meetingAttendees = meeting.meeting_attendees;
+
+    // Add meeting attendees to main 'attendees' list
+    attendees.push(...meetingAttendees);
 
     // let attendees = [
     //   ...meeting.meeting_attendees,
