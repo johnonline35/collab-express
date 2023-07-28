@@ -96,6 +96,7 @@ async function updateAttendeesAndMeetings(
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
+        console.log("Attendee:", attendee, "Meeting ID:", meeting.id);
         if (!existingAttendeesMap.has(attendee.email)) {
           attendeesToInsert.push({
             collab_user_id: userId,
