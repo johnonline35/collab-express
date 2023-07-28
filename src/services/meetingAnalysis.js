@@ -64,7 +64,7 @@ async function analyzeMeetings(userId) {
     let attendees = [
       ...meeting.meeting_attendees,
       {
-        meeting_id: meeting_id,
+        meeting_id: meeting.id,
         email: meeting.creator_email,
         organizer: false,
         response_status: "creator",
