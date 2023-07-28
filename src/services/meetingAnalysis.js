@@ -53,16 +53,16 @@ async function analyzeMeetings(userId) {
   // Prepare list of attendee emails and meeting attendees map for quick lookup
   const attendeeEmails = new Set();
   const meetingAttendeesMap = new Map();
-  let attendees = [];
 
   for (let meeting of meetings) {
-    // Check if the creator is already an attendee
-    const isCreatorAnAttendee = meeting.meeting_attendees.some(
+    let attendees = []; // Initialize the attendees array for each meeting
+
+    const creatorExists = meeting.meeting_attendees.some(
       (attendee) => attendee.email === meeting.creator_email
     );
 
-    // If the creator is not an attendee, add them to the attendees list
-    if (!isCreatorAnAttendee) {
+    // Add creator and organizer to the attendees list
+    if (!creatorExists) {
       meeting.meeting_attendees.push({
         meeting_id: meeting.id,
         email: meeting.creator_email,
@@ -71,7 +71,7 @@ async function analyzeMeetings(userId) {
       });
     }
 
-    // Populate 'attendees' with the list of meeting attendees
+    // Populate 'attendees' with the list of meeting attendees ok
     attendees.push(...meeting.meeting_attendees);
 
     // for (let meeting of meetings) {
