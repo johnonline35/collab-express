@@ -68,8 +68,7 @@ async function analyzeMeetings(userId) {
         email: meeting.creator_email,
         organizer: false,
         response_status: "creator",
-      }, // This needs to be remembered as there is no creator flag
-      // { email: meeting.organizer_email },
+      },
     ];
 
     // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
