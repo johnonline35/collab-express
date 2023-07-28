@@ -35,6 +35,7 @@ async function updateAttendeesAndMeetings(
   const existingDomainsMap = new Map();
 
   existingAttendees.forEach((attendee) => {
+    console.log(attendee); // Debugging line to verify attendee data
     existingAttendeesMap.set(attendee.attendee_email, attendee);
     const attendeeDomain = attendee.attendee_email.split("@")[1];
     if (!publicEmailDomains.includes(attendeeDomain)) {
@@ -74,6 +75,7 @@ async function updateAttendeesAndMeetings(
           workspaceId = existingAttendeesMap.has(attendee.email)
             ? existingAttendeesMap.get(attendee.email).workspace_id
             : existingDomainsMap.get(attendeeDomain);
+          console.log("Debug workspaceId:", workspaceId); // Debugging line
           existingWorkspace = true;
           console.log(
             "Existing workspace found for attendee:",
