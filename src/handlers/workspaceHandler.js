@@ -13,9 +13,12 @@ function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
 
   // Iterate over attendees and use cascading logic
   for (let attendee of attendeesForThisMeeting) {
-    console.log(`Checking attendee: ${JSON.stringify(attendee)}`);
+    console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
 
-    if (!firstAttendee) firstAttendee = attendee; // Set the first attendee if not set
+    if (!firstAttendee) {
+      firstAttendee = attendee;
+      console.log(`First attendee assigned: ${JSON.stringify(firstAttendee)}`);
+    }
 
     if (attendee.email === meeting.organizer_email && !organizer) {
       console.log(`Potential lead (organizer): ${JSON.stringify(attendee)}`);
