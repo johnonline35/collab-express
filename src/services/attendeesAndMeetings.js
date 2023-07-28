@@ -56,15 +56,28 @@ async function updateAttendeesAndMeetings(
 
       for (let attendee of attendeesForThisMeeting) {
         const attendeeDomain = attendee.email.split("@")[1];
+
+        console.log("Processing attendee:", attendee);
+        console.log("Extracted domain:", attendeeDomain);
+
         if (
           existingAttendeesMap.has(attendee.email) ||
           existingDomainsMap.has(attendeeDomain)
         ) {
+          console.log("Attendee or domain found in existing maps.");
+
           workspaceId = existingAttendeesMap.has(attendee.email)
             ? existingAttendeesMap.get(attendee.email).workspace_id
             : existingDomainsMap.get(attendeeDomain);
+
+          console.log("workspaceId set to:", workspaceId);
+
           existingWorkspace = true;
+          console.log("existingWorkspace set to true.");
+
           break;
+        } else {
+          console.log("Attendee and domain not found in existing maps.");
         }
       }
 
