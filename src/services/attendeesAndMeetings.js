@@ -86,7 +86,7 @@ async function updateAttendeesAndMeetings(
         }
       }
 
-      // If there is no existing workspace, then define a workspace lead, and create a workspace
+      // If there is no existing workspace, then define a workspace lead, and create a workspace.
       if (!existingWorkspace) {
         console.log("No existing workspace found - assigning workspace lead");
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
