@@ -1,64 +1,15 @@
 // This function assigns the attendee_is_workspace_lead flag based on the given rules
-function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
+function logAllAttendees(attendeesForThisMeeting, meeting) {
   if (!attendeesForThisMeeting || attendeesForThisMeeting.length === 0) {
-    throw new Error("No attendees available to assign as lead.");
+    throw new Error("No attendees for this meeting.");
   }
 
   console.log(`Meeting ID: ${meeting.id}`);
 
-  let organizer = null;
-  let creator = null;
-  let accepted = null;
-  let firstAttendee = attendeesForThisMeeting[0];
-
-  // Iterate over all attendees
+  // Iterate over all attendees and log them
   for (let attendee of attendeesForThisMeeting) {
-    // Logging attendee
-    console.log(`Evaluating attendee: ${JSON.stringify(attendee)}`);
-
-    // Determine and log attendee's role
-    if (attendee.email === meeting.organizer_email) {
-      console.log(`Attendee is an organizer: ${JSON.stringify(attendee)}`);
-      organizer = organizer || attendee;
-    }
-
-    if (attendee.email === meeting.creator_email) {
-      console.log(`Attendee is a creator: ${JSON.stringify(attendee)}`);
-      creator = creator || attendee;
-    }
-
-    if (attendee.response_status === "accepted") {
-      console.log(`Attendee has accepted: ${JSON.stringify(attendee)}`);
-      accepted = accepted || attendee;
-    }
-
-    if (attendee.response_status === "needsAction") {
-      console.log(`Attendee needs action: ${JSON.stringify(attendee)}`);
-    }
-
-    if (attendee.response_status === "declined") {
-      console.log(`Attendee has declined: ${JSON.stringify(attendee)}`);
-    }
+    console.log(`Attendee: ${JSON.stringify(attendee)}`);
   }
-
-  // Assign lead based on priority
-  if (organizer) {
-    console.log(`Assigned lead (organizer): ${JSON.stringify(organizer)}`);
-    return organizer;
-  } else if (creator) {
-    console.log(`Assigned lead (creator): ${JSON.stringify(creator)}`);
-    return creator;
-  } else if (accepted) {
-    console.log(`Assigned lead (accepted): ${JSON.stringify(accepted)}`);
-    return accepted;
-  } else if (firstAttendee) {
-    console.log(
-      `Assigned lead (first attendee): ${JSON.stringify(firstAttendee)}`
-    );
-    return firstAttendee;
-  }
-
-  throw new Error("No suitable lead found");
 }
 
 // function assignWorkspaceLead(attendeesForThisMeeting, meeting) {
