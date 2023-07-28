@@ -105,14 +105,13 @@ async function updateAttendeesAndMeetings(
           leadAssigned.email
         )?.workspace_id;
 
-        console.log(
-          `Workspace lead existing workspace ID: ${existingLeadWorkspace}`
-        );
-
-        workspaceId = existingLeadWorkspace ? existingLeadWorkspace : uuidv4();
-
-        // Only push new workspace to be created if it's a new workspace_id
-        if (!existingLeadWorkspace) {
+        // If leadAssigned already has a workspace, use it.
+        if (existingLeadWorkspace) {
+          workspaceId = existingLeadWorkspace;
+          console.log(`Existing workspace ID found for lead: ${workspaceId}`);
+        } else {
+          // If not, generate a new UUID and create a new workspace.
+          workspaceId = uuidv4();
           console.log("No existing workspace for lead, creating new workspace");
 
           workspacesToCreate.push({
@@ -132,8 +131,6 @@ async function updateAttendeesAndMeetings(
             workspaceId,
             `and lead assigned: ${leadAssigned.email}`
           );
-        } else {
-          console.log("Using existing workspace for lead");
         }
       }
 
