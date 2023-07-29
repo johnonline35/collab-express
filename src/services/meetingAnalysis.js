@@ -98,6 +98,7 @@ async function analyzeMeetings(userId) {
 
     if (result.data) {
       existingAttendees = existingAttendees.concat(result.data);
+      console.log("existingAttendees:", existingAttendees);
     } else {
       console.error("Error retrieving existing attendees:", result.error);
     }
@@ -233,7 +234,7 @@ async function analyzeMeetings(userId) {
 //   // );
 
 //   // Fetch all existing collab attendees, so that the new meetings and meeting attendees can be filtered against them. A new collab attendee from a meeting is only created if it does not exist in this list:
-//   let existingAttendees = [];
+//   let In = [];
 //   const chunkSize = 200; // Adjust as necessary
 //   const attendeeEmailsArray = Array.from(attendeeEmails);
 //   for (let i = 0; i < attendeeEmailsArray.length; i += chunkSize) {
@@ -245,19 +246,19 @@ async function analyzeMeetings(userId) {
 //       .in("attendee_email", chunk);
 
 //     if (result.data) {
-//       existingAttendees = existingAttendees.concat(result.data);
+//       In = In.concat(result.data);
 //     } else {
 //       console.error("Error retrieving existing attendees:", result.error);
 //     }
 //   }
 
 //   // console.log(
-//   //   "existingAttendees array in order before next function:",
-//   //   existingAttendees
+//   //   "In array in order before next function:",
+//   //   In
 //   // );
 
 //   // Fetch all matching attendees in a single query
-//   // let existingAttendees = [];
+//   // let In = [];
 //   // if (attendeeEmails.size > 0) {
 //   //   const result = await supabase
 //   //     .from("attendees")
@@ -265,7 +266,7 @@ async function analyzeMeetings(userId) {
 //   //     .in("attendee_email", Array.from(attendeeEmails));
 
 //   //   if (result.data) {
-//   //     existingAttendees = result.data;
+//   //     In = result.data;
 //   //   } else {
 //   //     console.error("Error retrieving existing attendees:", result.error);
 //   //   }
@@ -273,7 +274,7 @@ async function analyzeMeetings(userId) {
 
 //   // Update attendees and meetings in batch
 //   await updateAttendeesAndMeetings(
-//     existingAttendees,
+//     In,
 //     meetings,
 //     meetingAttendeesMap,
 //     userId,

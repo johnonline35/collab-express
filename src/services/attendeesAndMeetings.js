@@ -14,23 +14,6 @@ async function updateAttendeesAndMeetings(
   userDetails,
   publicEmailDomains
 ) {
-  // Input validation
-  if (!Array.isArray(existingAttendees)) {
-    console.error("Invalid input for existingAttendees:", existingAttendees);
-    throw new Error("existingAttendees must be an array");
-  }
-  if (!Array.isArray(meetings)) {
-    console.error("Invalid input for meetings:", meetings);
-    throw new Error("meetings must be an array");
-  }
-  if (!(meetingAttendeesMap instanceof Map)) {
-    console.error(
-      "Invalid input for meetingAttendeesMap:",
-      meetingAttendeesMap
-    );
-    throw new Error("meetingAttendeesMap must be a Map");
-  }
-
   const existingAttendeesMap = new Map();
   const existingDomainsMap = new Map();
 
