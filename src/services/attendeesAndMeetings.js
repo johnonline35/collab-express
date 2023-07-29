@@ -108,7 +108,9 @@ async function updateAttendeesAndMeetings(
         // If leadAssigned already has a workspace, use it.
         if (existingLeadWorkspace) {
           workspaceId = existingLeadWorkspace;
-          console.log(`Existing workspace ID found for lead: ${workspaceId}`);
+          console.log(
+            `Existing workspace ID found for ${leadAssigned.email}: ${workspaceId}`
+          );
         } else {
           // If not, generate a new UUID and create a new workspace
           workspaceId = uuidv4();
