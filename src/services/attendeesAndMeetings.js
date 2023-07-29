@@ -81,6 +81,12 @@ async function updateAttendeesAndMeetings(
           existingDomainsMap.has(attendeeDomain)
         ) {
           if (existingAttendeesMap.has(attendee.email)) {
+            // LOGGING
+            console.log(
+              `Details for ${attendee.email}: `,
+              existingAttendeesMap.get(attendee.email)
+            );
+
             workspaceId = existingAttendeesMap.get(attendee.email).workspace_id;
             console.log("Workspace ID from attendee map:", workspaceId); // <-- Add this log
           } else if (existingDomainsMap.has(attendeeDomain)) {
