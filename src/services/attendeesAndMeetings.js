@@ -37,7 +37,9 @@ async function updateAttendeesAndMeetings(
   existingAttendees.forEach((attendee) => {
     console.log("existingAttendees.forEach((attendee):", attendee); // Debugging line to verify attendee data
     existingAttendeesMap.set(attendee.attendee_email, attendee);
+
     const attendeeDomain = attendee.attendee_email.split("@")[1];
+
     if (!publicEmailDomains.includes(attendeeDomain)) {
       existingDomainsMap.set(attendeeDomain, attendee.workspace_id);
     }
@@ -72,9 +74,12 @@ async function updateAttendeesAndMeetings(
           existingAttendeesMap.has(attendee.email) ||
           existingDomainsMap.has(attendeeDomain)
         ) {
-          workspaceId = existingAttendeesMap.has(attendee.email)
-            ? existingAttendeesMap.get(attendee.email).workspace_id
-            : existingDomainsMap.get(attendeeDomain);
+          if (existingAttendeesMap.has(attendee.email)) {
+            workspaceId = existingAttendeesMap.get(attendee.email).workspace_id;
+          } else if (existingDomainsMap.has(attendeeDomain)) {
+            workspaceId = existingDomainsMap.get(attendeeDomain);
+          }
+
           console.log("Debug workspaceId:", workspaceId); // Debugging line
           existingWorkspace = true;
           console.log(
