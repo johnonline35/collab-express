@@ -45,6 +45,9 @@ async function updateAttendeesAndMeetings(
     }
   });
 
+  console.log("Existing attendees map:", existingAttendeesMap); // <-- Add this log
+  console.log("Existing domains map:", existingDomainsMap); // <-- Add this log
+
   const attendeesToInsert = [];
   const meetingsToUpdate = [];
   const workspacesToCreate = [];
@@ -70,14 +73,19 @@ async function updateAttendeesAndMeetings(
         );
 
         const attendeeDomain = attendee.email.split("@")[1];
+
+        console.log("Checking attendee:", attendee.email); // <-- Add this log
+
         if (
           existingAttendeesMap.has(attendee.email) ||
           existingDomainsMap.has(attendeeDomain)
         ) {
           if (existingAttendeesMap.has(attendee.email)) {
             workspaceId = existingAttendeesMap.get(attendee.email).workspace_id;
+            console.log("Workspace ID from attendee map:", workspaceId); // <-- Add this log
           } else if (existingDomainsMap.has(attendeeDomain)) {
             workspaceId = existingDomainsMap.get(attendeeDomain);
+            console.log("Workspace ID from domain map:", workspaceId); // <-- Add this log
           }
 
           console.log("Debug workspaceId:", workspaceId); // Debugging line
