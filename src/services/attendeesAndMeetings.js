@@ -110,7 +110,7 @@ async function updateAttendeesAndMeetings(
           workspaceId = existingLeadWorkspace;
           console.log(`Existing workspace ID found for lead: ${workspaceId}`);
         } else {
-          // If not, generate a new UUID and create a new workspace.
+          // If not, generate a new UUID and create a new workspace
           workspaceId = uuidv4();
           console.log("No existing workspace for lead, creating new workspace");
 
