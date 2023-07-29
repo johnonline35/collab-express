@@ -8,12 +8,7 @@ const {
 
 async function analyzeMeetings(userId) {
   // console.log("Running analyzeMeetings for user id:", userId);
-  // DEBUGGING ONLY BELOW:
-  const meetingIdsToProcess = [
-    "hjqhel66sboa3vut5ov89i7ki0",
-    "vr83s27bjakob1hs1qiu30763o",
-  ];
-  // DEBUGGING END - REMOVE THE ABOVE ^^
+
   // Fetch the list of public email domains
   let publicEmailDomains = await fetchPublicEmailDomains();
   // console.log("Public email domains fetched:", publicEmailDomains);
@@ -47,24 +42,11 @@ async function analyzeMeetings(userId) {
     .eq("collab_user_id", userId)
     .order("start_dateTime", { ascending: true });
 
-  // console.log("User meetings fetched:", meetings);
-
-  // Sort meetings by start_dateTime
-  // meetings.sort(
-  //   (a, b) => new Date(a.start_dateTime) - new Date(b.start_dateTime)
-  // );
-  // console.log("Meetings sorted by start dateTime:", meetings);
-
   // Prepare list of attendee emails and meeting attendees map for quick lookup
   const attendeeEmails = new Set();
   const meetingAttendeesMap = new Map();
 
   for (let meeting of meetings) {
-    // DEBUGGING START - REMOVE THIS IF STATEMENT AFTERWARDS
-    if (!meetingIdsToProcess.includes(meeting.id)) {
-      continue;
-    }
-    // END OF DEBUGGING - REMOVE THE ABOVE ^^
     let attendees = []; // Initialize the attendees array for each meeting
 
     const creatorExists = meeting.meeting_attendees.some(
@@ -84,36 +66,13 @@ async function analyzeMeetings(userId) {
     // Populate 'attendees' with the list of meeting attendees ok
     attendees.push(...meeting.meeting_attendees);
 
-    // for (let meeting of meetings) {
-    //   // console.log(`Meeting object: ${JSON.stringify(meeting)}`);
-    //   // console.log(
-    //   //   `Meeting attendees: ${JSON.stringify(meeting.meeting_attendees)}`
-    //   // );
-
-    //   // Add creator and organizer to the attendees list
-    //   let attendees = [
-    //     ...meeting.meeting_attendees,
-    //     {
-    //       meeting_id: meeting.id,
-    //       email: meeting.creator_email,
-    //       organizer: false,
-    //       response_status: "creator",
-    //     },
-    //   ];
-
-    // console.log("Attendees for meeting ID", meeting.id, ":", attendees);
-
     // Filter attendees based on their email domains
     const filteredAttendees = filterAttendees(
       attendees,
       publicEmailDomains,
       userDetails
     );
-    // console.log(
-    //   "Filtered attendees for meeting:",
-    //   meeting.id,
-    //   filteredAttendees
-    // );
+
     meeting.meeting_attendees = filteredAttendees;
 
     // Add attendees' emails to the set for batch querying
@@ -124,12 +83,6 @@ async function analyzeMeetings(userId) {
     // Map meeting ID to its attendees for later use
     meetingAttendeesMap.set(meeting.id, filteredAttendees);
   }
-  // console.log(
-  //   "Filtered attendees:",
-  //   attendeeEmails.size,
-  //   "Emails:",
-  //   Array.from(attendeeEmails)
-  // );
 
   // Fetch all existing collab attendees, so that the new meetings and meeting attendees can be filtered against them. A new collab attendee from a meeting is only created if it does not exist in this list:
   let existingAttendees = [];
@@ -149,26 +102,6 @@ async function analyzeMeetings(userId) {
       console.error("Error retrieving existing attendees:", result.error);
     }
   }
-
-  // console.log(
-  //   "existingAttendees array in order before next function:",
-  //   existingAttendees
-  // );
-
-  // Fetch all matching attendees in a single query
-  // let existingAttendees = [];
-  // if (attendeeEmails.size > 0) {
-  //   const result = await supabase
-  //     .from("attendees")
-  //     .select("*")
-  //     .in("attendee_email", Array.from(attendeeEmails));
-
-  //   if (result.data) {
-  //     existingAttendees = result.data;
-  //   } else {
-  //     console.error("Error retrieving existing attendees:", result.error);
-  //   }
-  // }
 
   // Update attendees and meetings in batch
   await updateAttendeesAndMeetings(
