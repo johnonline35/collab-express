@@ -36,28 +36,28 @@ async function updateAttendeesAndMeetings(
   const workspacesToCreate = [];
 
   for (let meeting of meetings) {
-    console.log("Processing meeting ID:", meeting.id);
+    // console.log("Processing meeting ID:", meeting.id);
 
     const attendeesForThisMeeting = meetingAttendeesMap.get(meeting.id);
 
     if (attendeesForThisMeeting.length > 0) {
-      console.log(
-        `This meeting has ${attendeesForThisMeeting.length} attendees`
-      );
+      // console.log(
+      //   `This meeting has ${attendeesForThisMeeting.length} attendees`
+      // );
 
       let workspaceId;
       let leadAssigned = null;
       let existingWorkspace = null;
 
       for (let attendee of attendeesForThisMeeting) {
-        console.log(
-          "Processing attendee for workspace existence check:",
-          attendee.email
-        );
+        // console.log(
+        //   "Processing attendee for workspace existence check:",
+        //   attendee.email
+        // );
 
         const attendeeDomain = attendee.email.split("@")[1];
 
-        console.log("Checking attendee:", attendee.email); // <-- Add this log
+        // console.log("Checking attendee:", attendee.email); // <-- Add this log
 
         if (
           existingAttendeesMap.has(attendee.email) ||
@@ -65,26 +65,26 @@ async function updateAttendeesAndMeetings(
         ) {
           if (existingAttendeesMap.has(attendee.email)) {
             // LOGGING
-            console.log(
-              `Details for ${attendee.email}: `,
-              existingAttendeesMap.get(attendee.email)
-            );
+            // console.log(
+            //   `Details for ${attendee.email}: `,
+            //   existingAttendeesMap.get(attendee.email)
+            // );
 
             workspaceId = existingAttendeesMap.get(attendee.email).workspace_id;
-            console.log("Workspace ID from attendee map:", workspaceId); // <-- Add this log
+            // console.log("Workspace ID from attendee map:", workspaceId); // <-- Add this log
           } else if (existingDomainsMap.has(attendeeDomain)) {
             workspaceId = existingDomainsMap.get(attendeeDomain);
-            console.log("Workspace ID from domain map:", workspaceId); // <-- Add this log
+            // console.log("Workspace ID from domain map:", workspaceId); // <-- Add this log
           }
 
-          console.log("Debug workspaceId:", workspaceId); // Debugging line
+          // console.log("Debug workspaceId:", workspaceId); // Debugging line
           existingWorkspace = true;
-          console.log(
-            "Existing workspace found for attendee:",
-            attendee.email,
-            "With Workspace ID:",
-            workspaceId
-          );
+          // console.log(
+          //   "Existing workspace found for attendee:",
+          //   attendee.email,
+          //   "With Workspace ID:",
+          //   workspaceId
+          // );
 
           break;
         }
@@ -92,15 +92,15 @@ async function updateAttendeesAndMeetings(
 
       // If there is no existing workspace, then define a workspace lead, and create a workspace.
       if (!existingWorkspace) {
-        console.log("No existing workspace found - assigning workspace lead");
+        // console.log("No existing workspace found - assigning workspace lead");
         leadAssigned = assignWorkspaceLead(attendeesForThisMeeting, meeting);
-        console.log(`Workspace lead assigned: ${leadAssigned.email}`); // logs the email of the lead
+        // console.log(`Workspace lead assigned: ${leadAssigned.email}`); // logs the email of the lead
         let workspaceInfo = createWorkspaceName(
           leadAssigned.email,
           publicEmailDomains
         );
 
-        console.log("Checking if workspace lead already has a workspace");
+        // console.log("Checking if workspace lead already has a workspace");
 
         // Check if leadAssigned already has a workspace_id
         let existingLeadWorkspace = existingAttendeesMap.get(
@@ -110,13 +110,13 @@ async function updateAttendeesAndMeetings(
         // If leadAssigned already has a workspace, use it.
         if (existingLeadWorkspace) {
           workspaceId = existingLeadWorkspace;
-          console.log(
-            `Existing workspace ID found for ${leadAssigned.email}: ${workspaceId}`
-          );
+          // console.log(
+          //   `Existing workspace ID found for ${leadAssigned.email}: ${workspaceId}`
+          // );
         } else {
           // If not, generate a new UUID and create a new workspace
           workspaceId = uuidv4();
-          console.log("No existing workspace for lead, creating new workspace");
+          // console.log("No existing workspace for lead, creating new workspace");
 
           workspacesToCreate.push({
             workspace_id: workspaceId,
@@ -126,15 +126,15 @@ async function updateAttendeesAndMeetings(
             domain: workspaceInfo.workspaceDomain,
           });
 
-          console.log(
-            "Here is the attendee:",
-            workspaceInfo.meetingAttendeeEmail,
-            ".. or the domain:",
-            workspaceInfo.workspaceDomain,
-            "and workspaceId created:",
-            workspaceId,
-            `and lead assigned: ${leadAssigned.email}`
-          );
+          // console.log(
+          //   "Here is the attendee:",
+          //   workspaceInfo.meetingAttendeeEmail,
+          //   ".. or the domain:",
+          //   workspaceInfo.workspaceDomain,
+          //   "and workspaceId created:",
+          //   workspaceId,
+          //   `and lead assigned: ${leadAssigned.email}`
+          // );
         }
       }
 
@@ -170,10 +170,10 @@ async function updateAttendeesAndMeetings(
         workspace_id: workspaceId,
       });
 
-      console.log("Updated meeting:", {
-        id: meeting.id,
-        workspace_id: workspaceId,
-      });
+      // console.log("Updated meeting:", {
+      //   id: meeting.id,
+      //   workspace_id: workspaceId,
+      // });
     }
   }
 
@@ -181,7 +181,7 @@ async function updateAttendeesAndMeetings(
     let { data: insertResult, error } = await supabase
       .from("attendees")
       .upsert(attendeesToInsert);
-    console.log("Insert attendees result:", insertResult);
+    // console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
   }
 
