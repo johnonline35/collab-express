@@ -140,30 +140,62 @@ async function updateAttendeesAndMeetings(
 
       attendeesForThisMeeting.forEach((attendee) => {
         console.log("Processing attendee:", attendee.email);
-        if (!existingAttendeesMap.has(attendee.email)) {
-          attendeesToInsert.push({
+
+        let supabaseTableAttendeesObjectAttendee = existingAttendeesMap.get(
+          attendee.email
+        );
+
+        // If the attendee doesn't exist in existingAttendeesMap, add it
+        if (!supabaseTableAttendeesObjectAttendee) {
+          supabaseTableAttendeesObjectAttendee = {
             collab_user_id: userId,
             workspace_id: workspaceId,
             attendee_email: attendee.email,
             attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
             attendee_domain: attendee.email.split("@")[1],
-          });
-          console.log(
-            "Attendee pushed to 'attendeesToInsert':",
-            attendee.email,
-            "attendee_is_workspace_lead:",
-            attendee.email === leadAssigned?.email,
-            "workspaceId:",
-            workspaceId
-          );
+          };
 
-          existingAttendeesMap.set(attendee.email, attendee);
-          const attendeeDomain = attendee.email.split("@")[1];
-          if (!publicEmailDomains.includes(attendeeDomain)) {
-            existingDomainsMap.set(attendeeDomain, workspaceId);
-          }
+          attendeesToInsert.push(supabaseTableAttendeesObjectAttendee);
+
+          existingAttendeesMap.set(
+            attendee.email,
+            supabaseTableAttendeesObjectAttendee
+          );
+        }
+
+        const attendeeDomain = attendee.email.split("@")[1];
+        if (!publicEmailDomains.includes(attendeeDomain)) {
+          existingDomainsMap.set(attendeeDomain, workspaceId);
         }
       });
+
+      // attendeesForThisMeeting.forEach((attendee) => {
+      //   console.log("Processing attendee:", attendee.email);
+      //   if (!existingAttendeesMap.has(attendee.email)) {
+      //     attendeesToInsert.push({
+      //       collab_user_id: userId,
+      //       workspace_id: workspaceId,
+      //       attendee_email: attendee.email,
+      //       attendee_is_workspace_lead: attendee.email === leadAssigned?.email,
+      //       attendee_domain: attendee.email.split("@")[1],
+      //     });
+      //     console.log(
+      //       "Attendee pushed to 'attendeesToInsert':",
+      //       attendee.email,
+      //       "attendee_is_workspace_lead:",
+      //       attendee.email === leadAssigned?.email,
+      //       "workspaceId:",
+      //       workspaceId
+      //     );
+
+      //     existingAttendeesMap.set(attendee.email, attendee);
+
+      //     const attendeeDomain = attendee.email.split("@")[1];
+      //     if (!publicEmailDomains.includes(attendeeDomain)) {
+      //       existingDomainsMap.set(attendeeDomain, workspaceId);
+      //     }
+      //   }
+      // });
 
       meetingsToUpdate.push({
         id: meeting.id,
