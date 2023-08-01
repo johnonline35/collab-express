@@ -364,7 +364,7 @@ const updateMeetingDescription = async (
     // Load the Google Calendar client
     const calendar = await loadClient(collab_user_id);
 
-    // Fetch meeting data from the 'meetings' table
+    // Fetch meeting data from the 'meetings' table:
     const { data: meetingData } = await supabase
       .from("meetings")
       .select("*")
@@ -385,7 +385,7 @@ const updateMeetingDescription = async (
         const newDescription =
           hyperlink + "<br/><br/>" + (event.data.description || "");
 
-        // Update the Google Calendar event
+        // Update the Google Calendar event.
         event.data.description = newDescription;
       } else {
         // Remove the hyperlink from the description
