@@ -42,6 +42,7 @@ async function updateAttendeesAndMeetings(
       let leadAssigned = null;
       let existingWorkspace = null;
 
+      // Check if the current attendee already exists in the supabase attendees table, and if it does, then assigned the existing attendees workspace_id to the other attendees of this meeting
       for (let attendee of attendeesForThisMeeting) {
         // If the attendee is in the map and the ignore flag is set, skip this iteration
         if (
