@@ -381,7 +381,7 @@ const updateMeetingDescription = async (
       // Check if link needs to be added or removed
       if (workspace_attendee_enable_calendar_link) {
         // Create a hyperlink and prepend it to the existing description
-        const hyperlink = `<a href="${workspaceLink}">Collab Workspace</a>`;
+        const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
         const newDescription =
           hyperlink + "<br/><br/>" + (event.data.description || "");
 
@@ -393,7 +393,7 @@ const updateMeetingDescription = async (
           `<a href="${workspaceLink.replace(
             /[.*+\-?^${}()|[\]\\]/g,
             "\\$&"
-          )}">Collab Workspace</a>`,
+          )}">Collab Space</a>`,
           "g"
         );
         event.data.description = event.data.description.replace(
