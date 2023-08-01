@@ -43,6 +43,14 @@ async function updateAttendeesAndMeetings(
       let existingWorkspace = null;
 
       for (let attendee of attendeesForThisMeeting) {
+        // If the attendee is in the map and the ignore flag is set, skip this iteration
+        if (
+          existingAttendeesMap.has(attendee.email) &&
+          existingAttendeesMap.get(attendee.email).ignore
+        ) {
+          continue;
+        }
+
         const attendeeDomain = attendee.email.split("@")[1];
 
         if (
