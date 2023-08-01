@@ -364,7 +364,7 @@ const updateMeetingDescription = async (
     // Load the Google Calendar client
     const calendar = await loadClient(collab_user_id);
 
-    // Fetch meeting data from the 'meetings' table:
+    // Fetch meeting data from the 'meetings' table
     const { data: meetingData } = await supabase
       .from("meetings")
       .select("*")
@@ -381,11 +381,11 @@ const updateMeetingDescription = async (
       // Check if link needs to be added or removed
       if (workspace_attendee_enable_calendar_link) {
         // Create a hyperlink and prepend it to the existing description
-        const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
+        const hyperlink = `<a href="${workspaceLink}">Collab Workspace</a>`;
         const newDescription =
           hyperlink + "<br/><br/>" + (event.data.description || "");
 
-        // Update the Google Calendar event.
+        // Update the Google Calendar event
         event.data.description = newDescription;
       } else {
         // Remove the hyperlink from the description
@@ -393,7 +393,7 @@ const updateMeetingDescription = async (
           `<a href="${workspaceLink.replace(
             /[.*+\-?^${}()|[\]\\]/g,
             "\\$&"
-          )}">Collab Space</a>`,
+          )}">Collab Workspace</a>`,
           "g"
         );
         event.data.description = event.data.description.replace(
