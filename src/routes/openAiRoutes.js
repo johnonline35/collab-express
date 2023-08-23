@@ -13,11 +13,11 @@ router.post("/summarize-career-education", async (req, res) => {
 
   //     // const prompt = convertToReadableText(careerData, educationData);
   //     //
-  //     const completionPrompt = `Based on the education and career information provided: went to stanford, studied medicine, is a billionare, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
-  // `;
+  const completionPrompt = `Based on the education and career information provided: went to stanford, studied medicine, is a billionare, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
+  `;
 
   //     // Use OpenAI to summarize the text
-  //     console.log("About to call OpenAI with the prompt: ", completionPrompt);
+  console.log("About to call OpenAI with the prompt: ", completionPrompt);
   //     const completion = await openAi.createCompletion(
   //       {
   //         model: "text-davinci-004",
