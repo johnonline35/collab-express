@@ -4,8 +4,6 @@ const supabase = require("../db/supabase");
 const openai = require("../api/openAi");
 
 router.post("/summarize-career-education", async (req, res) => {
-  console.log("Request received for /summarize-career-education"); // To confirm the endpoint is being hit
-
   //   try {
   //     // Fetch data from Supabase
   //     // const careerData = await supabase.from("career_table").select("*");
@@ -17,7 +15,7 @@ router.post("/summarize-career-education", async (req, res) => {
   async function testChat() {
     const completion = await openai.chat.completions.create({
       messages: [{ role: "user", content: "Say this is a test" }],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
     });
 
     const content = completion.choices[0].message.content;
