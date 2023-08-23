@@ -4,7 +4,7 @@ const supabase = require("../db/supabase");
 const openai = require("../api/openAi");
 
 router.post("/summarize-career-education", async (req, res) => {
-  const attendees = req.body.attendees;
+  const attendees = req.body.attendees[0];
   console.log(req.body);
   console.log(attendees);
   // attendees.forEach((attendee) => {
