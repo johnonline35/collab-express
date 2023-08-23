@@ -10,12 +10,13 @@ const app = express();
 
 // Internal Modules
 const corsMiddleware = require("./middleware/cors");
-const calendarRoutes = require("./routes/calendarRoutes");
-const openAiRoutes = require("./routes/openAiRoutes");
 
 // Middlewares
 app.use(express.json());
 app.use(corsMiddleware);
+
+const calendarRoutes = require("./routes/calendarRoutes");
+const openAiRoutes = require("./routes/openAiRoutes");
 
 // Routes
 app.use("/", calendarRoutes);
