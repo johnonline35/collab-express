@@ -8,13 +8,17 @@ dotenv.config();
 // Initialize Express
 const app = express();
 
-// Internal Modules
-const corsMiddleware = require("./middleware/cors");
-
 // Middlewares
+const corsMiddleware = require("./middleware/cors");
 app.use(express.json());
 app.use(corsMiddleware);
 
+app.use((req, res, next) => {
+  console.log("Headers:", req.headers);
+  next();
+});
+
+// Internal Modules
 const calendarRoutes = require("./routes/calendarRoutes");
 const openAiRoutes = require("./routes/openAiRoutes");
 
