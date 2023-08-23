@@ -6,7 +6,9 @@ const openai = require("../api/openAi");
 router.post("/summarize-career-education", async (req, res) => {
   const attendees = req.body.attendees;
   console.log(req.body);
-  console.log(attendees);
+  attendees.forEach((attendee) => {
+    console.log(attendee);
+  });
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
