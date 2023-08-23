@@ -13,24 +13,35 @@ router.post("/summarize-career-education", async (req, res) => {
 
   //     // const prompt = convertToReadableText(careerData, educationData);
   //     //
-  const completionPrompt = `Based on the education and career information provided: went to stanford, studied medicine, is a billionare, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
-  `;
 
-  //     // Use OpenAI to summarize the text
-  console.log("About to call OpenAI with the prompt: ", completionPrompt);
-  const completion = await openai.chat.completions.create(
-    {
-      model: "text-davinci-004",
-      prompt: completionPrompt,
-      max_tokens: 350,
-      stream: true,
-    },
-    {
-      responseType: "stream",
-    }
-  );
+  async function testChat() {
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: "Say this is a test" }],
+      model: "gpt-3.5-turbo",
+    });
 
-  console.log("Received completion from OpenAI:", completion);
+    console.log(chatCompletion);
+  }
+
+  testChat();
+  // const completionPrompt = `Based on the education and career information provided: went to stanford, studied medicine, is a billionare, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
+  // `;
+
+  // //     // Use OpenAI to summarize the text
+  // console.log("About to call OpenAI with the prompt: ", completionPrompt);
+  // const completion = await openai.chat.completions.create(
+  //   {
+  //     model: "text-davinci-004",
+  //     prompt: completionPrompt,
+  //     max_tokens: 350,
+  //     stream: true,
+  //   },
+  //   {
+  //     responseType: "stream",
+  //   }
+  // );
+
+  // console.log("Received completion from OpenAI:", completion);
 
   //     res.json(completion);
   //   } catch (error) {
