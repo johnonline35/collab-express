@@ -18,19 +18,19 @@ router.post("/summarize-career-education", async (req, res) => {
 
   //     // Use OpenAI to summarize the text
   console.log("About to call OpenAI with the prompt: ", completionPrompt);
-  //     const completion = await openAi.createCompletion(
-  //       {
-  //         model: "text-davinci-004",
-  //         prompt: completionPrompt,
-  //         max_tokens: 350,
-  //         stream: true,
-  //       },
-  //       {
-  //         responseType: "stream",
-  //       }
-  //     );
+  const completion = await openAi.createCompletion(
+    {
+      model: "text-davinci-004",
+      prompt: completionPrompt,
+      max_tokens: 350,
+      stream: true,
+    },
+    {
+      responseType: "stream",
+    }
+  );
 
-  //     console.log("Received completion from OpenAI:", completion);
+  console.log("Received completion from OpenAI:", completion);
 
   //     res.json(completion);
   //   } catch (error) {
