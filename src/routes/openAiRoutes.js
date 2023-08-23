@@ -20,7 +20,8 @@ router.post("/summarize-career-education", async (req, res) => {
       model: "gpt-3.5-turbo",
     });
 
-    console.log(chatCompletion);
+    const content = completion.choices[0].message.content;
+    console.log("Received content from OpenAI:", content);
   }
 
   testChat();
