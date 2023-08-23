@@ -5,7 +5,7 @@ const openai = require("../api/openAi");
 
 router.post("/summarize-career-education", async (req, res) => {
   const meeting = req.body.meetingData;
-  console.log(meeting);
+  console.log(req.body);
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
