@@ -14,12 +14,17 @@ router.post("/summarize-career-education", async (req, res) => {
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: "Say this is a test" }],
       model: "gpt-4",
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: "Hello!" },
+      ],
+      stream: true,
     });
 
-    const content = completion.choices[0].message.content;
-    console.log("Received content from OpenAI:", content);
+    for await (const chunk of completion) {
+      console.log(chunk.choices[0].delta.content);
+    }
   }
 
   testChat();
