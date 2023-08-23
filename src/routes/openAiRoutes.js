@@ -16,7 +16,11 @@ router.post("/summarize-career-education", async (req, res) => {
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
-        { role: "system", content: "You are a helpful assistant." },
+        {
+          role: "system",
+          content:
+            "You are a helpful assistant. Please write 3 seperate bullet points, using a new paragraph for each one, that are the 3 things you like most about the world - be creative",
+        },
         { role: "user", content: "Hello!" },
       ],
       stream: true,
