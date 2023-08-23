@@ -6,11 +6,12 @@ const openAi = require("../api/openAi");
 router.post("/summarize-career-education", async (req, res) => {
   try {
     // Fetch data from Supabase
-    const careerData = await supabase.from("career_table").select("*");
-    const educationData = await supabase.from("education_table").select("*");
+    // const careerData = await supabase.from("career_table").select("*");
+    // const educationData = await supabase.from("education_table").select("*");
 
-    const prompt = convertToReadableText(careerData, educationData);
-    const completionPrompt = `${prompt}\nBased on the education and career information provided, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
+    // const prompt = convertToReadableText(careerData, educationData);
+    //
+    const completionPrompt = `Based on the education and career information provided: went to stanford, studied medicine, is a billionare, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
 `;
 
     // Use OpenAI to summarize the text
