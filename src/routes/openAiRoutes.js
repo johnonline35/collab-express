@@ -4,8 +4,9 @@ const supabase = require("../db/supabase");
 const openai = require("../api/openAi");
 
 router.post("/summarize-career-education", async (req, res) => {
-  const meeting = req.body.meetingData;
+  const attendees = req.body.attendees;
   console.log(req.body);
+  console.log(attendees);
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
