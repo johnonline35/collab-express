@@ -15,7 +15,7 @@ router.post("/summarize-career-education", async (req, res) => {
   //     //
 
   async function testChat() {
-    const chatCompletion = await openai.chat.completions.create({
+    const completion = await openai.chat.completions.create({
       messages: [{ role: "user", content: "Say this is a test" }],
       model: "gpt-3.5-turbo",
     });
