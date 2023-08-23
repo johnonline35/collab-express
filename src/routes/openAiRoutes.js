@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const supabase = require("../db/supabase");
-const openAi = require("../api/openAi");
+const openai = require("../api/openAi");
 
 router.post("/summarize-career-education", async (req, res) => {
   console.log("Request received for /summarize-career-education"); // To confirm the endpoint is being hit
@@ -18,7 +18,7 @@ router.post("/summarize-career-education", async (req, res) => {
 
   //     // Use OpenAI to summarize the text
   console.log("About to call OpenAI with the prompt: ", completionPrompt);
-  const completion = await openAi.createCompletion(
+  const completion = await openai.chat.completions.create(
     {
       model: "text-davinci-004",
       prompt: completionPrompt,
