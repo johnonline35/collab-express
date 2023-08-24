@@ -15,8 +15,9 @@ const convertToReadableText = (experience, education, attendee) => {
   // Convert education info
   text += `\nEducation:\n`;
   education.forEach((ed) => {
-    const endDate = ed.end_date || "present";
-    text += `- ${ed.degree} in ${ed.major} from ${ed.school_name} (${ed.start_date} - ${endDate}).\n`;
+    const startDate = ed.start_date || "unknown";
+    const endDate = ed.end_date || "unknown";
+    text += `- ${ed.degree} in ${ed.major} from ${ed.school_name} (${startDate} - ${endDate}).\n`;
   });
 
   return text;
