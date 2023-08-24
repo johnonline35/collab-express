@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const openai = require("../api/openAi");
-const fetchAttendeeData = require("../utils/database");
+const { fetchAttendeeData } = require("../utils/database");
 
 router.post("/summarize-career-education", async (req, res) => {
   const meetingData = req.body[0];
