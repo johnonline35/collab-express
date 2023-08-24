@@ -15,7 +15,10 @@ router.post("/summarize-career-education", async (req, res) => {
     attendeeInfos.push(attendeeInfo); // Push each attendee's info to the array
   }
 
-  console.log("Attendee Information:", attendeeInfos);
+  attendeeInfos.forEach((attendeeInfo, index) => {
+    console.log(`Attendee ${index + 1} Experience:`, attendeeInfo.experience);
+    console.log(`Attendee ${index + 1} Education:`, attendeeInfo.education);
+  });
 
   // Fetch data from Supabase
 
