@@ -23,6 +23,16 @@ const convertToReadableText = (experience, education, attendee) => {
   return text;
 };
 
+function createCompletionPrompt(attendeeInfo, attendee) {
+  const promptText = convertToReadableText(
+    attendeeInfo.experience,
+    attendeeInfo.education,
+    attendee
+  );
+  return `Based on the education and career information ... ${promptText} `;
+}
+
 module.exports = {
   convertToReadableText,
+  createCompletionPrompt,
 };

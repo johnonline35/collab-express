@@ -148,6 +148,15 @@ async function fetchGoogleCalendarWatchDetailsForUser(userId) {
   };
 }
 
+async function fetchAllAttendeeInfos(attendees) {
+  const attendeeInfos = [];
+  for (let attendee of attendees) {
+    const attendeeInfo = await fetchAttendeeData(attendee.attendee_email);
+    attendeeInfos.push(attendeeInfo);
+  }
+  return attendeeInfos;
+}
+
 async function fetchAttendeeData(attendeeEmail) {
   try {
     const fetchUserId = supabase
@@ -198,5 +207,6 @@ module.exports = {
   saveUserTimeZone,
   saveGoogleCalendarWatchDetailsForUser,
   fetchGoogleCalendarWatchDetailsForUser,
+  fetchAllAttendeeInfos,
   fetchAttendeeData,
 };
