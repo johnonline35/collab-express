@@ -5,13 +5,12 @@ const openai = require("../api/openAi");
 const util = require("util");
 
 router.post("/summarize-career-education", async (req, res) => {
-  console.log(util.inspect(req.body, { depth: null, colors: true }));
+  const requestBodyObject = req.body[0];
+  const attendees = requestBodyObject.attendees;
 
-  console.log(req.body);
-
-  // attendees.forEach((attendee) => {
-  //   console.log(attendee);
-  // });
+  attendees.forEach((attendee) => {
+    console.log(attendee);
+  });
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
