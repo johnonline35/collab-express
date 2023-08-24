@@ -1,6 +1,7 @@
 // External Modules
 const express = require("express");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 
 // Initialize dotenv
 dotenv.config();
@@ -12,11 +13,7 @@ const app = express();
 const corsMiddleware = require("./middleware/cors");
 app.use(express.json());
 app.use(corsMiddleware);
-
-app.use((req, res, next) => {
-  console.log("Headers:", req.headers);
-  next();
-});
+app.use(bodyParser.json());
 
 // Internal Modules
 const calendarRoutes = require("./routes/calendarRoutes");
