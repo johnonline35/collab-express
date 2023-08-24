@@ -46,14 +46,14 @@ router.post("/summarize-career-education", async (req, res) => {
         responseContent += chunk.choices[0].delta.content;
         console.log(chunk.choices[0].delta.content);
       }
+
+      res.json({ content: responseContent });
     } catch (error) {
       console.error("Error while fetching completion from OpenAI:", error);
       // If you want to send an error response to the client:
       // return res.status(500).send("Error fetching data from OpenAI");
     }
   }
-
-  res.json({ content: responseContent }); // sending back the responses
 });
 
 module.exports = router;
