@@ -148,6 +148,46 @@ async function fetchGoogleCalendarWatchDetailsForUser(userId) {
   };
 }
 
+async function fetchAttendeeData(attendeeEmail) {
+  try {
+    const fetchUserId = supabase
+      .from("pdl_api_users")
+      .select("id")
+      .eq("email_address_collab_key", attendeeEmail);
+
+    const [usersResponse] = await Promise.all([fetchUserId]);
+
+    if (!usersResponse.data || usersResponse.data.length === 0) {
+      throw new Error(`User not found for email: ${attendeeEmail}`);
+    }
+
+    const userId = usersResponse.data[0].id;
+
+    const fetchExperience = supabase
+      .from("pdl_api_experience")
+      .select("company_name, company_size, title_name, start_date, end_date")
+      .eq("user_id", userId);
+
+    const fetchEducation = supabase
+      .from("pdl_api_education")
+      .select("school_name, degree, major, start_date, end_date")
+      .eq("user_id", userId);
+
+    const [experienceResponse, educationResponse] = await Promise.all([
+      fetchExperience,
+      fetchEducation,
+    ]);
+
+    return {
+      experience: experienceResponse.data,
+      education: educationResponse.data,
+    };
+  } catch (error) {
+    console.error(`Failed to fetch data for email: ${attendeeEmail}`, error);
+    throw error;
+  }
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -158,4 +198,5 @@ module.exports = {
   saveUserTimeZone,
   saveGoogleCalendarWatchDetailsForUser,
   fetchGoogleCalendarWatchDetailsForUser,
+  fetchAttendeeData,
 };
