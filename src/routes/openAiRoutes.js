@@ -25,7 +25,7 @@ router.post("/summarize-career-education", async (req, res) => {
       attendee
     );
 
-    const completionPrompt = `Based on the education and career information provided: ${promptText} please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.`;
+    const completionPrompt = `Based on the education and career information provided next, please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background. There might be a lot of repetition in experience, in which case, please just summarize the experience into a theme that can be easily understood an talked about: ${promptText} `;
     console.log("Completion prompt:", completionPrompt);
 
     try {

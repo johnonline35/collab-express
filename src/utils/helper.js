@@ -1,19 +1,22 @@
-// Helper function to convert experience and education into readable text
 const convertToReadableText = (experience, education, attendee) => {
   let text = "";
 
   if (attendee && attendee.attendee_name) {
-    text += `Attendee name: ${attendee.attendee_name}. `;
+    text += `${attendee.attendee_name}'s career and education includes:\n\n`;
   }
 
-  // Convert experience info
+  // Convert experience info in a structured manner
+  text += "Career Highlights:\n";
   experience.forEach((exp) => {
-    text += `Worked as a ${exp.title_name} at ${exp.company_name} from ${exp.start_date} to ${exp.end_date}. `;
+    const endDate = exp.end_date || "present";
+    text += `- ${exp.title_name} at ${exp.company_name} (${exp.start_date} - ${endDate}).\n`;
   });
 
   // Convert education info
+  text += `\nEducation:\n`;
   education.forEach((ed) => {
-    text += `Studied ${ed.major} and got a ${ed.degree} from ${ed.school_name} from ${ed.start_date} to ${ed.end_date}. `;
+    const endDate = ed.end_date || "present";
+    text += `- ${ed.degree} in ${ed.major} from ${ed.school_name} (${ed.start_date} - ${endDate}).\n`;
   });
 
   return text;
