@@ -41,10 +41,10 @@ router.post("/summarize-career-education", async (req, res) => {
         stream: true,
       });
 
-      if (completion && completion.choices && completion.choices.length > 0) {
-        responses.push(completion.choices[0].message.content);
-      } else {
-        console.error("Unexpected completion structure:", completion);
+      let responseContent = "";
+      for await (const chunk of completion) {
+        responseContent += chunk.choices[0].delta.content;
+        console.log(chunk.choices[0].delta.content);
       }
     } catch (error) {
       console.error("Error while fetching completion from OpenAI:", error);
@@ -53,7 +53,31 @@ router.post("/summarize-career-education", async (req, res) => {
     }
   }
 
-  res.json({ responses }); // sending back the responses
+  res.json({ content: responseContent }); // sending back the responses
 });
 
 module.exports = router;
+
+//  async function testChat() {
+//     const completion = await openai.chat.completions.create({
+//       model: "gpt-4",
+//       messages: [
+//         {
+//           role: "system",
+//           content:
+//             "You are a helpful assistant. Please write 3 seperate bullet points, using a new paragraph for each one, that are the 3 things you like most about the world - be creative",
+//         },
+//       ],
+//       max_tokens: 350,
+//       stream: true,
+//     });
+
+//     let responseContent = "";
+//     for await (const chunk of completion) {
+//       responseContent += chunk.choices[0].delta.content;
+//       console.log(chunk.choices[0].delta.content);
+//     }
+//     res.json({ content: responseContent });
+//   }
+//   testChat();
+// });
