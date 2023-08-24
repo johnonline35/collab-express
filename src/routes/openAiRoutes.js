@@ -12,11 +12,6 @@ router.post("/summarize-career-education", async (req, res) => {
     return;
   }
 
-  for (let attendee of attendees) {
-    console.log(attendee.attendee_email);
-    // access other properties of attendee as needed
-  }
-
   // attendees.forEach((attendee) => {
   //   console.log(attendee);
   // });
