@@ -2,15 +2,12 @@ const express = require("express");
 const router = express.Router();
 const supabase = require("../db/supabase");
 const openai = require("../api/openAi");
+const util = require("util");
 
 router.post("/summarize-career-education", async (req, res) => {
-  console.log(req.body);
-  const attendees = req.body.attendees;
+  console.log(util.inspect(req.body, { depth: null, colors: true }));
 
-  if (!Array.isArray(attendees)) {
-    console.error("attendees is not an array:", attendees);
-    return;
-  }
+  console.log(req.body);
 
   // attendees.forEach((attendee) => {
   //   console.log(attendee);
