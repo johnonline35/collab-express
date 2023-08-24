@@ -1,16 +1,28 @@
 const express = require("express");
 const router = express.Router();
-const supabase = require("../db/supabase");
 const openai = require("../api/openAi");
-const util = require("util");
+const fetchAttendeeData = require("../utils/database");
 
 router.post("/summarize-career-education", async (req, res) => {
-  const requestBodyObject = req.body[0];
-  const attendees = requestBodyObject.attendees;
+  const meetingData = req.body[0];
+  const attendees = meetingData.attendees;
 
-  attendees.forEach((attendee) => {
+  const attendeeInfos = [];
+
+  for (let attendee of attendees) {
     console.log(attendee);
-  });
+    const attendeeInfo = await fetchAttendeeData(attendee.attendee_email);
+    attendeeInfos.push(attendeeInfo); // Push each attendee's info to the array
+  }
+
+  console.log("Attendee Information:", attendeeInfos);
+
+  // Fetch data from Supabase
+
+  //     const prompt = convertToReadableText(experience, education);
+
+  // const completionPrompt = `Based on the education and career information provided: ${prompt} please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.
+  // `;
 
   async function testChat() {
     const completion = await openai.chat.completions.create({
@@ -21,7 +33,6 @@ router.post("/summarize-career-education", async (req, res) => {
           content:
             "You are a helpful assistant. Please write 3 seperate bullet points, using a new paragraph for each one, that are the 3 things you like most about the world - be creative",
         },
-        { role: "user", content: "Hello!" },
       ],
       max_tokens: 350,
       stream: true,
