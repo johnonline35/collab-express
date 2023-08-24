@@ -37,6 +37,7 @@ router.post("/summarize-career-education", async (req, res) => {
         },
       ],
       max_tokens: 350,
+      stream: true,
     });
 
     responses.push(completion.choices[0].message.content);
