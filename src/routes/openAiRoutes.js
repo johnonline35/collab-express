@@ -7,6 +7,11 @@ router.post("/summarize-career-education", async (req, res) => {
   console.log(req.body);
   const attendees = req.body.attendees;
 
+  if (!Array.isArray(attendees)) {
+    console.error("attendees is not an array:", attendees);
+    return;
+  }
+
   for (let attendee of attendees) {
     console.log(attendee.attendee_email);
     // access other properties of attendee as needed
