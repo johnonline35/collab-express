@@ -15,14 +15,18 @@ router.post("/summarize-career-education", async (req, res) => {
   }
 
   const responses = [];
-  for (let attendeeInfo of attendeeInfos) {
+  for (let i = 0; i < attendeeInfos.length; i++) {
+    const attendeeInfo = attendeeInfos[i];
+    const attendee = attendees[i]; // Assuming the ordering has remained consistent
+
     const promptText = convertToReadableText(
       attendeeInfo.experience,
-      attendeeInfo.education
+      attendeeInfo.education,
+      attendee
     );
 
     const completionPrompt = `Based on the education and career information provided: ${promptText} please list three rapport-building topics that could be used in conversation. Each topic should be a sentence or two and relate specifically to the individual's experiences or background.`;
-    console.log("Completion prompt:", ompletionPrompt);
+    console.log("Completion prompt:", completionPrompt);
 
     try {
       const completion = await openai.chat.completions.create({
