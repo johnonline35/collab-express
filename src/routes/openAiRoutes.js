@@ -9,10 +9,10 @@ const {
   convertToReadableText,
   createCompletionPrompt,
 } = require("../utils/helper");
-const ioConfig = require("../config/io");
+// const ioConfig = require("../config/io");
 
 router.post("/summarize-career-education", async (req, res) => {
-  const io = ioConfig.getIo();
+  // const io = ioConfig.getIo();
   const meetingData = req.body[0];
   const attendees = meetingData.attendees;
   const attendeeInfos = [];
@@ -54,10 +54,10 @@ router.post("/summarize-career-education", async (req, res) => {
         console.log(chunk.choices[0].delta.content);
 
         // Emit the chunk to the frontend
-        io.emit("responseChunk", {
-          attendeeEmail: attendee.attendee_email,
-          content: chunk.choices[0].delta.content,
-        });
+        // io.emit("responseChunk", {
+        //   attendeeEmail: attendee.attendee_email,
+        //   content: chunk.choices[0].delta.content,
+        // });
       }
 
       res.json({ content: responseContent });
