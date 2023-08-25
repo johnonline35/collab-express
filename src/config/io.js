@@ -5,7 +5,7 @@ let io;
 module.exports = {
   init: (httpServer) => {
     const corsOptions = {
-      origin: "https://www.instantcollab.co", // IMPORTANT: Replace '*' with your client's URL in production
+      origin: "*", // IMPORTANT: Replace '*' with your client's URL in production
       methods: ["GET", "POST"],
     };
 
@@ -13,6 +13,10 @@ module.exports = {
 
     io.on("connection", (socket) => {
       console.log("Client connected");
+
+      socket.on("error", (error) => {
+        console.error("Socket error:", error);
+      });
 
       socket.on("disconnect", () => {
         console.log("Client disconnected");
