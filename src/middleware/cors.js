@@ -2,8 +2,7 @@ const cors = require("cors");
 
 // Configure CORS middleware
 const corsOptions = {
-  origin: "*",
-  // origin: "https://www.instantcollab.co",
+  origin: "https://www.instantcollab.co",
   optionsSuccessStatus: 200,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
