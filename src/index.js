@@ -2,7 +2,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const http = require("http");
-const socketIo = require("socket.io");
+const socketIoModule = require("./config/io");
 
 // Initialize dotenv
 dotenv.config();
@@ -23,22 +23,13 @@ const openAiRoutes = require("./routes/openAiRoutes");
 app.use("/", calendarRoutes);
 app.use("/", openAiRoutes);
 
-// Create an HTTP server and wrap the Express app with socket.io
+// Create an HTTP server and initialize socket.io
 const server = http.createServer(app);
-const io = socketIo(server);
-
-io.on("connection", (socket) => {
-  console.log("Client connected");
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
-});
+socketIoModule.init(server);
 
 // Start Server
 const port = process.env.PORT || 3000;
 const host = "0.0.0.0";
 server.listen(port, host, () => {
-  // Note: Changed app.listen to server.listen
   console.log(`App is listening on IP ${host} and port ${port}!`);
 });
