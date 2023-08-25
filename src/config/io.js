@@ -5,7 +5,7 @@ let io;
 module.exports = {
   init: (httpServer) => {
     const corsOptions = {
-      origin: "*", // IMPORTANT: Replace '*' with your client's URL in production
+      origin: "https://www.instantcollab.co", // IMPORTANT: Replace '*' with your client's URL in production
       methods: ["GET", "POST"],
     };
 
