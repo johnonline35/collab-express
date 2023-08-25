@@ -23,7 +23,7 @@ const openAiRoutes = require("./routes/openAiRoutes");
 app.use("/", calendarRoutes);
 app.use("/", openAiRoutes);
 
-// Create an HTTP server and wrap the Express app
+// Create an HTTP server and wrap the Express app with socket.io
 const server = http.createServer(app);
 const io = socketIo(server);
 
