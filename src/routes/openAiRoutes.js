@@ -9,7 +9,7 @@ const {
   convertToReadableText,
   createCompletionPrompt,
 } = require("../utils/helper");
-const ioConfig = require("./config/io");
+const ioConfig = require("../config/io");
 
 router.post("/summarize-career-education", async (req, res) => {
   const io = ioConfig.getIo();
