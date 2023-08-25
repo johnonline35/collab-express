@@ -2,7 +2,7 @@ const convertToReadableText = (experience, education, attendee) => {
   let text = "";
 
   if (attendee && attendee.attendee_name) {
-    text += `${attendee.attendee_name}'s career and education includes:\n\n`;
+    text += `The subjects name is: ${attendee.attendee_name}'. And ${attendee.attendee_name} career and education includes:\n\n`;
   }
 
   // Convert experience info in a structured manner
