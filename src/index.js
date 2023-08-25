@@ -1,6 +1,8 @@
 // External Modules
 const express = require("express");
 const dotenv = require("dotenv");
+const http = require("http");
+const socketIo = require("socket.io");
 
 // Initialize dotenv
 dotenv.config();
@@ -21,9 +23,22 @@ const openAiRoutes = require("./routes/openAiRoutes");
 app.use("/", calendarRoutes);
 app.use("/", openAiRoutes);
 
+// Create an HTTP server and wrap the Express app
+const server = http.createServer(app);
+const io = socketIo(server);
+
+io.on("connection", (socket) => {
+  console.log("Client connected");
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
 // Start Server
 const port = process.env.PORT || 3000;
 const host = "0.0.0.0";
-app.listen(port, host, () => {
+server.listen(port, host, () => {
+  // Note: Changed app.listen to server.listen
   console.log(`App is listening on IP ${host} and port ${port}!`);
 });
