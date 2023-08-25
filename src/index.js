@@ -21,6 +21,10 @@ const corsMiddleware = require("./middleware/cors");
 app.use(express.json());
 app.use(corsMiddleware);
 
+// Create an HTTP server and initialize socket.io
+const server = http.createServer(app);
+socketIoModule.init(server);
+
 // Internal Modules
 const calendarRoutes = require("./routes/calendarRoutes");
 const openAiRoutes = require("./routes/openAiRoutes");
@@ -28,10 +32,6 @@ const openAiRoutes = require("./routes/openAiRoutes");
 // Routes
 app.use("/", calendarRoutes);
 app.use("/", openAiRoutes);
-
-// Create an HTTP server and initialize socket.io
-const server = http.createServer(app);
-socketIoModule.init(server);
 
 // Start Server
 const port = process.env.PORT || 3000;
