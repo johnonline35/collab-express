@@ -10,6 +10,12 @@ dotenv.config();
 // Initialize Express
 const app = express();
 
+// Log incoming request headers
+app.use((req, res, next) => {
+  console.log("Request Headers:", req.headers);
+  next();
+});
+
 // Middlewares
 const corsMiddleware = require("./middleware/cors");
 app.use(express.json());
