@@ -9,9 +9,10 @@ const {
   convertToReadableText,
   createCompletionPrompt,
 } = require("../utils/helper");
-let io = require("../config/io").getIo();
+const ioConfig = require("./config/io");
 
 router.post("/summarize-career-education", async (req, res) => {
+  const io = ioConfig.getIo();
   const meetingData = req.body[0];
   const attendees = meetingData.attendees;
   const attendeeInfos = [];
