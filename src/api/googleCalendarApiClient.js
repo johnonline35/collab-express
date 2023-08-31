@@ -459,7 +459,7 @@ const enableCalendarLinkForNewMeeting = async (
     throw new Error("No workspace found");
   }
 
-  if (workspace.workspace_attendee_enable_calendar_link !== TRUE) {
+  if (workspace.workspace_attendee_enable_calendar_link !== true) {
     throw new Error("Enable Calendar Links set to false by user");
   }
 
