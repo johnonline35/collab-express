@@ -86,7 +86,7 @@ router.post("/insert-link-for-new-meeting", async (req, res) => {
   try {
     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
       id,
-      user_id,
+      collab_user_id,
       workspace_id
     );
 
