@@ -5,6 +5,7 @@ const { watchGoogleCalendar } = require("../services/watchGoogleCalendar");
 const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
+const supabase = require("../db/supabase");
 
 // Fetch the Google calendar for the initial sync
 router.post("/", async (req, res) => {
