@@ -457,7 +457,7 @@ const enableCalendarLinkForNewMeeting = async (
       .send({ error: "Enable Calendar Links set to false by user" });
   }
 
-  const workspaceLink = collabWorkspaceLinkToAppend + workspaceId;
+  const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
   try {
     // Load the Google Calendar client
