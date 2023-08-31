@@ -87,6 +87,33 @@ router.post("/insert-link-for-new-meeting", async (req, res) => {
     return res.status(400).send({ error: "workspace_id is missing." });
   }
 
+  // Check if the workspace allows calendar links.
+  const { data: workspace, error } = await supabase
+    .from("workspaces")
+    .select("workspace_attendee_enable_calendar_link")
+    .eq("workspace_id", workspace_id)
+    .single();
+
+  console.log(
+    "workspace:",
+    workspace,
+    "enable calendar link:",
+    workspace.workspace_attendee_enable_calendar_link
+  );
+
+  if (error) {
+    console.error("Error querying workspace:", error);
+    throw new Error("Error querying the workspace.");
+  }
+
+  if (workspace.workspace_attendee_enable_calendar_link !== true) {
+    console.log(
+      "Enable Calendar Links not set, or set to false, by user for workspace_id:",
+      workspace_id
+    );
+    return;
+  }
+
   try {
     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
       id,
