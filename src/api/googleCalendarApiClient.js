@@ -382,8 +382,9 @@ const updateMeetingDescription = async (
       if (workspace_attendee_enable_calendar_link) {
         // Create a hyperlink and prepend it to the existing description
         const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
-        const newDescription =
-          hyperlink + "<br/><br/>" + (event.data.description || "");
+        const newDescription = event.data.description
+          ? hyperlink + "<br/><br/>" + event.data.description
+          : hyperlink;
 
         // Update the Google Calendar event
         event.data.description = newDescription;
@@ -449,12 +450,13 @@ const enableCalendarLinkForNewMeeting = async (
       eventId: id,
     });
 
-    console.log("calendar event", event);
+    // console.log("calendar event", event);
 
     // Create a hyperlink and prepend it to the existing description
     const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
-    const newDescription =
-      hyperlink + "<br/><br/>" + (event.data.description || "");
+    const newDescription = event.data.description
+      ? hyperlink + "<br/><br/>" + event.data.description
+      : hyperlink;
 
     // Update the Google Calendar event
     event.data.description = newDescription;
