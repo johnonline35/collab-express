@@ -73,13 +73,21 @@ router.post("/update-meeting-description", async (req, res) => {
 router.post("/insert-link-for-new-meeting", async (req, res) => {
   console.log("/insert-link-for-new-meeting req.body:", req.body);
   // Destructure information from the req.body
-  const { meetingId, userId, workspaceId } = req.body.record;
+  const { id, user_id, workspace_id } = req.body.record;
+  console.log(
+    "meetingId:",
+    id,
+    "user_id:",
+    user_id,
+    "workspace_id :",
+    workspace_id
+  );
 
   try {
     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
-      meetingId,
-      userId,
-      workspaceId
+      id,
+      user_id,
+      workspace_id
     );
 
     res.status(200).send({ success: "Link inserted for new meeting." });

@@ -421,25 +421,21 @@ const updateMeetingDescription = async (
   }
 };
 
-const enableCalendarLinkForNewMeeting = async (
-  meetingId,
-  userId,
-  workspaceId
-) => {
+const enableCalendarLinkForNewMeeting = async (id, user_id, workspace_id) => {
   console.log(
     "enableCalendarLinkForNewMeeting Called Successfully",
-    "meetingId:",
-    meetingId,
-    "userId:",
-    userId,
-    "workspaceId:",
-    workspaceId
+    "id:",
+    id,
+    "user_id:",
+    user_id,
+    "workspace_id:",
+    workspace_id
   );
   // Check if the workspace allows calendar links.
   const { data: workspace, error } = await supabase
     .from("workspaces")
     .select("workspace_attendee_enable_calendar_link")
-    .eq("workspace_id", workspaceId)
+    .eq("workspace_id", workspace_id)
     .single();
 
   if (error) {
@@ -461,11 +457,11 @@ const enableCalendarLinkForNewMeeting = async (
 
   try {
     // Load the Google Calendar client
-    const calendar = await loadClient(userId); // Using userId as per your extraction from req.body
+    const calendar = await loadClient(user_id); // Using userId as per your extraction from req.body
 
     const event = await calendar.events.get({
       calendarId: "primary",
-      eventId: meetingId,
+      eventId: id,
     });
 
     // Create a hyperlink and prepend it to the existing description
@@ -478,7 +474,7 @@ const enableCalendarLinkForNewMeeting = async (
 
     const response = await calendar.events.update({
       calendarId: "primary",
-      eventId: meetingId,
+      eventId: id,
       resource: event.data,
     });
   } catch (error) {
