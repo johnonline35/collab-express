@@ -44,31 +44,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// router.post("/", async (req, res) => {
-//   const { userId } = req.body;
-//   console.log(userId);
-//   try {
-//     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
-
-//     // Create the response object
-//     const response = {
-//       workspace_id: meetingsData.workspace_id,
-//       meetings: meetingsData.meetings.map((meeting) => {
-//         return {
-//           ...meeting,
-//           workspace_id: meeting.workspace_id || meetingsData.workspace_id,
-//         };
-//       }),
-//     };
-
-//     console.log("response:", response);
-//     res.json(response); // Send the response including workspace_id and meetings data
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Error fetching meetings");
-//   }
-// });
-
 // Update the meeting description endpoint
 router.post("/update-meeting-description", async (req, res) => {
   console.log(
@@ -94,6 +69,7 @@ router.post("/update-meeting-description", async (req, res) => {
   }
 });
 
+// Insert a Collab Space link into a new meeting when required
 router.post("/insert-link-for-new-meeting", async (req, res) => {
   console.log("/insert-link-for-new-meeting req.body:", req.body);
   // Destructure information from the req.body
