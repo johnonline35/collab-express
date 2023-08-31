@@ -447,7 +447,7 @@ const enableCalendarLinkForNewMeeting = async (
     "workspace:",
     workspace,
     "enable calendar link:",
-    workspace_attendee_enable_calendar_link
+    workspace.workspace_attendee_enable_calendar_link
   );
 
   if (error) {
