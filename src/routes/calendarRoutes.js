@@ -83,6 +83,10 @@ router.post("/insert-link-for-new-meeting", async (req, res) => {
     workspace_id
   );
 
+  if (!workspace_id) {
+    return res.status(400).send({ error: "workspace_id is missing." });
+  }
+
   try {
     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
       id,
