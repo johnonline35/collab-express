@@ -438,6 +438,8 @@ const enableCalendarLinkForNewMeeting = async (
 
   const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
+  console.log("workspaceLink:", workspaceLink);
+
   try {
     // Load the Google Calendar client
     const calendar = await loadClient(collab_user_id);
@@ -447,6 +449,8 @@ const enableCalendarLinkForNewMeeting = async (
       eventId: id,
     });
 
+    console.log("calendar event", event);
+
     // Create a hyperlink and prepend it to the existing description
     const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
     const newDescription =
@@ -455,11 +459,15 @@ const enableCalendarLinkForNewMeeting = async (
     // Update the Google Calendar event
     event.data.description = newDescription;
 
+    console.log("newDescription", newDescription);
+
     const response = await calendar.events.update({
       calendarId: "primary",
       eventId: id,
       resource: event.data,
     });
+
+    console.log("response", response);
 
     return response;
   } catch (error) {
