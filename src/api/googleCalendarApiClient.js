@@ -421,13 +421,17 @@ const updateMeetingDescription = async (
   }
 };
 
-const enableCalendarLinkForNewMeeting = async (id, user_id, workspace_id) => {
+const enableCalendarLinkForNewMeeting = async (
+  id,
+  collab_user_id,
+  workspace_id
+) => {
   console.log(
     "enableCalendarLinkForNewMeeting Called Successfully",
     "id:",
     id,
-    "user_id:",
-    user_id,
+    "collab_user_id:",
+    collab_user_id,
     "workspace_id:",
     workspace_id
   );
@@ -457,7 +461,7 @@ const enableCalendarLinkForNewMeeting = async (id, user_id, workspace_id) => {
 
   try {
     // Load the Google Calendar client
-    const calendar = await loadClient(user_id); // Using userId as per your extraction from req.body
+    const calendar = await loadClient(collab_user_id); // Using userId as per your extraction from req.body
 
     const event = await calendar.events.get({
       calendarId: "primary",
