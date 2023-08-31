@@ -436,33 +436,6 @@ const enableCalendarLinkForNewMeeting = async (
     workspace_id
   );
 
-  // Check if the workspace allows calendar links.
-  const { data: workspace, error } = await supabase
-    .from("workspaces")
-    .select("workspace_attendee_enable_calendar_link")
-    .eq("workspace_id", workspace_id)
-    .single();
-
-  console.log(
-    "workspace:",
-    workspace,
-    "enable calendar link:",
-    workspace.workspace_attendee_enable_calendar_link
-  );
-
-  if (error) {
-    console.error("Error querying workspace:", error);
-    throw new Error("Error querying the workspace.");
-  }
-
-  if (!workspace) {
-    throw new Error("No workspace found");
-  }
-
-  if (workspace.workspace_attendee_enable_calendar_link !== true) {
-    throw new Error("Enable Calendar Links set to false by user");
-  }
-
   const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
   try {
