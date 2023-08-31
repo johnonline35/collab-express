@@ -382,12 +382,17 @@ const updateMeetingDescription = async (
       if (workspace_attendee_enable_calendar_link) {
         // Create a hyperlink and prepend it to the existing description
         const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
-        const newDescription = event.data.description
-          ? hyperlink + "<br/><br/>" + event.data.description
-          : hyperlink;
+        let newDescription = event.data.description || "";
 
-        // Update the Google Calendar event
-        event.data.description = newDescription;
+        // Check if the hyperlink does not already exist in the description
+        if (!newDescription.includes(workspaceLink)) {
+          newDescription = newDescription
+            ? hyperlink + "<br/><br/>" + newDescription
+            : hyperlink;
+
+          // Update the Google Calendar event
+          event.data.description = newDescription;
+        }
       } else {
         // Remove the hyperlink from the description
         const hyperlinkRegEx = new RegExp(
@@ -454,23 +459,27 @@ const enableCalendarLinkForNewMeeting = async (
 
     // Create a hyperlink and prepend it to the existing description
     const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
-    const newDescription = event.data.description
-      ? hyperlink + "<br/><br/>" + event.data.description
-      : hyperlink;
+    let newDescription = event.data.description || "";
 
-    // Update the Google Calendar event
-    event.data.description = newDescription;
+    // Check if the hyperlink does not already exist in the description
+    if (!newDescription.includes(workspaceLink)) {
+      newDescription = newDescription
+        ? hyperlink + "<br/><br/>" + newDescription
+        : hyperlink;
 
-    console.log("newDescription", newDescription);
+      // Update the Google Calendar event
+      event.data.description = newDescription;
 
-    const response = await calendar.events.update({
-      calendarId: "primary",
-      eventId: id,
-      resource: event.data,
-    });
+      console.log("newDescription", newDescription);
 
-    console.log("response", response);
+      const response = await calendar.events.update({
+        calendarId: "primary",
+        eventId: id,
+        resource: event.data,
+      });
 
+      console.log("response", response);
+    }
     return response;
   } catch (error) {
     console.error("The API returned an error: ", error);
