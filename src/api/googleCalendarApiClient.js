@@ -443,6 +443,13 @@ const enableCalendarLinkForNewMeeting = async (
     .eq("workspace_id", workspace_id)
     .single();
 
+  console.log(
+    "workspace:",
+    workspace,
+    "enable calendar link:",
+    workspace_attendee_enable_calendar_link
+  );
+
   if (error) {
     console.error("Error querying workspace:", error);
     throw new Error("Error querying the workspace.");
@@ -452,7 +459,7 @@ const enableCalendarLinkForNewMeeting = async (
     throw new Error("No workspace found");
   }
 
-  if (workspace.workspace_attendee_enable_calendar_link !== true) {
+  if (workspace.workspace_attendee_enable_calendar_link !== TRUE) {
     throw new Error("Enable Calendar Links set to false by user");
   }
 
@@ -481,7 +488,7 @@ const enableCalendarLinkForNewMeeting = async (
       resource: event.data,
     });
 
-    return response; // if you need to return something
+    return response;
   } catch (error) {
     console.error("The API returned an error: ", error);
     throw new Error("Failed to update the calendar event.");
