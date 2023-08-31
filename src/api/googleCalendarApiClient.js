@@ -426,7 +426,15 @@ const enableCalendarLinkForNewMeeting = async (
   userId,
   workspaceId
 ) => {
-  console.log("enableCalendarLinkForNewMeeting Called Successfully");
+  console.log(
+    "enableCalendarLinkForNewMeeting Called Successfully",
+    "meetingId:",
+    meetingId,
+    "userId:",
+    userId,
+    "workspaceId:",
+    workspaceId
+  );
   // Check if the workspace allows calendar links.
   const { data: workspace, error } = await supabase
     .from("workspaces")
