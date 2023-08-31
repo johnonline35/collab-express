@@ -421,8 +421,66 @@ const updateMeetingDescription = async (
   }
 };
 
+const enableCalendarLinkForNewMeeting = async (
+  meetingId,
+  userId,
+  workspaceId
+) => {
+  // Check if the workspace allows calendar links.
+  const { data: workspace, error } = await supabase
+    .from("workspaces")
+    .select("workspace_attendee_enable_calendar_link")
+    .eq("workspace_id", workspaceId)
+    .single();
+
+  if (error) {
+    console.error("Error querying workspace:", error);
+    return res.status(500).send({ error: "Error querying the workspace." });
+  }
+
+  if (!workspace) {
+    return res.status(400).send({ error: "No workspace found" });
+  }
+
+  if (workspace.workspace_attendee_enable_calendar_link !== true) {
+    return res
+      .status(400)
+      .send({ error: "Enable Calendar Links set to false by user" });
+  }
+
+  const workspaceLink = collabWorkspaceLinkToAppend + workspaceId;
+
+  try {
+    // Load the Google Calendar client
+    const calendar = await loadClient(userId); // Using userId as per your extraction from req.body
+
+    const event = await calendar.events.get({
+      calendarId: "primary",
+      eventId: meetingId,
+    });
+
+    // Create a hyperlink and prepend it to the existing description
+    const hyperlink = `<a href="${workspaceLink}">Collab Space</a>`;
+    const newDescription =
+      hyperlink + "<br/><br/>" + (event.data.description || "");
+
+    // Update the Google Calendar event
+    event.data.description = newDescription;
+
+    const response = await calendar.events.update({
+      calendarId: "primary",
+      eventId: meetingId,
+      resource: event.data,
+    });
+  } catch (error) {
+    console.error("The API returned an error: ", error);
+    res.status(500).send({ error: "Failed to update the calendar event." });
+  }
+};
+
 module.exports = {
   getGoogleCal,
   updateGoogleCal,
   updateMeetingDescription,
+  enableCalendarLinkForNewMeeting,
 };
