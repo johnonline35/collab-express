@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Update the meeting description endpoint
+// Update the meeting description endpoint - called by webhook on workspaces table
 router.post("/update-meeting-description", async (req, res) => {
   // console.log(
   //   "update-meeting-description (from calendar link toggle) reqBody:",
@@ -69,16 +69,16 @@ router.post("/update-meeting-description", async (req, res) => {
   }
 });
 
-// Insert a Collab Space link into a new meeting when required
+// Insert a Collab Space link into a new meeting when required - called by webhook on meetings table
 router.post("/insert-link-for-new-meeting", async (req, res) => {
   console.log("/insert-link-for-new-meeting req.body:", req.body);
   // Destructure information from the req.body
-  const { id, user_id, workspace_id } = req.body.record;
+  const { id, collab_user_id, workspace_id } = req.body.record;
   console.log(
     "meetingId:",
     id,
-    "user_id:",
-    user_id,
+    "collab_user_id:",
+    collab_user_id,
     "workspace_id :",
     workspace_id
   );
