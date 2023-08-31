@@ -435,6 +435,7 @@ const enableCalendarLinkForNewMeeting = async (
     "workspace_id:",
     workspace_id
   );
+
   // Check if the workspace allows calendar links.
   const { data: workspace, error } = await supabase
     .from("workspaces")
@@ -444,24 +445,22 @@ const enableCalendarLinkForNewMeeting = async (
 
   if (error) {
     console.error("Error querying workspace:", error);
-    return res.status(500).send({ error: "Error querying the workspace." });
+    throw new Error("Error querying the workspace.");
   }
 
   if (!workspace) {
-    return res.status(400).send({ error: "No workspace found" });
+    throw new Error("No workspace found");
   }
 
   if (workspace.workspace_attendee_enable_calendar_link !== true) {
-    return res
-      .status(400)
-      .send({ error: "Enable Calendar Links set to false by user" });
+    throw new Error("Enable Calendar Links set to false by user");
   }
 
   const workspaceLink = collabWorkspaceLinkToAppend + workspace_id;
 
   try {
     // Load the Google Calendar client
-    const calendar = await loadClient(collab_user_id); // Using userId as per your extraction from req.body
+    const calendar = await loadClient(collab_user_id);
 
     const event = await calendar.events.get({
       calendarId: "primary",
@@ -481,9 +480,11 @@ const enableCalendarLinkForNewMeeting = async (
       eventId: id,
       resource: event.data,
     });
+
+    return response; // if you need to return something
   } catch (error) {
     console.error("The API returned an error: ", error);
-    res.status(500).send({ error: "Failed to update the calendar event." });
+    throw new Error("Failed to update the calendar event.");
   }
 };
 
