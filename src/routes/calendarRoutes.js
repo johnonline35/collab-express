@@ -72,14 +72,14 @@ router.post("/update-meeting-description", async (req, res) => {
 
 // Insert a Collab Space link into a new meeting when required - called by webhook on meetings table
 router.post("/insert-link-for-new-meeting", async (req, res) => {
-  console.log("/insert-link-for-new-meeting req.body:", req.body);
+  console.log("/insert-link-for-new-meeting called");
   // Destructure information from the req.body
   const { id, collab_user_id, workspace_id } = req.body.record;
   console.log(
     "meetingId:",
     id,
-    "collab_user_id:",
-    collab_user_id,
+    // "collab_user_id:",
+    // collab_user_id,
     "workspace_id :",
     workspace_id
   );
