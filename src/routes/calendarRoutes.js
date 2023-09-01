@@ -72,20 +72,21 @@ router.post("/update-meeting-description", async (req, res) => {
 
 // Insert a Collab Space link into a new meeting when required - called by webhook on meetings table
 router.post("/insert-link-for-new-meeting", async (req, res) => {
-  console.log("/insert-link-for-new-meeting called");
+  // console.log("/insert-link-for-new-meeting called");
   // Destructure information from the req.body
   const { id, collab_user_id, workspace_id } = req.body.record;
-  console.log(
-    "meetingId:",
-    id,
-    // "collab_user_id:",
-    // collab_user_id,
-    "workspace_id :",
-    workspace_id
-  );
+  // console.log(
+  //   "meetingId:",
+  //   id,
+  //   // "collab_user_id:",
+  //   // collab_user_id,
+  //   "workspace_id :",
+  //   workspace_id
+  // );
 
   if (!workspace_id) {
-    return res.status(400).send({ error: "workspace_id is missing." });
+    // console.log("No workspace_id, exiting function");
+    return;
   }
 
   // Check if the workspace allows calendar links.
@@ -95,12 +96,12 @@ router.post("/insert-link-for-new-meeting", async (req, res) => {
     .eq("workspace_id", workspace_id)
     .single();
 
-  console.log(
-    "workspace:",
-    workspace,
-    "enable calendar link:",
-    workspace.workspace_attendee_enable_calendar_link
-  );
+  // console.log(
+  //   "workspace:",
+  //   workspace,
+  //   "enable calendar link:",
+  //   workspace.workspace_attendee_enable_calendar_link
+  // );
 
   if (error) {
     console.error("Error querying workspace:", error);
@@ -108,12 +109,17 @@ router.post("/insert-link-for-new-meeting", async (req, res) => {
   }
 
   if (workspace.workspace_attendee_enable_calendar_link !== true) {
-    console.log(
-      "Enable Calendar Links not set, or set to false, by user for workspace_id:",
-      workspace_id
-    );
+    // console.log(
+    //   "Enable Calendar Links not set, or set to false, by user for workspace_id:",
+    //   workspace_id
+    // );
     return;
   }
+
+  console.log(
+    "workspace to have link inserted found for workspace ID:",
+    workspace_id
+  );
 
   try {
     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
