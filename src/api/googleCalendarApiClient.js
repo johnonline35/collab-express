@@ -476,7 +476,10 @@ const enableCalendarLinkForNewMeeting = async (
         resource: event.data,
       });
 
-      console.log("response", response);
+      console.log(
+        "This is the entire response object from GOOGLE CALENDAR:",
+        response
+      );
     }
     return response;
   } catch (error) {
