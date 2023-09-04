@@ -304,20 +304,40 @@ const updateGoogleCal = async (userId) => {
   // Insert data into the database for each meeting
   const updatePromises = meetings.map(async (meeting) => {
     // Update only if existing
+    // const { data: meetingData, error: meetingError } = await supabase
+    //   .from("meetings")
+    //   .update({
+    //     summary: meeting.summary,
+    //     description: meeting.description,
+    //     creator_email: meeting.creator.email,
+    //     organizer_email: meeting.organizer.email,
+    //     start_dateTime: meeting.start.dateTime,
+    //     end_dateTime: meeting.end.dateTime,
+    //     start_time_zone: meeting.start.timeZone,
+    //     end_time_zone: meeting.end.timeZone,
+    //     collab_user_id: userId,
+    //   })
+    //   .match({ id: meeting.id });
+
     const { data: meetingData, error: meetingError } = await supabase
       .from("meetings")
-      .update({
-        summary: meeting.summary,
-        description: meeting.description,
-        creator_email: meeting.creator.email,
-        organizer_email: meeting.organizer.email,
-        start_dateTime: meeting.start.dateTime,
-        end_dateTime: meeting.end.dateTime,
-        start_time_zone: meeting.start.timeZone,
-        end_time_zone: meeting.end.timeZone,
-        collab_user_id: userId,
-      })
-      .match({ id: meeting.id });
+      .upsert(
+        {
+          id: meeting.id,
+          summary: meeting.summary,
+          description: meeting.description,
+          creator_email: meeting.creator.email,
+          organizer_email: meeting.organizer.email,
+          start_dateTime: meeting.start.dateTime,
+          end_dateTime: meeting.end.dateTime,
+          start_time_zone: meeting.start.timeZone,
+          end_time_zone: meeting.end.timeZone,
+          collab_user_id: userId,
+        },
+        {
+          conflictFields: ["id"], // This specifies that if there's a conflict on the 'id' column, an update should be performed.
+        }
+      );
 
     if (meetingError) {
       console.error("Error updating Meeting:", meetingError);
