@@ -269,6 +269,7 @@ const updateGoogleCal = async (userId) => {
     return [];
   }
 
+  // For fetching changes afterwards
   do {
     const response = await calendar.events.list({
       calendarId: "primary",
@@ -277,11 +278,9 @@ const updateGoogleCal = async (userId) => {
       pageToken: nextPageToken,
     });
 
-    // console.log("response.data2", response.data);
+    console.log("response.data2", response.data);
 
     allEvents = allEvents.concat(response.data.items);
-
-    console.log("allEvents:", allEvents);
 
     nextPageToken = response.data.nextPageToken;
     nextSyncToken = response.data.nextSyncToken;
@@ -295,137 +294,122 @@ const updateGoogleCal = async (userId) => {
     }
   } while (nextPageToken);
 
-  const meetings = allEvents.filter(
-    (event) =>
-      event.attendees &&
-      event.attendees.length > 1 &&
-      event.attendees.length < 11
+  const deletedMeetings = allEvents.filter(
+    (event) => event.status === "cancelled"
+  );
+  const activeMeetings = allEvents.filter(
+    (event) => event.status !== "cancelled"
   );
 
-  const deletedAttendees = [];
-
-  const updatePromises = meetings.map(async (meeting) => {
-    console.log(
-      "Checking meeting status:",
-      meeting.status,
-      "for ID:",
-      meeting.id
-    );
-
-    if (meeting.status === "cancelled") {
-      const { data: deletedMeetings, error: deleteMeetingError } =
-        await supabase.from("meetings").delete().match({ id: meeting.id });
-
-      console.log("Deleted meeting:", deletedMeetings[0]);
-
-      const { data: deletedAttendees, error: deleteAttendeeError } =
-        await supabase
-          .from("meeting_attendees")
-          .delete()
-          .match({ meeting_id: meeting.id });
-
-      if (deletedMeetings.length === 0) {
-        console.warn(
-          "No matching meeting found to delete in Supabase for ID:",
-          meeting.id
-        );
-      }
-
-      if (deletedAttendees.length === 0) {
-        console.warn(
-          "No matching attendees found to delete in Supabase for meeting ID:",
-          meeting.id
-        );
-      }
-
-      if (deleteMeetingError) {
-        console.error("Error deleting Meeting:", deleteMeetingError);
-      }
-      if (deleteAttendeeError) {
-        console.error("Error deleting Attendees:", deleteAttendeeError);
-      }
-      return;
-    }
-
-    const { data: meetingData, error: meetingError } = await supabase
+  const deletePromises = deletedMeetings.map(async (meeting) => {
+    // Delete from meetings table
+    const { error: deleteMeetingError } = await supabase
       .from("meetings")
-      .upsert(
-        {
-          id: meeting.id,
-          summary: meeting.summary,
-          description: meeting.description,
-          creator_email: meeting.creator.email,
-          organizer_email: meeting.organizer.email,
-          start_dateTime: meeting.start.dateTime,
-          end_dateTime: meeting.end.dateTime,
-          start_time_zone: meeting.start.timeZone,
-          end_time_zone: meeting.end.timeZone,
-          collab_user_id: userId,
-        },
-        {
-          conflictFields: ["id"],
-        }
-      );
+      .delete()
+      .match({ id: meeting.id });
 
-    if (meetingError) {
-      console.error("Error updating Meeting:", meetingError);
+    if (deleteMeetingError) {
+      console.error("Error deleting Meeting:", deleteMeetingError);
     }
 
-    const currentAttendeeEmails = meeting.attendees.map((att) => att.email);
-
-    const { data: existingAttendees } = await supabase
-      .from("meeting_attendees")
-      .select("email")
-      .eq("meeting_id", meeting.id);
-
-    const existingAttendeeEmails = existingAttendees.map((att) => att.email);
-
-    for (const existingEmail of existingAttendeeEmails) {
-      if (!currentAttendeeEmails.includes(existingEmail)) {
-        deletedAttendees.push({ meeting_id: meeting.id, email: existingEmail });
-      }
-    }
-
-    const attendees = meeting.attendees.filter(
-      (attendee) => attendee.email.trim() !== userEmail.trim()
-    );
-
-    await Promise.all(
-      attendees.map(async (attendee) => {
-        const { error: attendeeError } = await supabase
-          .from("meeting_attendees")
-          .upsert(
-            {
-              meeting_id: meeting.id,
-              email: attendee.email,
-              organizer: attendee.organizer || false,
-              response_status: attendee.responseStatus,
-            },
-            {
-              conflictFields: ["meeting_id", "email"],
-            }
-          );
-        if (attendeeError) {
-          console.error("Error updating Attendee:", attendeeError);
-        }
-      })
-    );
-  });
-
-  await Promise.all(updatePromises);
-
-  for (const attendee of deletedAttendees) {
+    // Delete all attendees of this meeting from meeting_attendees table
     const { error: deleteAttendeeError } = await supabase
       .from("meeting_attendees")
       .delete()
-      .match({ meeting_id: attendee.meeting_id, email: attendee.email });
+      .match({ meeting_id: meeting.id });
 
     if (deleteAttendeeError) {
-      console.error("Error deleting removed Attendee:", deleteAttendeeError);
+      console.error("Error deleting Meeting Attendees:", deleteAttendeeError);
     }
-  }
+  });
 
-  return "Updated meetings and attendees successfully";
+  await Promise.all(deletePromises);
+
+  const updatePromises = activeMeetings
+    .filter(
+      (event) =>
+        event.attendees &&
+        event.attendees.length > 1 &&
+        event.attendees.length < 11
+    )
+    .map(async (meeting) => {
+      const { data: meetingData, error: meetingError } = await supabase
+        .from("meetings")
+        .upsert(
+          {
+            id: meeting.id,
+            summary: meeting.summary,
+            description: meeting.description,
+            creator_email: meeting.creator.email,
+            organizer_email: meeting.organizer.email,
+            start_dateTime: meeting.start.dateTime,
+            end_dateTime: meeting.end.dateTime,
+            start_time_zone: meeting.start.timeZone,
+            end_time_zone: meeting.end.timeZone,
+            collab_user_id: userId,
+          },
+          {
+            conflictFields: ["id"], // This specifies that if there's a conflict on the 'id' column, an update should be performed.
+          }
+        );
+
+      if (meetingError) {
+        console.error("Error updating Meeting:", meetingError);
+      }
+
+      const attendees = meeting.attendees.filter(
+        (attendee) => attendee.email.trim() !== userEmail.trim()
+      );
+
+      const currentAttendeesResponse = await supabase
+        .from("meeting_attendees")
+        .select("email")
+        .eq("meeting_id", meeting.id);
+
+      const currentAttendees = currentAttendeesResponse.data.map(
+        (a) => a.email
+      );
+
+      const attendeesToRemove = currentAttendees.filter(
+        (dbAttendee) =>
+          !attendees.some((newAttendee) => newAttendee.email === dbAttendee)
+      );
+
+      // Delete attendees that no longer exist in the updated list
+      await Promise.all(
+        attendeesToRemove.map(async (removedAttendeeEmail) => {
+          await supabase
+            .from("meeting_attendees")
+            .delete()
+            .eq("meeting_id", meeting.id)
+            .eq("email", removedAttendeeEmail);
+        })
+      );
+
+      // Upsert remaining attendees
+      await Promise.all(
+        attendees.map(async (attendee) => {
+          const { error: attendeeError } = await supabase
+            .from("meeting_attendees")
+            .upsert(
+              {
+                meeting_id: meeting.id,
+                email: attendee.email,
+                organizer: attendee.organizer || false,
+                response_status: attendee.responseStatus,
+              },
+              { conflictFields: ["meeting_id", "email"] }
+            );
+          if (attendeeError) {
+            console.error("Error updating Attendee:", attendeeError);
+          }
+        })
+      );
+    });
+
+  await Promise.all(updatePromises);
+
+  return "Updated and deleted meetings and attendees successfully";
 };
 
 // const updateGoogleCal = async (userId) => {
