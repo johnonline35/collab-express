@@ -78,69 +78,69 @@ router.post("/update-meeting-description", async (req, res) => {
 });
 
 // Insert a Collab Space link into a new meeting when required - called by webhook on the meetings table
-router.post("/insert-link-for-new-meeting", async (req, res) => {
-  console.log("/insert-link-for-new-meeting called");
-  // Destructure information from the req.body
-  const { id, collab_user_id, workspace_id } = req.body.record;
-  // console.log(
-  //   "meetingId:",
-  //   id,
-  //   // "collab_user_id:",
-  //   // collab_user_id,
-  //   "workspace_id :",
-  //   workspace_id
-  // );
+// router.post("/insert-link-for-new-meeting", async (req, res) => {
+//   console.log("/insert-link-for-new-meeting called");
+//   // Destructure information from the req.body
+//   const { id, collab_user_id, workspace_id } = req.body.record;
+//   // console.log(
+//   //   "meetingId:",
+//   //   id,
+//   //   // "collab_user_id:",
+//   //   // collab_user_id,
+//   //   "workspace_id :",
+//   //   workspace_id
+//   // );
 
-  if (!workspace_id) {
-    // console.log("No workspace_id, exiting function");
-    return;
-  }
+//   if (!workspace_id) {
+//     // console.log("No workspace_id, exiting function");
+//     return;
+//   }
 
-  // Check if the workspace allows calendar links.
-  const { data: workspace, error } = await supabase
-    .from("workspaces")
-    .select("workspace_attendee_enable_calendar_link")
-    .eq("workspace_id", workspace_id)
-    .single();
+//   // Check if the workspace allows calendar links.
+//   const { data: workspace, error } = await supabase
+//     .from("workspaces")
+//     .select("workspace_attendee_enable_calendar_link")
+//     .eq("workspace_id", workspace_id)
+//     .single();
 
-  console.log(
-    "workspace:",
-    workspace,
-    "enable calendar link:",
-    workspace.workspace_attendee_enable_calendar_link
-  );
+//   console.log(
+//     "workspace:",
+//     workspace,
+//     "enable calendar link:",
+//     workspace.workspace_attendee_enable_calendar_link
+//   );
 
-  if (error) {
-    console.error("Error querying workspace:", error);
-    throw new Error("Error querying the workspace.");
-  }
+//   if (error) {
+//     console.error("Error querying workspace:", error);
+//     throw new Error("Error querying the workspace.");
+//   }
 
-  if (workspace.workspace_attendee_enable_calendar_link !== true) {
-    // console.log(
-    //   "Enable Calendar Links not set, or set to false, by user for workspace_id:",
-    //   workspace_id
-    // );
-    return;
-  }
+//   if (workspace.workspace_attendee_enable_calendar_link !== true) {
+//     // console.log(
+//     //   "Enable Calendar Links not set, or set to false, by user for workspace_id:",
+//     //   workspace_id
+//     // );
+//     return;
+//   }
 
-  console.log(
-    "workspace to have link inserted found for workspace ID:",
-    workspace_id
-  );
+//   console.log(
+//     "workspace to have link inserted found for workspace ID:",
+//     workspace_id
+//   );
 
-  try {
-    await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
-      id,
-      collab_user_id,
-      workspace_id
-    );
+//   try {
+//     await googleCalendarApiClient.enableCalendarLinkForNewMeeting(
+//       id,
+//       collab_user_id,
+//       workspace_id
+//     );
 
-    res.status(200).send({ success: "Link inserted for new meeting." });
-  } catch (error) {
-    console.error("Error inserting link for new meeting:", error);
-    res.status(500).send({ error: "Failed to insert link for new meeting." });
-  }
-});
+//     res.status(200).send({ success: "Link inserted for new meeting." });
+//   } catch (error) {
+//     console.error("Error inserting link for new meeting:", error);
+//     res.status(500).send({ error: "Failed to insert link for new meeting." });
+//   }
+// });
 
 // Webhook endpoint called by Google Calendar when there is a calendar change event
 router.post("/google-calendar-watch", async (req, res) => {
