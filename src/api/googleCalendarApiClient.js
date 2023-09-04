@@ -304,15 +304,28 @@ const updateGoogleCal = async (userId) => {
 
   const updatePromises = meetings.map(async (meeting) => {
     if (meeting.status === "cancelled") {
-      const { error: deleteMeetingError } = await supabase
-        .from("meetings")
-        .delete()
-        .match({ id: meeting.id });
+      const { data: deletedMeetings, error: deleteMeetingError } =
+        await supabase.from("meetings").delete().match({ id: meeting.id });
 
-      const { error: deleteAttendeeError } = await supabase
-        .from("meeting_attendees")
-        .delete()
-        .match({ meeting_id: meeting.id });
+      const { data: deletedAttendees, error: deleteAttendeeError } =
+        await supabase
+          .from("meeting_attendees")
+          .delete()
+          .match({ meeting_id: meeting.id });
+
+      if (deletedMeetings.length === 0) {
+        console.warn(
+          "No matching meeting found to delete in Supabase for ID:",
+          meeting.id
+        );
+      }
+
+      if (deletedAttendees.length === 0) {
+        console.warn(
+          "No matching attendees found to delete in Supabase for meeting ID:",
+          meeting.id
+        );
+      }
 
       if (deleteMeetingError) {
         console.error("Error deleting Meeting:", deleteMeetingError);
