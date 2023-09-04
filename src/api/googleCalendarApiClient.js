@@ -422,17 +422,21 @@ const updateMeetingDescription = async (
           )}">Collab Space</a>`,
           "g"
         );
-        event.data.description = event.data.description.replace(
-          hyperlinkRegEx,
-          ""
-        );
+        if (event.data && event.data.description) {
+          event.data.description = event.data.description.replace(
+            hyperlinkRegEx,
+            ""
+          );
+        }
 
         // Remove any remaining line breaks after a hyperlink
         const lineBreaksRegEx = new RegExp("<br/><br/>", "g");
-        event.data.description = event.data.description.replace(
-          lineBreaksRegEx,
-          ""
-        );
+        if (event.data && event.data.description) {
+          event.data.description = event.data.description.replace(
+            lineBreaksRegEx,
+            ""
+          );
+        }
       }
 
       // Update the Google Calendar event
