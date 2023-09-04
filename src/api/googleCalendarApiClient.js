@@ -326,6 +326,8 @@ const updateGoogleCal = async (userId) => {
 
   await Promise.all(deletePromises);
 
+  const newMeetingIds = [];
+
   const updatePromises = activeMeetings
     .filter(
       (event) =>
@@ -356,6 +358,9 @@ const updateGoogleCal = async (userId) => {
 
       if (meetingError) {
         console.error("Error updating Meeting:", meetingError);
+      } else if (!meetingData || meetingData.length === 0) {
+        // If upsert was successful and it was a new insertion, add the meeting ID to newMeetingIds
+        newMeetingIds.push(meeting.id);
       }
 
       const attendees = meeting.attendees.filter(
@@ -412,6 +417,24 @@ const updateGoogleCal = async (userId) => {
 
   // Call getGoogleCal at the end to make sure all meetings and attendees have a workspace_id:
   await getGoogleCal(userId);
+
+  for (const id of newMeetingIds) {
+    // Fetch the workspace_id for the given meeting id from the Supabase "meetings" table
+    const { data, error } = await supabase
+      .from("meetings")
+      .select("workspace_id")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
+      continue; // Skip to next iteration in case of an error
+    }
+
+    // Use the retrieved workspace_id for the enableCalendarLinkForNewMeeting function
+    const workspace_id = data[0].workspace_id;
+    await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
+  }
 
   return "Updated and deleted meetings and attendees successfully";
 };
