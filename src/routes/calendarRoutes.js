@@ -171,4 +171,19 @@ router.post("/google-calendar-watch", async (req, res) => {
   }
 });
 
+router.post("/stop-google-calendar-watch", async (req, res) => {
+  const { collab_user_id } = req.body;
+  console.log(collab_user_id);
+
+  try {
+    await stopWatchGoogleCalendar(collab_user_id); // Call the function
+    res
+      .status(200)
+      .send({ message: "Google Calendar watch stopped successfully." });
+  } catch (error) {
+    console.error("Error stopping Google Calendar watch:", error);
+    res.status(500).send({ error: "Failed to stop Google Calendar watch." });
+  }
+});
+
 module.exports = router;
