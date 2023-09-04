@@ -426,13 +426,15 @@ const updateGoogleCal = async (userId) => {
       .eq("id", id)
       .single();
 
+    console.log("data response from meetings table workspace_id:", data);
+
     if (error) {
       console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
       continue; // Skip to next iteration in case of an error
     }
 
     // Use the retrieved workspace_id for the enableCalendarLinkForNewMeeting function
-    const workspace_id = data[0].workspace_id;
+    const workspace_id = data.workspace_id;
     await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
   }
 
