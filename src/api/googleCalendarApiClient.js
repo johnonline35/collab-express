@@ -246,6 +246,7 @@ const getGoogleCal = async (userId) => {
   }
 };
 
+// Update Supabase when a Collab user changes or deletes a Google Calendar event:
 const updateGoogleCal = async (userId) => {
   console.log("Just called updateGoogleCal, here is the userId:", userId);
   const calendar = await loadClient(userId);
