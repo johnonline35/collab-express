@@ -77,7 +77,7 @@ router.post("/update-meeting-description", async (req, res) => {
   }
 });
 
-// Insert a Collab Space link into a new meeting when required - called by webhook on meetings table
+// Insert a Collab Space link into a new meeting when required - called by webhook on the meetings table
 router.post("/insert-link-for-new-meeting", async (req, res) => {
   console.log("/insert-link-for-new-meeting called");
   // Destructure information from the req.body
