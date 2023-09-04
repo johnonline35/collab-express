@@ -277,9 +277,11 @@ const updateGoogleCal = async (userId) => {
       pageToken: nextPageToken,
     });
 
-    console.log("response.data2", response.data);
+    // console.log("response.data2", response.data);
 
     allEvents = allEvents.concat(response.data.items);
+
+    console.log("allEvents:", allEvents);
 
     nextPageToken = response.data.nextPageToken;
     nextSyncToken = response.data.nextSyncToken;
@@ -303,12 +305,7 @@ const updateGoogleCal = async (userId) => {
   const deletedAttendees = [];
 
   const updatePromises = meetings.map(async (meeting) => {
-    console.log(
-      "Checking meeting status:",
-      meeting.status,
-      "for ID:",
-      meeting.id
-    );
+    console.log("Checking meeting status:", status, "for ID:", id);
 
     if (meeting.status === "cancelled") {
       const { data: deletedMeetings, error: deleteMeetingError } =
