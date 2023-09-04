@@ -303,6 +303,13 @@ const updateGoogleCal = async (userId) => {
   const deletedAttendees = [];
 
   const updatePromises = meetings.map(async (meeting) => {
+    console.log(
+      "Checking meeting status:",
+      meeting.status,
+      "for ID:",
+      meeting.id
+    );
+
     if (meeting.status === "cancelled") {
       const { data: deletedMeetings, error: deleteMeetingError } =
         await supabase.from("meetings").delete().match({ id: meeting.id });
