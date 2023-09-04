@@ -20,7 +20,7 @@ const getGoogleCal = async (userId) => {
     console.error("Error: User email not found");
     return [];
   } else {
-    console.log("userEmail:", userEmail);
+    // console.log("userEmail:", userEmail);
   }
 
   let allEvents = [];
@@ -42,7 +42,7 @@ const getGoogleCal = async (userId) => {
         // console.log("response.data", response.data);
 
         if (response.data.nextSyncToken) {
-          console.log("nextSyncToken", response.data.nextSyncToken);
+          // console.log("nextSyncToken", response.data.nextSyncToken);
           nextSyncToken = response.data.nextSyncToken;
         } else {
           console.log("nextSyncToken is not present");
@@ -65,7 +65,7 @@ const getGoogleCal = async (userId) => {
           }
         }
 
-        console.log("userId:", userId, "nextSyncToken:", nextSyncToken);
+        // console.log("userId:", userId, "nextSyncToken:", nextSyncToken);
       } while (nextPageToken);
     } else {
       // For fetching changes afterwards
@@ -200,7 +200,7 @@ const getGoogleCal = async (userId) => {
     // Verify a few records...
     if (meetings.length > 0) {
       const lastMeeting = meetings[meetings.length - 1];
-      console.log("lastMeeting and id:", lastMeeting, lastMeeting.id);
+      // console.log("lastMeeting and id:", lastMeeting, lastMeeting.id);
       const { data: savedMeeting, error: fetchMeetingError } = await supabase
         .from("meetings")
         .select("*")
@@ -213,10 +213,10 @@ const getGoogleCal = async (userId) => {
           `Meeting with ID ${lastMeeting.id} not found in database`
         );
       } else {
-        console.log(`Verified meeting with ID ${lastMeeting.id} in database`);
+        // console.log(`Verified meeting with ID ${lastMeeting.id} in database`);
       }
     } else {
-      console.log("No meetings found to verify.");
+      // console.log("No meetings found to verify.");
     }
 
     console.log("Starting analyzeMeetings...");
