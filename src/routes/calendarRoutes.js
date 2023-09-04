@@ -175,6 +175,8 @@ router.post("/google-calendar-watch", async (req, res) => {
 });
 
 router.post("/stop-google-calendar-watch", async (req, res) => {
+  console.log("Received request to stop Google Calendar watch");
+
   const { userId } = req.body;
   console.log(userId);
 
