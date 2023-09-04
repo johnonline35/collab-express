@@ -410,6 +410,9 @@ const updateGoogleCal = async (userId) => {
 
   await Promise.all(updatePromises);
 
+  // Call getGoogleCal at the end to make sure all meetings and attendees have a workspace_id:
+  await getGoogleCal(userId);
+
   return "Updated and deleted meetings and attendees successfully";
 };
 
