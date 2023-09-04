@@ -426,8 +426,6 @@ const updateGoogleCal = async (userId) => {
       .eq("id", id)
       .single();
 
-    console.log("data response from meetings table workspace_id:", data);
-
     if (error) {
       console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
       continue; // Skip to next iteration in case of an error
