@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const googleCalendarApiClient = require("../api/googleCalendarApiClient");
-const { watchGoogleCalendar } = require("../services/watchGoogleCalendar");
+const {
+  watchGoogleCalendar,
+  stopWatchGoogleCalendar,
+} = require("../services/watchGoogleCalendar");
 const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
@@ -172,11 +175,11 @@ router.post("/google-calendar-watch", async (req, res) => {
 });
 
 router.post("/stop-google-calendar-watch", async (req, res) => {
-  const { collab_user_id } = req.body;
-  console.log(collab_user_id);
+  const { userId } = req.body;
+  console.log(userId);
 
   try {
-    await stopWatchGoogleCalendar(collab_user_id); // Call the function
+    await stopWatchGoogleCalendar(userId); // Call the function
     res
       .status(200)
       .send({ message: "Google Calendar watch stopped successfully." });
