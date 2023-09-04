@@ -27,8 +27,8 @@ async function updateAttendeesAndMeetings(
     }
   });
 
-  console.log("Existing attendees map:", existingAttendeesMap);
-  console.log("Existing domains map:", existingDomainsMap);
+  // console.log("Existing attendees map:", existingAttendeesMap);
+  // console.log("Existing domains map:", existingDomainsMap);
 
   const attendeesToInsert = [];
   const meetingsToUpdate = [];
@@ -102,7 +102,7 @@ async function updateAttendeesAndMeetings(
       }
 
       attendeesForThisMeeting.forEach((attendee) => {
-        console.log("Processing attendee:", attendee.email);
+        // console.log("Processing attendee:", attendee.email);
 
         let supabaseTableAttendeesObjectAttendee = existingAttendeesMap.get(
           attendee.email

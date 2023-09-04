@@ -95,7 +95,7 @@ async function analyzeMeetings(userId) {
 
     if (result.data) {
       existingAttendees = existingAttendees.concat(result.data);
-      console.log("existingAttendees:", existingAttendees);
+      // console.log("existingAttendees:", existingAttendees);
     } else {
       console.error("Error retrieving existing attendees:", result.error);
     }
