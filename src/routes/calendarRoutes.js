@@ -5,7 +5,11 @@ const {
   watchGoogleCalendar,
   stopWatchGoogleCalendar,
 } = require("../services/watchGoogleCalendar");
-const { checkIfWatchIsSetup, setWatchSetup } = require("../utils/database");
+const {
+  checkIfWatchIsSetup,
+  setWatchSetup,
+  removeWatchSetup,
+} = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
 const supabase = require("../db/supabase");
@@ -175,13 +179,15 @@ router.post("/google-calendar-watch", async (req, res) => {
 });
 
 router.post("/stop-google-calendar-watch", async (req, res) => {
-  console.log("Received request to stop Google Calendar watch");
-
   const { userId } = req.body;
-  console.log(userId);
 
   try {
-    await stopWatchGoogleCalendar(userId); // Call the function
+    // Stop the Google Calendar watch
+    await stopWatchGoogleCalendar(userId);
+
+    // Call removeWatchSetup to update the is_watch_setup flag
+    await removeWatchSetup(userId);
+
     res
       .status(200)
       .send({ message: "Google Calendar watch stopped successfully." });

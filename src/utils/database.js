@@ -104,6 +104,18 @@ const setWatchSetup = async (userId) => {
   }
 };
 
+const removeWatchSetup = async (userId) => {
+  const { error } = await supabase
+    .from("collab_users")
+    .update({ is_watch_setup: false })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error setting watch setup:", error);
+    throw error;
+  }
+};
+
 // Save the resourceId and channelId for a user
 async function saveGoogleCalendarWatchDetailsForUser(
   userId,
@@ -202,6 +214,7 @@ module.exports = {
   getUserEmailFromDB,
   checkIfWatchIsSetup,
   setWatchSetup,
+  removeWatchSetup,
   saveSyncTokenForUser,
   loadSyncTokenForUser,
   saveUserTimeZone,
