@@ -430,13 +430,26 @@ const updateGoogleCal = async (userId) => {
       console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
       continue; // Skip to next iteration in case of an error
     }
-
-    // Use the retrieved workspace_id for the enableCalendarLinkForNewMeeting function
     const workspace_id = data.workspace_id;
-    await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
-  }
+    const { data: linkEnabled, error: linkEnabledError } = await supabase
+      .from(workspaces)
+      .select("workspace_attendee_enable_calendar_link")
+      .eq("workspace_id", workspace_id)
+      .single();
 
-  return "Updated and deleted meetings and attendees successfully";
+    if (linkEnabledError) {
+      console.error(
+        `Error fetching workspace_attendee_enable_calendar_link for workspace_id ${workspace_id}:`,
+        linkEnabledError
+      );
+      continue; // Skip to next iteration in case of an error
+    }
+
+    if (linkEnabled) {
+      await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
+    }
+  }
+  return "Updated and/or deleted meetings and attendees successfully";
 };
 
 // const updateGoogleCal = async (userId) => {
