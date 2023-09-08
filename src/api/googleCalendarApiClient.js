@@ -431,8 +431,8 @@ const updateGoogleCal = async (userId) => {
       continue; // Skip to next iteration in case of an error
     }
     const workspace_id = data.workspace_id;
-    const { data: linkEnabled, error: linkEnabledError } = await supabase
-      .from(workspaces)
+    const { data: linkEnabledData, error: linkEnabledError } = await supabase
+      .from("workspaces")
       .select("workspace_attendee_enable_calendar_link")
       .eq("workspace_id", workspace_id)
       .single();
@@ -445,7 +445,7 @@ const updateGoogleCal = async (userId) => {
       continue; // Skip to next iteration in case of an error
     }
 
-    if (linkEnabled) {
+    if (linkEnabledData.workspace_attendee_enable_calendar_link) {
       await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
     }
   }
