@@ -430,6 +430,7 @@ const updateGoogleCal = async (userId) => {
       console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
       continue; // Skip to next iteration in case of an error
     }
+
     const workspace_id = data.workspace_id;
     const { data: linkEnabledData, error: linkEnabledError } = await supabase
       .from("workspaces")
