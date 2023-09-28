@@ -9,6 +9,7 @@ const {
   checkIfWatchIsSetup,
   setWatchSetup,
   removeWatchSetup,
+  enrichWorkspaces,
 } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
@@ -37,7 +38,7 @@ router.post("/", async (req, res) => {
       await setWatchSetup(userId);
     }
 
-    const enrichWorkspaces = await enrichWorkspaces(userId);
+    const enrichedWorkspacesResult = await enrichWorkspaces(userId);
 
     // Create the response object
     const response = {
