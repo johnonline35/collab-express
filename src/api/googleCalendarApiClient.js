@@ -418,6 +418,7 @@ const updateGoogleCal = async (userId) => {
   // Call getGoogleCal at the end to make sure all meetings and attendees have a workspace_id:
   await getGoogleCal(userId);
 
+  // For each new meeting, insert a collab space link if the user has enabled it:
   for (const id of newMeetingIds) {
     // Fetch the workspace_id for the given meeting id from the Supabase "meetings" table
     const { data, error } = await supabase
@@ -443,7 +444,7 @@ const updateGoogleCal = async (userId) => {
         `Error fetching workspace_attendee_enable_calendar_link for workspace_id ${workspace_id}:`,
         linkEnabledError
       );
-      continue; // Skip to next iteration in case of an error
+      continue; // Skip to next iteration in case of an error.
     }
 
     if (linkEnabledData.workspace_attendee_enable_calendar_link) {

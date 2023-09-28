@@ -37,6 +37,8 @@ router.post("/", async (req, res) => {
       await setWatchSetup(userId);
     }
 
+    const enrichWorkspaces = await enrichWorkspaces(userId);
+
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,
