@@ -215,7 +215,7 @@ async function enrichWorkspaces(userId) {
     let { data: meetings, error } = await supabase
       .from("meetings")
       .select("workspace_id, start_dateTime")
-      .eq("userId", userId)
+      .eq("collab_user_id", userId)
       .gte("start_dateTime", new Date().toISOString()) // From now to the future
       .order("start_dateTime", { ascending: true })
       .limit(10);
