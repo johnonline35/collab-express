@@ -240,7 +240,8 @@ async function fetchWorkspaces(userId) {
           },
           { returning: "minimal" }
         )
-        .in("workspace_id", workspaceIds);
+        .eq("workspace_id", workspaceIds[0])
+        .select();
 
       if (updateError) {
         throw updateError;
