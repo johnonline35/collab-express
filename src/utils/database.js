@@ -232,7 +232,7 @@ async function fetchWorkspaces(userId) {
     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
     if (workspaceIds.length > 0) {
       // Check if there's at least one ID
-      const { data: updatedData, error: updateError } = await supabase
+      const { data, error: updateError } = await supabase
         .from("workspaces")
         .update({
           enrich_and_display: true,
@@ -242,7 +242,7 @@ async function fetchWorkspaces(userId) {
       if (updateError) {
         throw updateError;
       }
-      console.log("updatedData:", updatedData);
+      console.log("data", data);
       updatedWorkspaces = updatedData; // Assign the updated data
     }
 
