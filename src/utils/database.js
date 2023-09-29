@@ -210,14 +210,15 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function enrichWorkspaces(userId) {
+  const currentDate = new Date().toISOString();
   try {
     // 1. Fetch meetings based on userId
     let { data: meetings, error } = await supabase
       .from("meetings")
       .select("*")
       .eq("collab_user_id", userId)
-      // .gte("start_dateTime", new Date().toISOString())
-      // .order("start_dateTime", { ascending: true })
+      .gte("start_dateTime", currentDate)
+      .order("start_dateTime", { ascending: true })
       .limit(10);
 
     if (error) {
@@ -226,7 +227,7 @@ async function enrichWorkspaces(userId) {
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
-    console.log("first workspaceId:", workspaceIds[0]);
+    console.log("workspaceId's:", workspaceIds);
 
     // 2. Update workspaces table
     if (workspaceIds.length > 0) {
