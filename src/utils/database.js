@@ -245,7 +245,8 @@ async function fetchWorkspaces(userId) {
 
       updatedWorkspaces = updatedData; // Assign the updated data
     }
-    console.log({ updatedWorkspaces: updatedWorkspaces });
+    console.log("HERE IS THE UPDATED WORKSPACES");
+    console.log("updatedWorkspaces:", updatedWorkspaces);
     return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
