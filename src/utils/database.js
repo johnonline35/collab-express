@@ -231,7 +231,7 @@ async function enrichWorkspaces(userId) {
     // 2. Update workspaces table
     const { data, error: updateError } = await supabase
       .from("workspaces")
-      .filter((workspace) => workspaceIds.includes(workspace.workspace_id))
+      .in("workspace_id", workspaceIds)
       .update({
         enrich_and_display: true,
       });
