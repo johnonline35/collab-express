@@ -237,7 +237,8 @@ async function fetchWorkspaces(userId) {
         .update({
           enrich_and_display: true,
         })
-        .in("workspace_id", workspaceIds);
+        .in("workspace_id", workspaceIds)
+        .select();
 
       if (updateError) {
         throw updateError;
@@ -246,7 +247,7 @@ async function fetchWorkspaces(userId) {
       updatedWorkspaces = updatedData; // Assign the updated data
     }
     console.log("HERE IS THE UPDATED WORKSPACES");
-    console.log("updatedWorkspaces:", updatedWorkspaces);
+    console.log("updatedData:", updatedData);
     return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
