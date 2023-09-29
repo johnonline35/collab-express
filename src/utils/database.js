@@ -226,17 +226,17 @@ async function enrichWorkspaces(userId) {
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
-    console.log("workspaceIds:", workspaceIds);
+    console.log("first workspaceId:", workspaceIds[0]);
 
     // 2. Update workspaces table
     if (workspaceIds.length > 0) {
       // Check if there's at least one ID
       const { data, error: updateError } = await supabase
         .from("workspaces")
-        .eq("workspace_id", workspaceIds[0])
         .update({
           enrich_and_display: true,
-        });
+        })
+        .eq("workspace_id", workspaceIds[0]);
 
       if (updateError) {
         throw updateError;
