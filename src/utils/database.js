@@ -209,7 +209,7 @@ async function fetchAttendeeData(attendeeEmail) {
   }
 }
 
-async function fetchWorkspaces(userId) {
+async function fetchWorkspacesToEnrich(userId) {
   const currentDate = new Date().toISOString();
   try {
     // 1. Fetch meetings based on userId
@@ -257,6 +257,33 @@ async function fetchWorkspaces(userId) {
   }
 }
 
+async function fetchAttendeesToEnrich(userId, workspacesToEnrich) {
+  try {
+    // Extract workspace_ids from workspacesToEnrich
+    const workspaceIds = workspacesToEnrich.map(
+      (workspace) => workspace.workspace_id
+    );
+
+    // Fetch attendees based on workspaceIds and userId
+    const { data: attendees, error } = await supabase
+      .from("attendees")
+      .select("*")
+      .in("workspace_id", workspaceIds)
+      .eq("collab_user_id", userId);
+
+    if (error) {
+      throw error;
+    }
+
+    console.log("Fetched attendees:", attendees);
+
+    return attendees;
+  } catch (err) {
+    console.error("Error while fetching attendees:", err);
+    return null;
+  }
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -270,5 +297,6 @@ module.exports = {
   fetchGoogleCalendarWatchDetailsForUser,
   fetchAllAttendeeInfos,
   fetchAttendeeData,
-  fetchWorkspaces,
+  fetchWorkspacesToEnrich,
+  fetchAttendeesToEnrich,
 };
