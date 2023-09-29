@@ -226,6 +226,7 @@ async function enrichWorkspaces(userId) {
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
+    console.log("workspaceIds:", workspaceIds);
 
     // 2. Update workspaces table
     const { data, error: updateError } = await supabase
