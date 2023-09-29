@@ -246,10 +246,10 @@ async function fetchWorkspaces(userId) {
       if (updateError) {
         throw updateError;
       }
-      console.log("updatedData:", updatedData);
+
       updatedWorkspaces = updatedData; // Assign the updated data
     }
-
+    console.log("updatedWorkspaces:", updatedWorkspaces);
     return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
