@@ -236,7 +236,7 @@ async function enrichWorkspaces(userId) {
         .update({
           enrich_and_display: true,
         })
-        .eq("workspace_id", workspaceIds[0]);
+        .in("workspace_id", workspaceIds);
 
       if (updateError) {
         throw updateError;
