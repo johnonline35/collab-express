@@ -209,7 +209,7 @@ async function fetchAttendeeData(attendeeEmail) {
   }
 }
 
-async function enrichWorkspaces(userId) {
+async function fetchWorkspaces(userId) {
   const currentDate = new Date().toISOString();
   try {
     // 1. Fetch meetings based on userId
@@ -227,12 +227,12 @@ async function enrichWorkspaces(userId) {
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
-    console.log("workspaceId's:", workspaceIds);
 
     // 2. Update workspaces table
+    let updatedWorkspaces = []; // Placeholder for the updated workspaces data
     if (workspaceIds.length > 0) {
       // Check if there's at least one ID
-      const { data, error: updateError } = await supabase
+      const { data: updatedData, error: updateError } = await supabase
         .from("workspaces")
         .update({
           enrich_and_display: true,
@@ -242,9 +242,11 @@ async function enrichWorkspaces(userId) {
       if (updateError) {
         throw updateError;
       }
-    }
 
-    return null;
+      updatedWorkspaces = updatedData; // Assign the updated data
+    }
+    console.log({ updatedWorkspaces: updatedWorkspaces });
+    return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
     return null;
@@ -264,5 +266,5 @@ module.exports = {
   fetchGoogleCalendarWatchDetailsForUser,
   fetchAllAttendeeInfos,
   fetchAttendeeData,
-  enrichWorkspaces,
+  fetchWorkspaces,
 };

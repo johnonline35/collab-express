@@ -9,7 +9,7 @@ const {
   checkIfWatchIsSetup,
   setWatchSetup,
   removeWatchSetup,
-  enrichWorkspaces,
+  fetchWorkspaces,
 } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
@@ -34,11 +34,11 @@ router.post("/", async (req, res) => {
     if (!isWatchSetup) {
       // Set up the Google Calendar watch
       await watchGoogleCalendar(userId);
-      // Set the flag database indicating a watch is set up
+      // Set the flag in the database indicating a watch is set up
       await setWatchSetup(userId);
     }
 
-    const enrichedWorkspacesResult = await enrichWorkspaces(userId);
+    const workspacesToEnrich = await fetchWorkspaces(userId);
 
     // Create the response object
     const response = {
