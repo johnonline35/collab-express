@@ -214,10 +214,10 @@ async function enrichWorkspaces(userId) {
     // 1. Fetch meetings based on userId
     let { data: meetings, error } = await supabase
       .from("meetings")
-      .select("workspace_id, start_dateTime")
+      .select("*")
       .eq("collab_user_id", userId)
-      .gte("start_dateTime", new Date().toISOString()) // From now to the future
-      .order("start_dateTime", { ascending: true })
+      // .gte("start_dateTime", new Date().toISOString())
+      // .order("start_dateTime", { ascending: true })
       .limit(10);
 
     if (error) {
