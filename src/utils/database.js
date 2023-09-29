@@ -229,15 +229,18 @@ async function enrichWorkspaces(userId) {
     console.log("workspaceIds:", workspaceIds);
 
     // 2. Update workspaces table
-    const { data, error: updateError } = await supabase
-      .from("workspaces")
-      .in("workspace_id", workspaceIds)
-      .update({
-        enrich_and_display: true,
-      });
+    if (workspaceIds.length > 0) {
+      // Check if there's at least one ID
+      const { data, error: updateError } = await supabase
+        .from("workspaces")
+        .eq("workspace_id", workspaceIds[0])
+        .update({
+          enrich_and_display: true,
+        });
 
-    if (updateError) {
-      throw updateError;
+      if (updateError) {
+        throw updateError;
+      }
     }
 
     return null;
