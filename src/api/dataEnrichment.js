@@ -5,11 +5,10 @@ async function enrichWorkspacesAndAttendees(
   workspacesToEnrich,
   attendeesToEnrich
 ) {
-  console.log({ workspacesToEnrich: workspacesToEnrich });
-  console.log({ attendeesToEnrich: attendeesToEnrich });
   try {
     // Process workspacesToEnrich
     for (let workspace of workspacesToEnrich) {
+      console.log({ workspaceID: workspace.workspace_id });
       //   const response = await axios.post(jobManagerEndpoint, workspace);
       // Handle response if necessary
       // For example: if(response.status !== 200) { /* Handle error */ }
@@ -17,6 +16,7 @@ async function enrichWorkspacesAndAttendees(
 
     // Process attendeesToEnrich
     for (let attendee of attendeesToEnrich) {
+      console.log({ attendeeID: attendee.attendee_id });
       //   const response = await axios.post(jobManagerEndpoint, attendee);
       // Handle response if necessary
     }
