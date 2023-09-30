@@ -8,16 +8,16 @@ async function enrichWorkspacesAndAttendees(
   try {
     // Process workspacesToEnrich
     for (let workspace of workspacesToEnrich) {
-      console.log({ workspaceID: workspace.workspace_id });
-      //   const response = await axios.post(jobManagerEndpoint, workspace);
+      //   console.log({ workspaceID: workspace.workspace_id });
+      const response = await axios.post(jobManagerEndpoint, workspace);
       // Handle response if necessary
       // For example: if(response.status !== 200) { /* Handle error */ }
     }
 
     // Process attendeesToEnrich
     for (let attendee of attendeesToEnrich) {
-      console.log({ attendeeID: attendee.attendee_id });
-      //   const response = await axios.post(jobManagerEndpoint, attendee);
+      //   console.log({ attendeeID: attendee.attendee_id });
+      const response = await axios.post(jobManagerEndpoint, attendee);
       // Handle response if necessary
     }
 
