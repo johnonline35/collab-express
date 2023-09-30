@@ -14,7 +14,7 @@ const {
 } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
-const supabase = require("../db/supabase");
+const { enrichWorkspacesAndAttendees } = require("../api/dataEnrichment");
 
 // Fetch the Google calendar for the initial sync
 router.post("/", async (req, res) => {
@@ -44,6 +44,11 @@ router.post("/", async (req, res) => {
     const attendeesToEnrich = await fetchAttendeesToEnrich(
       userId,
       workspacesToEnrich
+    );
+
+    const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+      workspacesToEnrich,
+      attendeesToEnrich
     );
 
     // Create the response object
