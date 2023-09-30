@@ -1,5 +1,5 @@
 const axios = require("axios");
-const jobManagerEndpoint = require("../data/collabUrls/jobManagerEndpoint");
+const { jobEndpoint } = require("../data/collabUrls/jobManagerEndpoint");
 
 async function enrichWorkspacesAndAttendees(
   workspacesToEnrich,
