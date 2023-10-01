@@ -211,9 +211,11 @@ async function fetchAttendeeData(attendeeEmail) {
 
 async function fetchWorkspacesToEnrich(userId) {
   const currentDate = new Date().toISOString();
+  let meetings = [];
+
   try {
-    // 1. Fetch meetings based on userId
-    let { data: meetings, error } = await supabase
+    // 1. Fetch future meetings based on userId
+    let { data: futureMeetings, error: futureError } = await supabase
       .from("meetings")
       .select("*")
       .eq("collab_user_id", userId)
@@ -221,8 +223,28 @@ async function fetchWorkspacesToEnrich(userId) {
       .order("start_dateTime", { ascending: true })
       .limit(10);
 
-    if (error) {
-      throw error;
+    if (futureError) {
+      throw futureError;
+    }
+
+    meetings.push(...futureMeetings);
+
+    // If there are not 10 future meetings, fetch past meetings to make up the difference
+    if (meetings.length < 10) {
+      let remaining = 10 - meetings.length;
+      let { data: pastMeetings, error: pastError } = await supabase
+        .from("meetings")
+        .select("*")
+        .eq("collab_user_id", userId)
+        .lt("start_dateTime", currentDate)
+        .order("start_dateTime", { ascending: false }) // Get the most recent past meetings
+        .limit(remaining);
+
+      if (pastError) {
+        throw pastError;
+      }
+
+      meetings.push(...pastMeetings);
     }
 
     // Extract workspace_ids from the meetings
