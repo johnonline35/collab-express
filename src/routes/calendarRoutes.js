@@ -39,20 +39,20 @@ router.post("/", async (req, res) => {
       await setWatchSetup(userId);
     }
 
-    // if (!userResult.initialEnrichmentComplete) {
-    //   const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
+    if (!userResult.initialEnrichmentComplete) {
+      const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
-    //   const attendeesToEnrich = await fetchAttendeesToEnrich(
-    //     userId,
-    //     workspacesToEnrich
-    //   );
+      const attendeesToEnrich = await fetchAttendeesToEnrich(
+        userId,
+        workspacesToEnrich
+      );
 
-    //   const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-    //     workspacesToEnrich,
-    //     attendeesToEnrich,
-    //     userId
-    //   );
-    // }
+      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+        workspacesToEnrich,
+        attendeesToEnrich,
+        userId
+      );
+    }
 
     // Create the response object
     const response = {
