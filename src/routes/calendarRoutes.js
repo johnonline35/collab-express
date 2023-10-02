@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
       // Set the flag in the database indicating a watch is set up
       await setWatchSetup(userId);
     }
-
+    // Enrich the 10 most relevant workspaces:
     const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
     // Check if the array is empty
@@ -52,7 +52,6 @@ router.post("/", async (req, res) => {
         workspacesToEnrich,
         attendeesToEnrich
       );
-      // ... continue with the rest of your logic
     } else {
       console.log("No new workspaces to enrich.");
     }

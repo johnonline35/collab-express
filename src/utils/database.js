@@ -278,7 +278,7 @@ async function fetchWorkspacesToEnrich(userId) {
 
       const { error: updateError } = await supabase
         .from("collab_users")
-        .update({ last_processed_timestamp: latestMeetingTimestamp })
+        .update({ last_processed_meeting_timestamp: latestMeetingTimestamp })
         .eq("id", userId);
 
       if (updateError) {
