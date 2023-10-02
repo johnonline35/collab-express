@@ -210,16 +210,19 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function fetchWorkspacesToEnrich(userId) {
-  const currentDate = new Date().toISOString();
+  // 1. Get the last processed timestamp from localStorage
+  const lastProcessedTimestamp =
+    localStorage.getItem("lastProcessedTimestamp") || new Date(0).toISOString();
+
   let meetings = [];
 
   try {
-    // 1. Fetch future meetings based on userId
+    // 2. Fetch future meetings based on userId and lastProcessedTimestamp
     let { data: futureMeetings, error: futureError } = await supabase
       .from("meetings")
       .select("*")
       .eq("collab_user_id", userId)
-      .gte("start_dateTime", currentDate)
+      .gte("start_dateTime", lastProcessedTimestamp)
       .order("start_dateTime", { ascending: true })
       .limit(10);
 
@@ -229,28 +232,15 @@ async function fetchWorkspacesToEnrich(userId) {
 
     meetings.push(...futureMeetings);
 
-    // If there are not 10 future meetings, fetch past meetings to make up the difference
-    if (meetings.length < 10) {
-      let remaining = 10 - meetings.length;
-      let { data: pastMeetings, error: pastError } = await supabase
-        .from("meetings")
-        .select("*")
-        .eq("collab_user_id", userId)
-        .lt("start_dateTime", currentDate)
-        .order("start_dateTime", { ascending: false }) // Get the most recent past meetings
-        .limit(remaining);
-
-      if (pastError) {
-        throw pastError;
-      }
-
-      meetings.push(...pastMeetings);
+    // If there are no new meetings, exit early.
+    if (meetings.length === 0) {
+      return [];
     }
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
 
-    // 2. Update workspaces table
+    // 3. Update workspaces table
     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
     if (workspaceIds.length > 0) {
       // Check if there's at least one ID
@@ -262,8 +252,7 @@ async function fetchWorkspacesToEnrich(userId) {
           },
           { returning: "minimal" }
         )
-        .in("workspace_id", workspaceIds)
-        .select();
+        .in("workspace_id", workspaceIds);
 
       if (updateError) {
         throw updateError;
@@ -271,8 +260,15 @@ async function fetchWorkspacesToEnrich(userId) {
 
       updatedWorkspaces = updatedData; // Assign the updated data
     }
-    console.log("updatedWorkspaces:", updatedWorkspaces);
-    return updatedWorkspaces; // Return the updated workspaces
+
+    // 4. After processing, update the last processed timestamp in localStorage
+    if (meetings.length > 0) {
+      const latestMeetingTimestamp =
+        meetings[meetings.length - 1].start_dateTime;
+      localStorage.setItem("lastProcessedTimestamp", latestMeetingTimestamp);
+    }
+
+    return updatedWorkspaces;
   } catch (err) {
     console.error("Error while fetching and updating:", err);
     return null;
