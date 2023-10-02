@@ -277,7 +277,7 @@ async function fetchWorkspacesToEnrich(userId) {
     return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
-    return null;
+    return [];
   }
 }
 
