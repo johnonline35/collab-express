@@ -49,7 +49,8 @@ router.post("/", async (req, res) => {
 
       const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
         workspacesToEnrich,
-        attendeesToEnrich
+        attendeesToEnrich,
+        userId
       );
     }
 
