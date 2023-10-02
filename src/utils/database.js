@@ -209,6 +209,76 @@ async function fetchAttendeeData(attendeeEmail) {
   }
 }
 
+// async function fetchWorkspacesToEnrich(userId) {
+//   const currentDate = new Date().toISOString();
+//   let meetings = [];
+
+//   try {
+//     // 1. Fetch future meetings based on userId
+//     let { data: futureMeetings, error: futureError } = await supabase
+//       .from("meetings")
+//       .select("*")
+//       .eq("collab_user_id", userId)
+//       .gte("start_dateTime", currentDate)
+//       .order("start_dateTime", { ascending: true })
+//       .limit(10);
+
+//     if (futureError) {
+//       throw futureError;
+//     }
+
+//     meetings.push(...futureMeetings);
+
+//     // If there are not 10 future meetings, fetch past meetings to make up the difference
+//     if (meetings.length < 10) {
+//       let remaining = 10 - meetings.length;
+//       let { data: pastMeetings, error: pastError } = await supabase
+//         .from("meetings")
+//         .select("*")
+//         .eq("collab_user_id", userId)
+//         .lt("start_dateTime", currentDate)
+//         .order("start_dateTime", { ascending: false }) // Get the most recent past meetings
+//         .limit(remaining);
+
+//       if (pastError) {
+//         throw pastError;
+//       }
+
+//       meetings.push(...pastMeetings);
+//     }
+
+//     // Extract workspace_ids from the meetings
+//     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
+
+//     // 2. Update workspaces table
+//     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
+//     if (workspaceIds.length > 0) {
+//       // Check if there's at least one ID
+//       const { data: updatedData, error: updateError } = await supabase
+//         .from("workspaces")
+//         .update(
+//           {
+//             enrich_and_display: true,
+//           },
+//           { returning: "minimal" }
+//         )
+//         .in("workspace_id", workspaceIds)
+//         .select();
+
+//       if (updateError) {
+//         throw updateError;
+//       }
+
+//       updatedWorkspaces = updatedData; // Assign the updated data
+//     }
+//     console.log("updatedWorkspaces:", updatedWorkspaces);
+//     return updatedWorkspaces; // Return the updated workspaces
+//   } catch (err) {
+//     console.error("Error while fetching and updating:", err);
+//     return null;
+//   }
+// }
+
 async function fetchWorkspacesToEnrich(userId) {
   console.log("fetchWorkspacesToEnrich started for userId:", userId);
 
@@ -273,7 +343,8 @@ async function fetchWorkspacesToEnrich(userId) {
           },
           { returning: "minimal" }
         )
-        .in("workspace_id", workspaceIds);
+        .in("workspace_id", workspaceIds)
+        .select();
 
       if (updateError) {
         throw updateError;
