@@ -42,7 +42,7 @@ const getGoogleCal = async (userId) => {
         // console.log("response.data", response.data);
 
         if (response.data.nextSyncToken) {
-          // console.log("nextSyncToken", response.data.nextSyncToken);
+          console.log("nextSyncToken", response.data.nextSyncToken);
           nextSyncToken = response.data.nextSyncToken;
         } else {
           console.log("nextSyncToken is not present");
