@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { jobManagerEndpoint } = require("../data/collabUrls");
+const { updateInitialEnrichmentComplete } = require("../utils/database");
 
 async function enrichWorkspacesAndAttendees(
   workspacesToEnrich,
@@ -22,13 +23,9 @@ async function enrichWorkspacesAndAttendees(
       // Handle response if necessary
     }
 
-    const { error } = await supabase
-      .from("collab_users")
-      .update({ initial_enrichment_complete: true })
-      .eq("id", userId);
-
-    if (error) {
-      throw error; // If there's an error updating the table, throw it
+    const updateSuccess = await updateInitialEnrichmentComplete(userId);
+    if (!updateSuccess) {
+      throw new Error("Failed to update initial enrichment completion status");
     }
 
     return true; // Successfully enriched both workspaces and attendees

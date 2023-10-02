@@ -408,6 +408,23 @@ async function fetchAttendeesToEnrich(userId, workspacesToEnrich) {
   }
 }
 
+async function updateInitialEnrichmentComplete(userId) {
+  try {
+    const { error } = await supabase
+      .from("collab_users")
+      .update({ initial_enrichment_complete: true })
+      .eq("id", userId);
+
+    if (error) {
+      throw error;
+    }
+    return true;
+  } catch (err) {
+    console.error("Error updating initial_enrichment_complete:", err);
+    return false;
+  }
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -423,4 +440,5 @@ module.exports = {
   fetchAttendeeData,
   fetchWorkspacesToEnrich,
   fetchAttendeesToEnrich,
+  updateInitialEnrichmentComplete,
 };
