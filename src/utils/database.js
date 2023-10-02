@@ -210,6 +210,8 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function fetchWorkspacesToEnrich(userId) {
+  console.log("fetchWorkspacesToEnrich started for userId:", userId);
+
   let meetings = [];
 
   try {
@@ -224,8 +226,15 @@ async function fetchWorkspacesToEnrich(userId) {
       throw userMetaError;
     }
 
+    console.log(
+      "Last processed timestamp fetched:",
+      userMeta?.last_processed_meeting_timestamp
+    );
+
     const lastProcessedTimestamp =
       userMeta?.last_processed_meeting_timestamp || new Date(0).toISOString();
+
+    console.log("Fetching future meetings...");
 
     // 2. Fetch future meetings based on userId and lastProcessedTimestamp
     let { data: futureMeetings, error: futureError } = await supabase
@@ -239,6 +248,8 @@ async function fetchWorkspacesToEnrich(userId) {
     if (futureError) {
       throw futureError;
     }
+
+    console.log(`Fetched ${futureMeetings.length} future meetings.`);
 
     meetings.push(...futureMeetings);
 
@@ -289,7 +300,7 @@ async function fetchWorkspacesToEnrich(userId) {
     return updatedWorkspaces; // You need to ensure 'updatedWorkspaces' is defined and populated before this point
   } catch (err) {
     console.error("Error while fetching and updating:", err);
-    return null;
+    return [];
   }
 }
 
