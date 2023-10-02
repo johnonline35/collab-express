@@ -42,16 +42,21 @@ router.post("/", async (req, res) => {
     if (!userResult.initialEnrichmentComplete) {
       const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
-      const attendeesToEnrich = await fetchAttendeesToEnrich(
-        userId,
-        workspacesToEnrich
-      );
-
-      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-        workspacesToEnrich,
-        attendeesToEnrich,
-        userId
-      );
+      if (workspacesToEnrich.length > 0) {
+        // Checking if the workspaces array is not empty
+        const attendeesToEnrich = await fetchAttendeesToEnrich(
+          userId,
+          workspacesToEnrich
+        );
+        const enrichedWorkspacesAndAttendees =
+          await enrichWorkspacesAndAttendees(
+            workspacesToEnrich,
+            attendeesToEnrich,
+            userId
+          );
+      } else {
+        console.log("No workspaces to enrich");
+      }
     }
 
     // Create the response object
