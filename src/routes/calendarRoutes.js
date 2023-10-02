@@ -38,23 +38,18 @@ router.post("/", async (req, res) => {
       // Set the flag in the database indicating a watch is set up
       await setWatchSetup(userId);
     }
-    // Enrich the 10 most relevant workspaces:
+
     const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
-    // Check if the array is empty
-    if (workspacesToEnrich.length > 0) {
-      const attendeesToEnrich = await fetchAttendeesToEnrich(
-        userId,
-        workspacesToEnrich
-      );
+    const attendeesToEnrich = await fetchAttendeesToEnrich(
+      userId,
+      workspacesToEnrich
+    );
 
-      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-        workspacesToEnrich,
-        attendeesToEnrich
-      );
-    } else {
-      console.log("No new workspaces to enrich.");
-    }
+    const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+      workspacesToEnrich,
+      attendeesToEnrich
+    );
 
     // Create the response object
     const response = {
