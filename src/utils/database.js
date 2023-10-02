@@ -209,109 +209,17 @@ async function fetchAttendeeData(attendeeEmail) {
   }
 }
 
-// async function fetchWorkspacesToEnrich(userId) {
-//   const currentDate = new Date().toISOString();
-//   let meetings = [];
-
-//   try {
-//     // 1. Fetch future meetings based on userId
-//     let { data: futureMeetings, error: futureError } = await supabase
-//       .from("meetings")
-//       .select("*")
-//       .eq("collab_user_id", userId)
-//       .gte("start_dateTime", currentDate)
-//       .order("start_dateTime", { ascending: true })
-//       .limit(10);
-
-//     if (futureError) {
-//       throw futureError;
-//     }
-
-//     meetings.push(...futureMeetings);
-
-//     // If there are not 10 future meetings, fetch past meetings to make up the difference
-//     if (meetings.length < 10) {
-//       let remaining = 10 - meetings.length;
-//       let { data: pastMeetings, error: pastError } = await supabase
-//         .from("meetings")
-//         .select("*")
-//         .eq("collab_user_id", userId)
-//         .lt("start_dateTime", currentDate)
-//         .order("start_dateTime", { ascending: false }) // Get the most recent past meetings
-//         .limit(remaining);
-
-//       if (pastError) {
-//         throw pastError;
-//       }
-
-//       meetings.push(...pastMeetings);
-//     }
-
-//     // Extract workspace_ids from the meetings
-//     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
-
-//     // 2. Update workspaces table
-//     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
-//     if (workspaceIds.length > 0) {
-//       // Check if there's at least one ID
-//       const { data: updatedData, error: updateError } = await supabase
-//         .from("workspaces")
-//         .update(
-//           {
-//             enrich_and_display: true,
-//           },
-//           { returning: "minimal" }
-//         )
-//         .in("workspace_id", workspaceIds)
-//         .select();
-
-//       if (updateError) {
-//         throw updateError;
-//       }
-
-//       updatedWorkspaces = updatedData; // Assign the updated data
-//     }
-//     console.log("updatedWorkspaces:", updatedWorkspaces);
-//     return updatedWorkspaces; // Return the updated workspaces
-//   } catch (err) {
-//     console.error("Error while fetching and updating:", err);
-//     return null;
-//   }
-// }
-
 async function fetchWorkspacesToEnrich(userId) {
-  console.log("fetchWorkspacesToEnrich started for userId:", userId);
-
+  const currentDate = new Date().toISOString();
   let meetings = [];
 
   try {
-    // 1. Fetch the last processed timestamp from the user_metadata table
-    let { data: userMeta, error: userMetaError } = await supabase
-      .from("collab_users")
-      .select("last_processed_meeting_timestamp")
-      .eq("id", userId)
-      .single();
-
-    if (userMetaError) {
-      throw userMetaError;
-    }
-
-    console.log(
-      "Last processed timestamp fetched:",
-      userMeta?.last_processed_meeting_timestamp
-    );
-
-    const lastProcessedTimestamp =
-      userMeta?.last_processed_meeting_timestamp || new Date(0).toISOString();
-
-    console.log("Fetching future meetings...");
-
-    // 2. Fetch future meetings based on userId and lastProcessedTimestamp
+    // 1. Fetch future meetings based on userId
     let { data: futureMeetings, error: futureError } = await supabase
       .from("meetings")
       .select("*")
       .eq("collab_user_id", userId)
-      .gte("start_dateTime", lastProcessedTimestamp)
+      .gte("start_dateTime", currentDate)
       .order("start_dateTime", { ascending: true })
       .limit(10);
 
@@ -319,19 +227,30 @@ async function fetchWorkspacesToEnrich(userId) {
       throw futureError;
     }
 
-    console.log(`Fetched ${futureMeetings.length} future meetings.`);
-
     meetings.push(...futureMeetings);
 
-    // If there are no new meetings, exit early.
-    if (meetings.length === 0) {
-      return [];
+    // If there are not 10 future meetings, fetch past meetings to make up the difference
+    if (meetings.length < 10) {
+      let remaining = 10 - meetings.length;
+      let { data: pastMeetings, error: pastError } = await supabase
+        .from("meetings")
+        .select("*")
+        .eq("collab_user_id", userId)
+        .lt("start_dateTime", currentDate)
+        .order("start_dateTime", { ascending: false }) // Get the most recent past meetings
+        .limit(remaining);
+
+      if (pastError) {
+        throw pastError;
+      }
+
+      meetings.push(...pastMeetings);
     }
 
     // Extract workspace_ids from the meetings
     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
 
-    // 3. Update workspaces table
+    // 2. Update workspaces table
     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
     if (workspaceIds.length > 0) {
       // Check if there's at least one ID
@@ -352,28 +271,109 @@ async function fetchWorkspacesToEnrich(userId) {
 
       updatedWorkspaces = updatedData; // Assign the updated data
     }
-
-    // 3. After processing, update the last processed timestamp in the user_metadata table
-    if (meetings.length > 0) {
-      const latestMeetingTimestamp =
-        meetings[meetings.length - 1].start_dateTime;
-
-      const { error: updateError } = await supabase
-        .from("collab_users")
-        .update({ last_processed_meeting_timestamp: latestMeetingTimestamp })
-        .eq("id", userId);
-
-      if (updateError) {
-        throw updateError;
-      }
-    }
-
-    return updatedWorkspaces; // You need to ensure 'updatedWorkspaces' is defined and populated before this point
+    console.log("updatedWorkspaces:", updatedWorkspaces);
+    return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
-    return [];
+    return null;
   }
 }
+
+// async function fetchWorkspacesToEnrich(userId) {
+//   console.log("fetchWorkspacesToEnrich started for userId:", userId);
+
+//   let meetings = [];
+
+//   try {
+//     // 1. Fetch the last processed timestamp from the user_metadata table
+//     let { data: userMeta, error: userMetaError } = await supabase
+//       .from("collab_users")
+//       .select("last_processed_meeting_timestamp")
+//       .eq("id", userId)
+//       .single();
+
+//     if (userMetaError) {
+//       throw userMetaError;
+//     }
+
+//     console.log(
+//       "Last processed timestamp fetched:",
+//       userMeta?.last_processed_meeting_timestamp
+//     );
+
+//     const lastProcessedTimestamp =
+//       userMeta?.last_processed_meeting_timestamp || new Date(0).toISOString();
+
+//     console.log("Fetching future meetings...");
+
+//     // 2. Fetch future meetings based on userId and lastProcessedTimestamp
+//     let { data: futureMeetings, error: futureError } = await supabase
+//       .from("meetings")
+//       .select("*")
+//       .eq("collab_user_id", userId)
+//       .gte("start_dateTime", lastProcessedTimestamp)
+//       .order("start_dateTime", { ascending: true })
+//       .limit(10);
+
+//     if (futureError) {
+//       throw futureError;
+//     }
+
+//     console.log(`Fetched ${futureMeetings.length} future meetings.`);
+
+//     meetings.push(...futureMeetings);
+
+//     // If there are no new meetings, exit early.
+//     if (meetings.length === 0) {
+//       return [];
+//     }
+
+//     // Extract workspace_ids from the meetings
+//     const workspaceIds = meetings.map((meeting) => meeting.workspace_id);
+
+//     // 3. Update workspaces table
+//     let updatedWorkspaces = []; // Placeholder for the updated workspaces data
+//     if (workspaceIds.length > 0) {
+//       // Check if there's at least one ID
+//       const { data: updatedData, error: updateError } = await supabase
+//         .from("workspaces")
+//         .update(
+//           {
+//             enrich_and_display: true,
+//           },
+//           { returning: "minimal" }
+//         )
+//         .in("workspace_id", workspaceIds)
+//         .select();
+
+//       if (updateError) {
+//         throw updateError;
+//       }
+
+//       updatedWorkspaces = updatedData; // Assign the updated data
+//     }
+
+//     // 3. After processing, update the last processed timestamp in the user_metadata table
+//     if (meetings.length > 0) {
+//       const latestMeetingTimestamp =
+//         meetings[meetings.length - 1].start_dateTime;
+
+//       const { error: updateError } = await supabase
+//         .from("collab_users")
+//         .update({ last_processed_meeting_timestamp: latestMeetingTimestamp })
+//         .eq("id", userId);
+
+//       if (updateError) {
+//         throw updateError;
+//       }
+//     }
+
+//     return updatedWorkspaces; // You need to ensure 'updatedWorkspaces' is defined and populated before this point
+//   } catch (err) {
+//     console.error("Error while fetching and updating:", err);
+//     return [];
+//   }
+// }
 
 async function fetchAttendeesToEnrich(userId, workspacesToEnrich) {
   try {
