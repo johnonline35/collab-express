@@ -210,13 +210,23 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function fetchWorkspacesToEnrich(userId) {
-  // 1. Get the last processed timestamp from localStorage
-  const lastProcessedTimestamp =
-    localStorage.getItem("lastProcessedTimestamp") || new Date(0).toISOString();
-
   let meetings = [];
 
   try {
+    // 1. Fetch the last processed timestamp from the user_metadata table
+    let { data: userMeta, error: userMetaError } = await supabase
+      .from("collab_users")
+      .select("last_processed_meeting_timestamp")
+      .eq("id", userId)
+      .single();
+
+    if (userMetaError) {
+      throw userMetaError;
+    }
+
+    const lastProcessedTimestamp =
+      userMeta?.last_processed_meeting_timestamp || new Date(0).toISOString();
+
     // 2. Fetch future meetings based on userId and lastProcessedTimestamp
     let { data: futureMeetings, error: futureError } = await supabase
       .from("meetings")
