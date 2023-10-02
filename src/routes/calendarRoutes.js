@@ -41,15 +41,21 @@ router.post("/", async (req, res) => {
 
     const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
-    const attendeesToEnrich = await fetchAttendeesToEnrich(
-      userId,
-      workspacesToEnrich
-    );
+    // Check if the array is empty
+    if (workspacesToEnrich.length > 0) {
+      const attendeesToEnrich = await fetchAttendeesToEnrich(
+        userId,
+        workspacesToEnrich
+      );
 
-    const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-      workspacesToEnrich,
-      attendeesToEnrich
-    );
+      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+        workspacesToEnrich,
+        attendeesToEnrich
+      );
+      // ... continue with the rest of your logic
+    } else {
+      console.log("No new workspaces to enrich.");
+    }
 
     // Create the response object
     const response = {
