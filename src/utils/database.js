@@ -80,16 +80,22 @@ const getUserEmailFromDB = async (userId) => {
 const checkIfWatchIsSetup = async (userId) => {
   const { data, error } = await supabase
     .from("collab_users")
-    .select("is_watch_setup")
+    .select("*")
     .eq("id", userId);
 
   if (error) {
-    console.error("Error fetching watch status:", error);
-    return false;
+    console.error("Error fetching user data:", error);
+    return {
+      isWatchSetup: false,
+      initialEnrichmentComplete: false,
+    };
   }
 
   // If the field is null or undefined, consider the watch as not set up
-  return data[0].is_watch_setup || false;
+  return {
+    isWatchSetup: data[0].is_watch_setup || false,
+    initialEnrichmentComplete: data[0].initial_enrichment_complete || false,
+  };
 };
 
 const setWatchSetup = async (userId) => {
