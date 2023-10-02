@@ -271,14 +271,22 @@ async function fetchWorkspacesToEnrich(userId) {
       updatedWorkspaces = updatedData; // Assign the updated data
     }
 
-    // 4. After processing, update the last processed timestamp in localStorage
+    // 3. After processing, update the last processed timestamp in the user_metadata table
     if (meetings.length > 0) {
       const latestMeetingTimestamp =
         meetings[meetings.length - 1].start_dateTime;
-      localStorage.setItem("lastProcessedTimestamp", latestMeetingTimestamp);
+
+      const { error: updateError } = await supabase
+        .from("collab_users")
+        .update({ last_processed_timestamp: latestMeetingTimestamp })
+        .eq("id", userId);
+
+      if (updateError) {
+        throw updateError;
+      }
     }
 
-    return updatedWorkspaces;
+    return updatedWorkspaces; // You need to ensure 'updatedWorkspaces' is defined and populated before this point
   } catch (err) {
     console.error("Error while fetching and updating:", err);
     return null;
