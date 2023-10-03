@@ -40,20 +40,20 @@ router.post("/", async (req, res) => {
     }
 
     if (!userResult.initialEnrichmentComplete) {
-      const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
-
-      const attendeesToEnrich = await fetchAttendeesToEnrich(
-        userId,
-        workspacesToEnrich
-      );
-
-      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-        workspacesToEnrich,
-        attendeesToEnrich,
-        userId
-      );
+      // SKIP FOR NOW
     }
+    const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
 
+    const attendeesToEnrich = await fetchAttendeesToEnrich(
+      userId,
+      workspacesToEnrich
+    );
+
+    const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+      workspacesToEnrich,
+      attendeesToEnrich,
+      userId
+    );
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,
