@@ -232,7 +232,7 @@ async function fetchWorkspacesToEnrich(userId) {
       .eq("collab_user_id", userId)
       .gte("start_dateTime", currentDate)
       .order("start_dateTime", { ascending: true })
-      .limit(70);
+      .limit(100);
 
     let uniqueWorkspaceIds = [];
 
@@ -257,7 +257,7 @@ async function fetchWorkspacesToEnrich(userId) {
         .eq("collab_user_id", userId)
         .lt("start_dateTime", currentDate)
         .order("start_dateTime", { ascending: false })
-        .limit(70);
+        .limit(100);
 
       for (let meeting of pastMeetings) {
         if (
