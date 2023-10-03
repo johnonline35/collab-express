@@ -259,7 +259,7 @@ async function fetchWorkspacesToEnrich(userId) {
         }
       }
     }
-
+    console.log("uniqueWorkspaceIds:", uniqueWorkspaceIds);
     // 2. Update workspaces table
     let updatedWorkspaces = [];
     const { data: updatedData, error: updateError } = await supabase
