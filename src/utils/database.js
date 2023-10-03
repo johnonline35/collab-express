@@ -218,6 +218,12 @@ async function fetchAttendeeData(attendeeEmail) {
 async function fetchWorkspacesToEnrich(userId) {
   const currentDate = new Date().toISOString();
 
+  function isValidUUID(v) {
+    const regex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+    return v && regex.test(v);
+  }
+
   try {
     // 1. Fetch future meetings based on userId
     let { data: futureMeetings } = await supabase
@@ -232,7 +238,10 @@ async function fetchWorkspacesToEnrich(userId) {
 
     // Extract unique workspace_ids from future meetings
     for (let meeting of futureMeetings) {
-      if (!uniqueWorkspaceIds.includes(meeting.workspace_id)) {
+      if (
+        !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
+        isValidUUID(meeting.workspace_id)
+      ) {
         uniqueWorkspaceIds.push(meeting.workspace_id);
         if (uniqueWorkspaceIds.length >= 10) {
           break;
@@ -251,7 +260,10 @@ async function fetchWorkspacesToEnrich(userId) {
         .limit(70);
 
       for (let meeting of pastMeetings) {
-        if (!uniqueWorkspaceIds.includes(meeting.workspace_id)) {
+        if (
+          !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
+          isValidUUID(meeting.workspace_id)
+        ) {
           uniqueWorkspaceIds.push(meeting.workspace_id);
           if (uniqueWorkspaceIds.length >= 10) {
             break;
