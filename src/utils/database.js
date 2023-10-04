@@ -234,6 +234,8 @@ async function fetchWorkspacesToEnrich(userId) {
       .order("start_dateTime", { ascending: true });
     // .limit(100);
 
+    console.log("Future meetings array:", futureMeetings);
+
     let uniqueWorkspaceIds = [];
 
     // Extract unique workspace_ids from future meetings
