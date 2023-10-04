@@ -216,6 +216,7 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function fetchWorkspacesToEnrich(userId) {
+  console.log("Just called: fetchWorkspacesToEnrich");
   const currentDate = new Date().toISOString();
 
   function isValidUUID(v) {
@@ -462,9 +463,9 @@ async function fetchWorkspacesToEnrich(userId) {
 // }
 
 async function fetchAttendeesToEnrich(userId, workspacesToEnrich) {
-  console.log(
-    `Just called fetchAttendeesToEnrich with userId: ${userId}, and workspace object: ${workspacesToEnrich}`
-  );
+  // console.log(
+  //   `Just called fetchAttendeesToEnrich with userId: ${userId}, and workspace object: ${workspacesToEnrich}`
+  // );
   try {
     // Extract workspace_ids from workspacesToEnrich
     const workspaceIds = workspacesToEnrich.map(
