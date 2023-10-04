@@ -155,7 +155,7 @@ async function updateAttendeesAndMeetings(
           .update({ workspace_id: meeting.workspace_id })
           .eq("id", meeting.id);
         console.log(
-          `"*******Update meeting result when workspace ID is first added to the meeting. Meeting Id: ${updateResult.search} and Workspace Id: ${updateResult.body.workspace_id}`
+          `"*******Update meeting result Workspace Id: ${updateResult}`
         );
         return updateResult;
       })
