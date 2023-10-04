@@ -253,27 +253,27 @@ async function fetchWorkspacesToEnrich(userId) {
     }
 
     // If there are not 10 unique workspaces from future meetings, fetch past meetings to make up the difference
-    // if (uniqueWorkspaceIds.length < 10) {
-    //   let { data: pastMeetings } = await supabase
-    //     .from("meetings")
-    //     .select("*")
-    //     .eq("collab_user_id", userId)
-    //     .lt("start_dateTime", currentDate)
-    //     .order("start_dateTime", { ascending: false })
-    //     .limit(100);
+    if (uniqueWorkspaceIds.length < 10) {
+      let { data: pastMeetings } = await supabase
+        .from("meetings")
+        .select("*")
+        .eq("collab_user_id", userId)
+        .lt("start_dateTime", currentDate)
+        .order("start_dateTime", { ascending: false })
+        .limit(100);
 
-    //   for (let meeting of pastMeetings) {
-    //     if (
-    //       !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
-    //       isValidUUID(meeting.workspace_id)
-    //     ) {
-    //       uniqueWorkspaceIds.push(meeting.workspace_id);
-    //       if (uniqueWorkspaceIds.length >= 10) {
-    //         break;
-    //       }
-    //     }
-    //   }
-    // }
+      for (let meeting of pastMeetings) {
+        if (
+          !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
+          isValidUUID(meeting.workspace_id)
+        ) {
+          uniqueWorkspaceIds.push(meeting.workspace_id);
+          if (uniqueWorkspaceIds.length >= 10) {
+            break;
+          }
+        }
+      }
+    }
     console.log("uniqueWorkspaceIds:", uniqueWorkspaceIds);
     // 2. Update workspaces table
     let updatedWorkspaces = [];
