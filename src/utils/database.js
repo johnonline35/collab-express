@@ -225,52 +225,59 @@ async function fetchWorkspacesToEnrich(userId) {
   }
 
   try {
-    // 1. Fetch future meetings based on userId
-    let { data: futureMeetings } = await supabase
-      .from("meetings")
-      .select("*")
-      .eq("collab_user_id", userId)
-      .gte("start_dateTime", currentDate)
-      .order("start_dateTime", { ascending: true })
-      .limit(100);
-
     let uniqueWorkspaceIds = [];
 
-    // Extract unique workspace_ids from future meetings
+    let { data: futureMeetings } = await supabase.rpc(
+      "get_future_unique_workspace_ids_from_meetings_table",
+      { user_id: userId, current_date: currentDate }
+    );
+
+    // 1. Fetch future meetings based on userId
+    // let { data: futureMeetings } = await supabase
+    //   .from("meetings")
+    //   .select("*")
+    //   .eq("collab_user_id", userId)
+    //   .gte("start_dateTime", currentDate)
+    //   .order("start_dateTime", { ascending: true });
+    // // .limit(100);
+
+    // let uniqueWorkspaceIds = [];
+
+    // // Extract unique workspace_ids from future meetings
     for (let meeting of futureMeetings) {
       if (
         !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
         isValidUUID(meeting.workspace_id)
       ) {
         uniqueWorkspaceIds.push(meeting.workspace_id);
-        if (uniqueWorkspaceIds.length >= 10) {
-          break;
-        }
+        // if (uniqueWorkspaceIds.length >= 10) {
+        //   break;
+        // }
       }
     }
 
-    // If there are not 10 unique workspaces from future meetings, fetch past meetings to make up the difference
-    if (uniqueWorkspaceIds.length < 10) {
-      let { data: pastMeetings } = await supabase
-        .from("meetings")
-        .select("*")
-        .eq("collab_user_id", userId)
-        .lt("start_dateTime", currentDate)
-        .order("start_dateTime", { ascending: false })
-        .limit(100);
+    // // If there are not 10 unique workspaces from future meetings, fetch past meetings to make up the difference
+    // if (uniqueWorkspaceIds.length < 10) {
+    //   let { data: pastMeetings } = await supabase
+    //     .from("meetings")
+    //     .select("*")
+    //     .eq("collab_user_id", userId)
+    //     .lt("start_dateTime", currentDate)
+    //     .order("start_dateTime", { ascending: false })
+    //     .limit(100);
 
-      for (let meeting of pastMeetings) {
-        if (
-          !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
-          isValidUUID(meeting.workspace_id)
-        ) {
-          uniqueWorkspaceIds.push(meeting.workspace_id);
-          if (uniqueWorkspaceIds.length >= 10) {
-            break;
-          }
-        }
-      }
-    }
+    //   for (let meeting of pastMeetings) {
+    //     if (
+    //       !uniqueWorkspaceIds.includes(meeting.workspace_id) &&
+    //       isValidUUID(meeting.workspace_id)
+    //     ) {
+    //       uniqueWorkspaceIds.push(meeting.workspace_id);
+    //       if (uniqueWorkspaceIds.length >= 10) {
+    //         break;
+    //       }
+    //     }
+    //   }
+    // }
     console.log("uniqueWorkspaceIds:", uniqueWorkspaceIds);
     // 2. Update workspaces table
     let updatedWorkspaces = [];
