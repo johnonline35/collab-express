@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     if (!userResult.isWatchSetup) {
       // Set up the Google Calendar watch
       await watchGoogleCalendar(userId);
-      // Set the flag in the database indicating a watch is set up
+      // Set the flag in the database indicating a watch is set up.
       await setWatchSetup(userId);
     }
 
