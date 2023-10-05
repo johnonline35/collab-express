@@ -235,7 +235,7 @@ async function fetchWorkspacesToEnrich(userId) {
       .order("start_dateTime", { ascending: true });
     // .limit(100);
 
-    console.log("Future meetings array:", futureMeetings);
+    // console.log("Future meetings array:", futureMeetings);
 
     let uniqueWorkspaceIds = [];
 
@@ -274,7 +274,7 @@ async function fetchWorkspacesToEnrich(userId) {
         }
       }
     }
-    console.log("uniqueWorkspaceIds:", uniqueWorkspaceIds);
+    // console.log("uniqueWorkspaceIds:", uniqueWorkspaceIds);
     // 2. Update workspaces table
     let updatedWorkspaces = [];
     const { data: updatedData, error: updateError } = await supabase
@@ -288,7 +288,7 @@ async function fetchWorkspacesToEnrich(userId) {
     }
     updatedWorkspaces = updatedData;
 
-    console.log("updatedWorkspaces:", updatedWorkspaces);
+    // console.log("updatedWorkspaces:", updatedWorkspaces);
     return updatedWorkspaces; // Return the updated workspaces
   } catch (err) {
     console.error("Error while fetching and updating:", err);
