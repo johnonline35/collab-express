@@ -78,7 +78,7 @@ async function updateAttendeesAndMeetings(
           publicEmailDomains
         );
 
-        // Check if leadAssigned already has a workspace_id
+        // Check if leadAssigned already has a workspace_id:
         let existingLeadWorkspace = existingAttendeesMap.get(
           leadAssigned.email
         )?.workspace_id;
