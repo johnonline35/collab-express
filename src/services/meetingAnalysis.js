@@ -102,7 +102,7 @@ async function analyzeMeetings(userId) {
   }
 
   // Update attendees and meetings in batch
-  await updateAttendeesAndMeetings(
+  const updatedMeetings = await updateAttendeesAndMeetings(
     existingAttendees,
     meetings,
     meetingAttendeesMap,
@@ -112,7 +112,7 @@ async function analyzeMeetings(userId) {
   );
   console.log("Attendees and meetings updated.");
 
-  return meetings;
+  return updatedMeetings;
 }
 
 module.exports = {
