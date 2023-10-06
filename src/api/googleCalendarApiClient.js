@@ -224,22 +224,22 @@ const getGoogleCal = async (userId) => {
     console.log("analyzeMeetings finished.");
 
     // Update the workspace_id for each meeting in the response
-    const updatedMeetings = meetings.map((meeting) => {
-      const analyzedMeeting = analyzedMeetings.find((m) => m.id === meeting.id);
-      if (analyzedMeeting && analyzedMeeting.workspace_id) {
-        meeting.workspace_id = analyzedMeeting.workspace_id;
-      }
-      return meeting;
-    });
+    // const updatedMeetings = meetings.map((meeting) => {
+    //   const analyzedMeeting = analyzedMeetings.find((m) => m.id === meeting.id);
+    //   if (analyzedMeeting && analyzedMeeting.workspace_id) {
+    //     meeting.workspace_id = analyzedMeeting.workspace_id;
+    //   }
+    //   return meeting;
+    // });
 
-    // Return the updated meetings along with the first workspace_id
-    const response = {
-      workspace_id:
-        updatedMeetings.length > 0 ? updatedMeetings[0].workspace_id : null,
-      meetings: updatedMeetings,
-    };
+    // // Return the updated meetings along with the first workspace_id
+    // const response = {
+    //   workspace_id:
+    //     updatedMeetings.length > 0 ? updatedMeetings[0].workspace_id : null,
+    //   meetings: updatedMeetings,
+    // };
 
-    return response;
+    return analyzedMeetings;
   } catch (error) {
     console.error("The API returned an error:", error);
     return [];

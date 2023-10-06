@@ -174,6 +174,8 @@ async function updateAttendeesAndMeetings(
     if (error) console.log("Error in creating workspace: ", error);
     // else console.log("Workspaces created successfully: ", data);
   }
+
+  return meetingsToUpdate;
 }
 
 module.exports = {
