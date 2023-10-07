@@ -221,15 +221,16 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
   const sortWorkspaceIds = function () {
     const currentDate = new Date().toISOString();
     let uniqueWorkspaceIds = [];
+    const meetings = meetingsData.meetingsToUpdate;
 
-    meetingsData.meetingsToUpdate.sort(
+    meetings.sort(
       (a, b) =>
         new Date(a.start_dateTime).getTime() -
         new Date(b.start_dateTime).getTime()
     );
 
     // Step 1: Get unique workspace IDs from future meetings
-    for (let meeting of meetingsData.meetingsToUpdate) {
+    for (let meeting of meetings) {
       if (
         meeting.start_dateTime > currentDate &&
         !uniqueWorkspaceIds.includes(meeting.workspace_id)
@@ -241,8 +242,8 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
 
     // Step 2: If there are fewer than 10 unique workspace IDs, get from past meetings by iterating in reverse order
     if (uniqueWorkspaceIds.length < 10) {
-      for (let i = meetingsData.length - 1; i >= 0; i--) {
-        let meeting = meetingsData[i];
+      for (let i = meetings.length - 1; i >= 0; i--) {
+        let meeting = meetings[i];
         if (
           meeting.start_dateTime <= currentDate &&
           !uniqueWorkspaceIds.includes(meeting.workspace_id)
@@ -262,7 +263,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     const workspaceIdsSet = new Set(workspaceIds);
     const seenAttendeeEmails = new Set();
 
-    for (let attendee of meetingsData.attendeesToInsert) {
+    for (let attendee of meetings.attendeesToInsert) {
       if (
         workspaceIdsSet.has(attendee.workspace_id) &&
         !seenAttendeeEmails.has(attendee.email)
@@ -301,7 +302,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
   }
 }
 
-// async function fetchWorkspacesToEnrich(userId, meetingsData) {
+// async function fetchWorkspacesToEnrich(userId, meetings) {
 //   console.log("Just called: fetchWorkspacesToEnrich");
 //   const currentDate = new Date().toISOString();
 
