@@ -136,6 +136,7 @@ async function updateAttendeesAndMeetings(
         id: meeting.id,
         start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
+        meeting_attendees: meeting.meeting_attendees,
       });
     }
   }
