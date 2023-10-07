@@ -145,7 +145,10 @@ async function updateAttendeesAndMeetings(
       .upsert(attendeesToInsert)
       .select();
     console.log("Insert attendees result:", insertResult);
+
     if (error) console.log("Error inserting attendees:", error);
+
+    return insertResult;
   }
 
   if (meetingsToUpdate.length > 0) {
@@ -176,7 +179,10 @@ async function updateAttendeesAndMeetings(
     // else console.log("Workspaces created successfully: ", data);
   }
 
-  return meetingsToUpdate;
+  return {
+    meetingsToUpdate: meetingsToUpdate,
+    attendeesToInsert: attendeesToInsert,
+  };
 }
 
 module.exports = {
