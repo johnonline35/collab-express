@@ -171,12 +171,12 @@ router.post("/google-calendar-watch", async (req, res) => {
   const channelToken = req.headers["x-goog-channel-token"];
   const channelId = req.headers["x-goog-channel-id"];
   // console.log("Called Google calendar watch endpoint reqHeaders", reqHeaders);
-  console.log("Called Google calendar watch endpoint channelId", channelId);
-  console.log("Called Google calendar watch endpoint resourceId", resourceId);
-  console.log(
-    "Called Google calendar watch endpoint channelToken",
-    channelToken
-  );
+  // console.log("Called Google calendar watch endpoint channelId", channelId);
+  // console.log("Called Google calendar watch endpoint resourceId", resourceId);
+  // console.log(
+  //   "Called Google calendar watch endpoint channelToken",
+  //   channelToken
+  // );
 
   // If the X-Goog-Channel-Token header is missing or not formatted as expected, handle it gracefully
   if (!channelToken || !channelToken.includes("userId=")) {
@@ -188,11 +188,11 @@ router.post("/google-calendar-watch", async (req, res) => {
 
   // Extract the userId from the channel token
   const userId = channelToken.split("=")[1];
-  console.log("google-calendar-watch userId:", userId);
+  // console.log("google-calendar-watch userId:", userId);
 
   try {
     const updateStatus = await updateGoogleCal(userId);
-    console.log("updateStatus:", updateStatus);
+    // console.log("updateStatus:", updateStatus);
     res.sendStatus(200);
   } catch (error) {
     console.error("Error in google calendar watch: ", error);
