@@ -144,8 +144,9 @@ async function updateAttendeesAndMeetings(
   if (attendeesToInsert.length > 0) {
     let { data: insertResult, error } = await supabase
       .from("attendees")
-      .upsert(attendeesToInsert);
-    // console.log("Insert attendees result:", insertResult);
+      .upsert(attendeesToInsert)
+      .select();
+    console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
   }
 
@@ -172,7 +173,7 @@ async function updateAttendeesAndMeetings(
       .from("workspaces")
       .upsert(workspacesToCreate)
       .select();
-    console.log("Workspace just created with an ID here:", data[0]);
+    // console.log("Workspace just created with an ID here:", data[0]);
     if (error) console.log("Error in creating workspace: ", error);
     // else console.log("Workspaces created successfully: ", data);
   }
