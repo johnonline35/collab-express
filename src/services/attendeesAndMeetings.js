@@ -154,12 +154,12 @@ async function updateAttendeesAndMeetings(
           .from("meetings")
           .update({ workspace_id: meeting.workspace_id })
           .eq("id", meeting.id);
-        console.log(
-          `"*******Update meeting result Meeting Id:`,
-          updateResult.url.search,
-          "Workspace Id:",
-          updateResult.body.workspace_id
-        );
+        // console.log(
+        //   `"*******Update meeting result Meeting Id:`,
+        //   updateResult.url.search,
+        //   "Workspace Id:",
+        //   updateResult.body.workspace_id
+        // );
         return updateResult;
       })
     );

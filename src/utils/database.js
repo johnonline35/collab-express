@@ -483,7 +483,7 @@ async function fetchAttendeesToEnrich(userId, workspacesToEnrich) {
       throw error;
     }
 
-    console.log("Fetched attendees:", attendees);
+    // console.log("Fetched attendees:", attendees);
 
     return attendees;
   } catch (err) {
