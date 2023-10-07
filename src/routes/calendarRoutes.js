@@ -48,6 +48,8 @@ router.post("/", async (req, res) => {
       meetingsData
     );
 
+    console.log("workspacesToEnrich:", workspacesToEnrich);
+
     // const attendeesToEnrich = await fetchAttendeesToEnrich(
     //   userId,
     //   workspacesToEnrich
