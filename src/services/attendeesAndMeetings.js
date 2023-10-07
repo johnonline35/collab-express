@@ -134,6 +134,7 @@ async function updateAttendeesAndMeetings(
 
       meetingsToUpdate.push({
         id: meeting.id,
+        start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
       });
     }
