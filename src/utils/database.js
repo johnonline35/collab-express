@@ -262,7 +262,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     const { data: updatedData, error: updateError } = await supabase
       .from("workspaces")
       .update({ enrich_and_display: true }, { returning: "minimal" })
-      .in("workspace_id", workspaceIds)
+      .in("workspace_id", workspaceIds())
       .select();
 
     if (updateError) {
