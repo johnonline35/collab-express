@@ -256,19 +256,19 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     return uniqueWorkspaceIds;
   };
 
+  // Refactored for Linear Time: (O ( n + m )):
   const sortAttendees = function () {
     let uniqueAttendees = [];
+    const workspaceIdsSet = new Set(workspaceIds);
+    const seenAttendeeEmails = new Set();
 
-    for (let workspaceId of workspaceIds) {
-      for (let meeting of meetingsData) {
-        if (meeting.workspace_id === workspaceId) {
-          for (let attendee of meeting.meeting_attendees) {
-            // Check if the attendee's email is not already in the uniqueAttendees list
-            if (!uniqueAttendees.some((a) => a.email === attendee.email)) {
-              uniqueAttendees.push(attendee);
-            }
-          }
-        }
+    for (let attendee of meetingsData.attendeesToInsert) {
+      if (
+        workspaceIdsSet.has(attendee.workspace_id) &&
+        !seenAttendeeEmails.has(attendee.email)
+      ) {
+        uniqueAttendees.push(attendee);
+        seenAttendeeEmails.add(attendee.email);
       }
     }
 
