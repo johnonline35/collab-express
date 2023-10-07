@@ -147,24 +147,15 @@ async function updateAttendeesAndMeetings(
       .select();
     console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
-
-    return insertResult;
   }
 
   if (meetingsToUpdate.length > 0) {
     await Promise.all(
       meetingsToUpdate.map((meeting) => {
-        let updateResult = supabase
+        return supabase
           .from("meetings")
           .update({ workspace_id: meeting.workspace_id })
           .eq("id", meeting.id);
-        // console.log(
-        //   `"*******Update meeting result Meeting Id:`,
-        //   updateResult.url.search,
-        //   "Workspace Id:",
-        //   updateResult.body.workspace_id
-        // );
-        return updateResult;
       })
     );
   }
