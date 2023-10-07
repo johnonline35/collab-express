@@ -25,19 +25,6 @@ router.post("/", async (req, res) => {
     // Fetch the Google calendar data
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
 
-    meetingsData.forEach((meeting) => {
-      console.log("Meeting ID:", meeting.id);
-      console.log("Start DateTime:", meeting.start_dateTime);
-      console.log("Workspace ID:", meeting.workspace_id);
-
-      console.log("Attendees:");
-      meeting.meeting_attendees.forEach((attendee) => {
-        console.log(" -", attendee.email);
-      });
-
-      console.log("------------------"); // To separate entries for clarity
-    });
-
     // Check if a Google Calendar watch is already set up
     const userResult = await checkIfWatchIsSetup(userId);
 
@@ -55,7 +42,10 @@ router.post("/", async (req, res) => {
     if (!userResult.initialEnrichmentComplete) {
       // SKIP FOR NOW
     }
-    const workspacesToEnrich = await fetchWorkspacesToEnrich(userId);
+    const workspacesToEnrich = await fetchWorkspacesToEnrich(
+      userId,
+      meetingsData
+    );
 
     const attendeesToEnrich = await fetchAttendeesToEnrich(
       userId,
