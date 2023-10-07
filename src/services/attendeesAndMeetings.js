@@ -180,7 +180,7 @@ async function updateAttendeesAndMeetings(
   }
 
   console.log({
-    meetingsToUpdate: meetingsToUpdate,
+    // meetingsToUpdate: meetingsToUpdate,
     attendeesToInsert: attendeesToInsert,
   });
 
