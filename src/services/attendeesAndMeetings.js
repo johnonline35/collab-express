@@ -179,10 +179,7 @@ async function updateAttendeesAndMeetings(
     // else console.log("Workspaces created successfully: ", data);
   }
 
-  return {
-    meetingsToUpdate: meetingsToUpdate,
-    attendeesToInsert: attendeesToInsert,
-  };
+  return meetingsToUpdate;
 }
 
 module.exports = {
