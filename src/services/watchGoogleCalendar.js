@@ -38,7 +38,7 @@ async function watchGoogleCalendar(userId) {
     throw new Error("Failed to set up Google Calendar watch");
   }
 
-  console.log("Google Calendar watch set up successfully", res.data);
+  console.log("Google Calendar watch set up successfully");
 
   const resourceId = res.data.resourceId;
   const channelId = res.data.id;
