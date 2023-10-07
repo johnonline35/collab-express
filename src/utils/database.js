@@ -217,6 +217,7 @@ async function fetchAttendeeData(attendeeEmail) {
 
 async function fetchWorkspacesToEnrich(userId, meetingsData) {
   console.log("Just called: fetchWorkspacesToEnrich");
+  console.log("meetingsData Object:", meetingsData);
 
   const sortWorkspaceIds = function () {
     const currentDate = new Date().toISOString();
