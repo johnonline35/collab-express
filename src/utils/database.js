@@ -279,6 +279,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
   };
 
   const workspaceIds = sortWorkspaceIds();
+  console.log("***workspaceIds***", workspaceIds);
   const uniqueAttendees = sortAttendees();
 
   try {
