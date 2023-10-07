@@ -232,7 +232,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     );
 
     // Step 1: Get unique workspace IDs from future meetings
-    for (let meeting of meetingsData) {
+    for (let meeting of meetingsData.meetingsToUpdate) {
       if (
         meeting.start_dateTime > currentDate &&
         !uniqueWorkspaceIds.includes(meeting.workspace_id)
@@ -265,7 +265,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     const workspaceIdsSet = new Set(workspaceIds);
     const seenAttendeeEmails = new Set();
 
-    for (let attendee of meetingsData) {
+    for (let attendee of meetingsData.attendeesToInsert) {
       if (
         workspaceIdsSet.has(attendee.workspace_id) &&
         !seenAttendeeEmails.has(attendee.email)
