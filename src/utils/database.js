@@ -217,7 +217,6 @@ async function fetchAttendeeData(attendeeEmail) {
 
 async function fetchWorkspacesToEnrich(userId, meetingsData) {
   console.log("Just called: fetchWorkspacesToEnrich");
-  console.log("meetingsData Object:", meetingsData);
 
   const sortWorkspaceIds = function () {
     const currentDate = new Date().toISOString();
@@ -263,7 +262,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     const workspaceIdsSet = new Set(workspaceIds);
     const seenAttendeeEmails = new Set();
 
-    for (let attendee of meetingsData.attendeesToInsert) {
+    for (let attendee of meetingsData) {
       if (
         workspaceIdsSet.has(attendee.workspace_id) &&
         !seenAttendeeEmails.has(attendee.email)
