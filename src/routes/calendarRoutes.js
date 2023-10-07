@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
   try {
     // Fetch the Google calendar data
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
+    console.log("meetingsData from getgooglecal:", meetingsData);
 
     // Check if a Google Calendar watch is already set up
     const userResult = await checkIfWatchIsSetup(userId);
