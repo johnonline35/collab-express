@@ -253,7 +253,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
         }
       }
     }
-
+    console.log("&&&&&&& WORKSPACE IDS &&&&&&&:", uniqueWorkspaceIds);
     return uniqueWorkspaceIds;
   };
 
