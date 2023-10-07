@@ -143,7 +143,7 @@ async function updateAttendeesAndMeetings(
     let { data: insertResult, error } = await supabase
       .from("attendees")
       .upsert(attendeesToInsert);
-    // console.log("Insert attendees result:", insertResult);
+    console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
   }
 
