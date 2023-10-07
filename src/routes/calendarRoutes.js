@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 
       console.log("Attendees:");
       meeting.meeting_attendees.forEach((attendee) => {
-        console.log(" -", attendee);
+        console.log(" -", attendee.email);
       });
 
       console.log("------------------"); // To separate entries for clarity
