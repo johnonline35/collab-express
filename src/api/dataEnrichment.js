@@ -3,21 +3,21 @@ const { jobManagerEndpoint } = require("../data/collabUrls");
 const { updateInitialEnrichmentComplete } = require("../utils/database");
 
 async function enrichWorkspacesAndAttendees(
-  workspacesToEnrich,
-  attendeesToEnrich,
+  uniqueWorkspaces,
+  uniqueAttendees,
   userId
 ) {
   try {
-    // Process workspacesToEnrich
-    for (let workspace of workspacesToEnrich) {
+    // Process uniqueWorkspaces
+    for (let workspace of uniqueWorkspaces) {
       //   console.log({ workspaceID: workspace.workspace_id });
       const response = await axios.post(jobManagerEndpoint, workspace);
       // Handle response if necessary
       // For example: if(response.status !== 200) { /* Handle error */ }
     }
 
-    // Process attendeesToEnrich
-    for (let attendee of attendeesToEnrich) {
+    // Process uniqueAttendees
+    for (let attendee of uniqueAttendees) {
       //   console.log({ attendeeID: attendee.attendee_id });
       const response = await axios.post(jobManagerEndpoint, attendee);
       // Handle response if necessary

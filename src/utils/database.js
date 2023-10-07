@@ -217,9 +217,8 @@ async function fetchAttendeeData(attendeeEmail) {
 
 async function fetchWorkspacesToEnrich(userId, meetingsData) {
   console.log("Just called: fetchWorkspacesToEnrich");
-  const currentDate = new Date().toISOString();
 
-  const workspaceIds = function () {
+  const sortWorkspaceIds = function () {
     const currentDate = new Date().toISOString();
     let uniqueWorkspaceIds = [];
 
@@ -253,25 +252,49 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
         }
       }
     }
-    console.log("&&&&&&& WORKSPACE IDS &&&&&&&:", uniqueWorkspaceIds);
+
     return uniqueWorkspaceIds;
   };
 
+  const sortAttendees = function () {
+    let uniqueAttendees = [];
+
+    for (let workspaceId of workspaceIds) {
+      for (let meeting of meetingsData) {
+        if (meeting.workspace_id === workspaceId) {
+          for (let attendee of meeting.meeting_attendees) {
+            // Check if the attendee's email is not already in the uniqueAttendees list
+            if (!uniqueAttendees.some((a) => a.email === attendee.email)) {
+              uniqueAttendees.push(attendee);
+            }
+          }
+        }
+      }
+    }
+
+    return uniqueAttendees;
+  };
+
+  const workspaceIds = sortWorkspaceIds();
+  const uniqueAttendees = sortAttendees();
+
   try {
-    let updatedWorkspaces = [];
+    let uniqueWorkspaces = [];
     const { data: updatedData, error: updateError } = await supabase
       .from("workspaces")
       .update({ enrich_and_display: true }, { returning: "minimal" })
-      .in("workspace_id", workspaceIds())
+      .in("workspace_id", workspaceIds)
       .select();
 
     if (updateError) {
       throw updateError;
     }
-    updatedWorkspaces = updatedData;
+    uniqueWorkspaces = updatedData;
 
-    // console.log("updatedWorkspaces:", updatedWorkspaces);
-    return updatedWorkspaces; // Return the updated workspaces
+    return {
+      uniqueWorkspaces: uniqueWorkspaces,
+      uniqueAttendees: uniqueAttendees,
+    };
   } catch (err) {
     console.error("Error while fetching and updating:", err);
     return [];

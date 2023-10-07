@@ -47,14 +47,14 @@ router.post("/", async (req, res) => {
       meetingsData
     );
 
-    const attendeesToEnrich = await fetchAttendeesToEnrich(
-      userId,
-      workspacesToEnrich
-    );
+    // const attendeesToEnrich = await fetchAttendeesToEnrich(
+    //   userId,
+    //   workspacesToEnrich
+    // );
 
     const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-      workspacesToEnrich,
-      attendeesToEnrich,
+      workspacesToEnrich.uniqueWorkspaces,
+      workspacesToEnrich.uniqueAttendees,
       userId
     );
     // Create the response object
