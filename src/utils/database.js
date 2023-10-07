@@ -245,7 +245,7 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
     // Step 2: If there are fewer than 10 unique workspace IDs, get from past meetings by iterating in reverse order
     if (uniqueWorkspaceIds.length < 10) {
       for (let i = meetingsData.length - 1; i >= 0; i--) {
-        let meeting = meetingsData[i];
+        let meeting = meetingsData.meetingsToUpdate[i];
         if (
           meeting.start_dateTime <= currentDate &&
           !uniqueWorkspaceIds.includes(meeting.workspace_id)
