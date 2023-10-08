@@ -231,10 +231,10 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
         new Date(b.start_dateTime).getTime()
     );
 
-    console.log(
-      "Sorted meetingsData.meetingsToUpdate:",
-      meetingsData.meetingsToUpdate
-    );
+    // console.log(
+    //   "Sorted meetingsData.meetingsToUpdate:",
+    //   meetingsData.meetingsToUpdate
+    // );
 
     for (let meeting of meetingsData.meetingsToUpdate) {
       if (
