@@ -259,21 +259,16 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
 
   // Refactored for Linear Time: (O ( n + m )):
   const sortAttendees = function () {
-    let uniqueAttendees = [];
+    let attendeesForWorkspaces = [];
     const workspaceIdsSet = new Set(workspaceIds);
-    const seenAttendeeEmails = new Set();
 
     for (let attendee of meetingsData.attendeesToInsert) {
-      if (
-        workspaceIdsSet.has(attendee.workspace_id) &&
-        !seenAttendeeEmails.has(attendee.email)
-      ) {
-        uniqueAttendees.push(attendee);
-        seenAttendeeEmails.add(attendee.email);
+      if (workspaceIdsSet.has(attendee.workspace_id)) {
+        attendeesForWorkspaces.push(attendee);
       }
     }
 
-    return uniqueAttendees;
+    return attendeesForWorkspaces;
   };
 
   const workspaceIds = sortWorkspaceIds();
