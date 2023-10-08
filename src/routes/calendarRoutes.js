@@ -24,13 +24,14 @@ router.post("/", async (req, res) => {
   try {
     // Fetch the Google calendar data
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
-    const currentDateTimestamp = new Date().getTime();
-    console.log(
-      "Meetings with future start_dateTime:",
-      meetingsData.meetingsToUpdate.filter(
-        (meeting) => meeting.id === "552amra85ii71hcahasmgdbbot"
-      )
-    );
+    console.log("Meetings Data Length:", meetingsData.meetingsToUpdate.length);
+    // const currentDateTimestamp = new Date().getTime();
+    // console.log(
+    //   "Meetings with future start_dateTime:",
+    //   meetingsData.meetingsToUpdate.filter(
+    //     (meeting) => meeting.id === "552amra85ii71hcahasmgdbbot"
+    //   )
+    // );
 
     // Check if a Google Calendar watch is already set up
     const userResult = await checkIfWatchIsSetup(userId);
