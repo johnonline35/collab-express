@@ -216,10 +216,10 @@ async function fetchAttendeeData(attendeeEmail) {
 }
 
 async function fetchWorkspacesToEnrich(userId, meetingsData) {
-  console.log(
-    "Just called: fetchWorkspacesToEnrich here is the meetingsData:",
-    meetingsData
-  );
+  // console.log(
+  //   "Just called: fetchWorkspacesToEnrich here is the meetingsData:",
+  //   meetingsData
+  // );
 
   const sortWorkspaceIds = function () {
     const currentDateTimestamp = new Date().getTime();
@@ -272,9 +272,9 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
   };
 
   const workspaceIds = sortWorkspaceIds();
-  console.log("***workspaceIds***", workspaceIds.length);
+  console.log("***workspaceIds LENGTH***", workspaceIds.length);
   const uniqueAttendees = sortAttendees();
-  console.log("***workspaceIds***", uniqueAttendees.length);
+  console.log("***uniqueAttendees LENGTH***", uniqueAttendees.length);
 
   try {
     let uniqueWorkspaces = [];
