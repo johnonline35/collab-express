@@ -223,16 +223,8 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
 
   const sortWorkspaceIds = function () {
     const currentDateTimestamp = new Date().getTime();
-    console.log("currentDateTimestamp:", currentDateTimestamp);
-    let uniqueWorkspaceIds = [];
 
-    console.log(
-      "Meetings with future start_dateTime:",
-      meetingsData.meetingsToUpdate.filter(
-        (meeting) =>
-          new Date(meeting.start_dateTime).getTime() > currentDateTimestamp
-      )
-    );
+    let uniqueWorkspaceIds = [];
 
     meetingsData.meetingsToUpdate.sort(
       (a, b) =>
