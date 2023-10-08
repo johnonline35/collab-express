@@ -25,6 +25,10 @@ router.post("/", async (req, res) => {
     // Fetch the Google calendar data
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
     console.log("Meetings Data Length:", meetingsData.meetingsToUpdate.length);
+    console.log(
+      "attendeesToInsert Length:",
+      meetingsData.attendeesToInsert.length
+    );
     // const currentDateTimestamp = new Date().getTime();
     // console.log(
     //   "Meetings with future start_dateTime:",
