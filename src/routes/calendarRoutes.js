@@ -48,11 +48,11 @@ router.post("/", async (req, res) => {
       meetingsData
     );
 
-    console.log({
-      "workspacesToEnrich uniqueWorkspaces:":
-        workspacesToEnrich.uniqueWorkspaces,
-      "workspacesToEnrich uniqueAttendees:": workspacesToEnrich.uniqueAttendees,
-    });
+    // console.log({
+    //   "workspacesToEnrich uniqueWorkspaces:":
+    //     workspacesToEnrich.uniqueWorkspaces,
+    //   "workspacesToEnrich uniqueAttendees:": workspacesToEnrich.uniqueAttendees,
+    // });
 
     // const attendeesToEnrich = await fetchAttendeesToEnrich(
     //   userId,

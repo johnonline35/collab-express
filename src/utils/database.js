@@ -231,6 +231,11 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
         new Date(b.start_dateTime).getTime()
     );
 
+    console.log(
+      "Sorted meetingsData.meetingsToUpdate:",
+      meetingsData.meetingsToUpdate
+    );
+
     for (let meeting of meetingsData.meetingsToUpdate) {
       if (
         new Date(meeting.start_dateTime).getTime() > currentDateTimestamp &&
@@ -241,18 +246,18 @@ async function fetchWorkspacesToEnrich(userId, meetingsData) {
       }
     }
 
-    if (uniqueWorkspaceIds.length < 10) {
-      for (let i = meetingsData.meetingsToUpdate.length - 1; i >= 0; i--) {
-        let meeting = meetingsData.meetingsToUpdate[i];
-        if (
-          new Date(meeting.start_dateTime).getTime() <= currentDateTimestamp &&
-          !uniqueWorkspaceIds.includes(meeting.workspace_id)
-        ) {
-          uniqueWorkspaceIds.push(meeting.workspace_id);
-          if (uniqueWorkspaceIds.length === 10) break;
-        }
-      }
-    }
+    // if (uniqueWorkspaceIds.length < 10) {
+    //   for (let i = meetingsData.meetingsToUpdate.length - 1; i >= 0; i--) {
+    //     let meeting = meetingsData.meetingsToUpdate[i];
+    //     if (
+    //       new Date(meeting.start_dateTime).getTime() <= currentDateTimestamp &&
+    //       !uniqueWorkspaceIds.includes(meeting.workspace_id)
+    //     ) {
+    //       uniqueWorkspaceIds.push(meeting.workspace_id);
+    //       if (uniqueWorkspaceIds.length === 10) break;
+    //     }
+    //   }
+    // }
 
     return uniqueWorkspaceIds;
   };
