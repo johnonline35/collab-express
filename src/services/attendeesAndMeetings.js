@@ -139,7 +139,10 @@ async function updateAttendeesAndMeetings(
       });
     }
   }
-
+  console.log(
+    "attendeesToInsert.length before supabase:",
+    attendeesToInsert.length
+  );
   if (attendeesToInsert.length > 0) {
     let { data: insertResult, error } = await supabase
       .from("attendees")
@@ -147,6 +150,7 @@ async function updateAttendeesAndMeetings(
       .select();
     // console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
+    console.log("Supabase insertResult:", insertResult);
   }
 
   if (meetingsToUpdate.length > 0) {
