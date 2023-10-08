@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
       "Meetings with future start_dateTime:",
       meetingsData.meetingsToUpdate.filter(
         (meeting) =>
+          meeting.start_dateTime && // Ensure start_dateTime is not null
           new Date(meeting.start_dateTime).getTime() > currentDateTimestamp
       )
     );
