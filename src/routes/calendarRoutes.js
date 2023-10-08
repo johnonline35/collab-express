@@ -24,6 +24,7 @@ router.post("/", async (req, res) => {
   try {
     // Fetch the Google calendar data
     const meetingsData = await googleCalendarApiClient.getGoogleCal(userId);
+    const currentDateTimestamp = new Date().getTime();
     console.log(
       "Meetings with future start_dateTime:",
       meetingsData.meetingsToUpdate.filter(
