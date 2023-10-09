@@ -52,29 +52,18 @@ router.post("/", async (req, res) => {
     }
 
     if (!userResult.initialEnrichmentComplete) {
-      // SKIP FOR NOW
+      const workspacesToEnrich = await fetchWorkspacesToEnrich(
+        userId,
+        meetingsData
+      );
+
+      const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+        workspacesToEnrich.uniqueWorkspaces,
+        workspacesToEnrich.uniqueAttendees,
+        userId
+      );
     }
-    const workspacesToEnrich = await fetchWorkspacesToEnrich(
-      userId,
-      meetingsData
-    );
 
-    // console.log({
-    //   "workspacesToEnrich uniqueWorkspaces:":
-    //     workspacesToEnrich.uniqueWorkspaces,
-    //   "workspacesToEnrich uniqueAttendees:": workspacesToEnrich.uniqueAttendees,
-    // });
-
-    // const attendeesToEnrich = await fetchAttendeesToEnrich(
-    //   userId,
-    //   workspacesToEnrich
-    // );
-
-    const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
-      workspacesToEnrich.uniqueWorkspaces,
-      workspacesToEnrich.uniqueAttendees,
-      userId
-    );
     // Create the response object
     const response = {
       workspace_id: meetingsData.workspace_id,
