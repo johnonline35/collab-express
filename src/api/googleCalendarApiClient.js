@@ -153,14 +153,11 @@ const getGoogleCal = async (userId) => {
       };
 
       try {
-        // console.log("Upserting meeting data:", meetingData.start_dateTime);
-        // Wait for the meeting upsert to complete before upserting attendees
+        // Directly upsert the meeting without using limiter
         const { data: upsertMeetingData, error: upsertMeetingError } =
-          await limiter.schedule(() =>
-            supabase
-              .from("meetings")
-              .upsert([meetingData], { returning: "minimal" })
-          );
+          await supabase
+            .from("meetings")
+            .upsert([meetingData], { returning: "minimal" });
 
         if (upsertMeetingError) {
           console.error("Upsert Meeting Error:", upsertMeetingError);
@@ -169,22 +166,20 @@ const getGoogleCal = async (userId) => {
 
         // console.log("Upsert Meeting Data:", upsertMeetingData);
 
-        // Now that the meeting has been upserted, upsert attendees
+        // Now that the meeting has been upserted, upsert attendees without using limiter
         await Promise.all(
           attendees.map(async (attendee) => {
             const { data: upsertAttendeeData, error: upsertAttendeeError } =
-              await limiter.schedule(() =>
-                supabase.from("meeting_attendees").upsert(
-                  [
-                    {
-                      meeting_id: meeting.id,
-                      email: attendee.email,
-                      organizer: attendee.organizer || false,
-                      response_status: attendee.responseStatus,
-                    },
-                  ],
-                  { returning: "minimal" }
-                )
+              await supabase.from("meeting_attendees").upsert(
+                [
+                  {
+                    meeting_id: meeting.id,
+                    email: attendee.email,
+                    organizer: attendee.organizer || false,
+                    response_status: attendee.responseStatus,
+                  },
+                ],
+                { returning: "minimal" }
               );
 
             if (upsertAttendeeError) {
@@ -194,6 +189,47 @@ const getGoogleCal = async (userId) => {
             }
           })
         );
+        // console.log("Upserting meeting data:", meetingData.start_dateTime);
+        // Wait for the meeting upsert to complete before upserting attendees
+        // const { data: upsertMeetingData, error: upsertMeetingError } =
+        //   await limiter.schedule(() =>
+        //     supabase
+        //       .from("meetings")
+        //       .upsert([meetingData], { returning: "minimal" })
+        //   );
+
+        // if (upsertMeetingError) {
+        //   console.error("Upsert Meeting Error:", upsertMeetingError);
+        //   return;
+        // }
+
+        // // console.log("Upsert Meeting Data:", upsertMeetingData);
+
+        // // Now that the meeting has been upserted, upsert attendees
+        // await Promise.all(
+        //   attendees.map(async (attendee) => {
+        //     const { data: upsertAttendeeData, error: upsertAttendeeError } =
+        //       await limiter.schedule(() =>
+        //         supabase.from("meeting_attendees").upsert(
+        //           [
+        //             {
+        //               meeting_id: meeting.id,
+        //               email: attendee.email,
+        //               organizer: attendee.organizer || false,
+        //               response_status: attendee.responseStatus,
+        //             },
+        //           ],
+        //           { returning: "minimal" }
+        //         )
+        //       );
+
+        //     if (upsertAttendeeError) {
+        //       console.error("Upsert Attendee Error:", upsertAttendeeError);
+        //     } else {
+        //       // console.log("Upsert Attendee Data:", upsertAttendeeData);
+        //     }
+        //   })
+        // );
       } catch (error) {
         console.error("Upsert process error:", error);
       }
