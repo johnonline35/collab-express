@@ -150,7 +150,7 @@ async function updateAttendeesAndMeetings(
       .select();
     // console.log("Insert attendees result:", insertResult);
     if (error) console.log("Error inserting attendees:", error);
-    console.log("Supabase insertResult length:", insertResult.length);
+    // console.log("Supabase insertResult length:", insertResult.length);
   }
 
   if (meetingsToUpdate.length > 0) {

@@ -30,6 +30,8 @@ const getGoogleCal = async (userId) => {
   try {
     let syncToken = await loadSyncTokenForUser(userId);
 
+    console.log("Starting to fetch Google Calendar events...");
+
     if (!syncToken) {
       // For the initial fetch
       do {
@@ -94,6 +96,8 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
+    console.log("Finished fetching Google Calendar events...");
+
     // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
       if (
@@ -128,7 +132,7 @@ const getGoogleCal = async (userId) => {
     //     event.attendees.length > 1 &&
     //     event.attendees.length < 11
     // );
-
+    console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
     const upsertPromises = meetings.map(async (meeting) => {
       const attendees = meeting.attendees.filter(
@@ -196,6 +200,7 @@ const getGoogleCal = async (userId) => {
     });
 
     await Promise.all(upsertPromises);
+    console.log("Finished upserting data into Supabase.");
 
     // Verify a few records...
     if (meetings.length > 0) {

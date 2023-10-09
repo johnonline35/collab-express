@@ -19,7 +19,6 @@ const { enrichWorkspacesAndAttendees } = require("../api/dataEnrichment");
 // Fetch the Google calendar for the initial sync
 router.post("/", async (req, res) => {
   const { userId } = req.body;
-  console.log(userId); // Log the userId sent from your getMeetings function
 
   try {
     // Fetch the Google calendar data
@@ -29,13 +28,6 @@ router.post("/", async (req, res) => {
       "attendeesToInsert Length:",
       meetingsData.attendeesToInsert.length
     );
-    // const currentDateTimestamp = new Date().getTime();
-    // console.log(
-    //   "Meetings with future start_dateTime:",
-    //   meetingsData.meetingsToUpdate.filter(
-    //     (meeting) => meeting.id === "552amra85ii71hcahasmgdbbot"
-    //   )
-    // );
 
     // Check if a Google Calendar watch is already set up
     const userResult = await checkIfWatchIsSetup(userId);
