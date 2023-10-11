@@ -116,22 +116,9 @@ const getGoogleCal = async (userId) => {
         return false;
       }
 
-      // Check if the meeting started more than 5 years ago
-      // const fiveYearsAgo = new Date();
-      // fiveYearsAgo.setFullYear(fiveYearsAgo.getFullYear() - 1);
-      // if (eventDateTime.getTime() < fiveYearsAgo.getTime()) {
-      //   return false;
-      // }
-
       return true;
     });
 
-    // const meetings = allEvents.filter(
-    //   (event) =>
-    //     event.attendees &&
-    //     event.attendees.length > 1 &&
-    //     event.attendees.length < 11
-    // );
     console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
     const upsertPromises = meetings.map(async (meeting) => {
@@ -189,47 +176,6 @@ const getGoogleCal = async (userId) => {
             }
           })
         );
-        // console.log("Upserting meeting data:", meetingData.start_dateTime);
-        // Wait for the meeting upsert to complete before upserting attendees
-        // const { data: upsertMeetingData, error: upsertMeetingError } =
-        //   await limiter.schedule(() =>
-        //     supabase
-        //       .from("meetings")
-        //       .upsert([meetingData], { returning: "minimal" })
-        //   );
-
-        // if (upsertMeetingError) {
-        //   console.error("Upsert Meeting Error:", upsertMeetingError);
-        //   return;
-        // }
-
-        // // console.log("Upsert Meeting Data:", upsertMeetingData);
-
-        // // Now that the meeting has been upserted, upsert attendees
-        // await Promise.all(
-        //   attendees.map(async (attendee) => {
-        //     const { data: upsertAttendeeData, error: upsertAttendeeError } =
-        //       await limiter.schedule(() =>
-        //         supabase.from("meeting_attendees").upsert(
-        //           [
-        //             {
-        //               meeting_id: meeting.id,
-        //               email: attendee.email,
-        //               organizer: attendee.organizer || false,
-        //               response_status: attendee.responseStatus,
-        //             },
-        //           ],
-        //           { returning: "minimal" }
-        //         )
-        //       );
-
-        //     if (upsertAttendeeError) {
-        //       console.error("Upsert Attendee Error:", upsertAttendeeError);
-        //     } else {
-        //       // console.log("Upsert Attendee Data:", upsertAttendeeData);
-        //     }
-        //   })
-        // );
       } catch (error) {
         console.error("Upsert process error:", error);
       }
@@ -263,22 +209,6 @@ const getGoogleCal = async (userId) => {
     console.log("Starting analyzeMeetings...");
     const analyzedMeetings = await analyzeMeetings(userId);
     console.log("analyzeMeetings finished.");
-
-    // Update the workspace_id for each meeting in the response
-    // const updatedMeetings = meetings.map((meeting) => {
-    //   const analyzedMeeting = analyzedMeetings.find((m) => m.id === meeting.id);
-    //   if (analyzedMeeting && analyzedMeeting.workspace_id) {
-    //     meeting.workspace_id = analyzedMeeting.workspace_id;
-    //   }
-    //   return meeting;
-    // });
-
-    // // Return the updated meetings along with the first workspace_id
-    // const response = {
-    //   workspace_id:
-    //     updatedMeetings.length > 0 ? updatedMeetings[0].workspace_id : null,
-    //   meetings: updatedMeetings,
-    // };
 
     return analyzedMeetings;
   } catch (error) {
