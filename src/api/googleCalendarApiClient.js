@@ -113,15 +113,15 @@ const getGoogleCal = async (userId) => {
         event.attendees.length <= 1 ||
         event.attendees.length >= 11
       ) {
-        console.log(
-          `Filtered out meeting ID: ${
-            event.id
-          } due to attendee count. Attendees: ${
-            event.attendees
-              ? event.attendees.map((a) => a.email).join(", ")
-              : "None"
-          }`
-        );
+        // console.log(
+        //   `Filtered out meeting ID: ${
+        //     event.id
+        //   } due to attendee count. Attendees: ${
+        //     event.attendees
+        //       ? event.attendees.map((a) => a.email).join(", ")
+        //       : "None"
+        //   }`
+        // );
         return false;
       }
 
@@ -130,13 +130,13 @@ const getGoogleCal = async (userId) => {
       const sixMonthsFromNow = new Date();
       sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
       if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
-        console.log(
-          `Filtered out meeting ID: ${
-            event.id
-          } due to date beyond 6 months. Attendees: ${event.attendees
-            .map((a) => a.email)
-            .join(", ")}`
-        );
+        // console.log(
+        //   `Filtered out meeting ID: ${
+        //     event.id
+        //   } due to date beyond 6 months. Attendees: ${event.attendees
+        //     .map((a) => a.email)
+        //     .join(", ")}`
+        // );
         return false;
       }
 
@@ -148,13 +148,13 @@ const getGoogleCal = async (userId) => {
             extractDomainFromEmail(attendee.email) === userEmailDomain
         );
         if (allSameDomain) {
-          console.log(
-            `Filtered out meeting ID: ${
-              event.id
-            } as all attendees from user's domain. Attendees: ${event.attendees
-              .map((a) => a.email)
-              .join(", ")}`
-          );
+          // console.log(
+          //   `Filtered out meeting ID: ${
+          //     event.id
+          //   } as all attendees from user's domain. Attendees: ${event.attendees
+          //     .map((a) => a.email)
+          //     .join(", ")}`
+          // );
           return false;
         }
       }
@@ -162,130 +162,147 @@ const getGoogleCal = async (userId) => {
       return true;
     });
 
-    // const meetings = allEvents.filter((event) => {
-    //   if (
-    //     !event.attendees ||
-    //     event.attendees.length <= 1 ||
-    //     event.attendees.length >= 11
-    //   ) {
-    //     return false;
-    //   }
-
-    //   // Check if the meeting starts more than 6 months from now
-    //   const eventDateTime = new Date(event.start.dateTime);
-    //   const sixMonthsFromNow = new Date();
-    //   sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
-
-    //   if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
-    //     return false;
-    //   }
-
-    //   if (!publicEmailDomainsSet.has(userEmailDomain)) {
-    //     // Filter out meetings where all attendees are from the user's domain
-    //     let allSameDomain = true;
-    //     for (let attendee of event.attendees) {
-    //       if (extractDomainFromEmail(attendee.email) !== userEmailDomain) {
-    //         allSameDomain = false;
-    //         break;
-    //       }
-    //     }
-    //     if (allSameDomain) return false;
-    //   }
-
-    //   // if userEmail domain not on publicEmailDomains list then filter out all attendees and meetings who have the same domain.
-    //   // The goal is that we do not want any meeting id that only has attendees from the same domain as the user.
-
-    //   return true;
-    // });
-
     console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
-    const upsertPromises = meetings.map(async (meeting) => {
-      const attendees = meeting.attendees.filter(
-        (attendee) => attendee.email.trim() !== userEmail.trim()
-      );
-
-      console.log("Meeting attendees:", attendees);
-
-      const meetingData = {
-        id: meeting.id,
-        summary: meeting.summary,
-        description: meeting.description,
-        creator_email: meeting.creator.email,
-        organizer_email: meeting.organizer.email,
-        start_dateTime: meeting.start.dateTime,
-        end_dateTime: meeting.end.dateTime,
-        start_time_zone: meeting.start.timeZone,
-        end_time_zone: meeting.end.timeZone,
-        collab_user_id: userId,
-      };
-
-      try {
-        // Directly upsert the meeting without using limiter
-        const { data: upsertMeetingData, error: upsertMeetingError } =
-          await supabase
-            .from("meetings")
-            .upsert([meetingData], { returning: "minimal" });
-
-        if (upsertMeetingError) {
-          console.error("Upsert Meeting Error:", upsertMeetingError);
-          return;
-        }
-
-        // console.log("Upsert Meeting Data:", upsertMeetingData);
-
-        // Now that the meeting has been upserted, upsert attendees without using limiter
-        await Promise.all(
-          attendees.map(async (attendee) => {
-            const { data: upsertAttendeeData, error: upsertAttendeeError } =
-              await supabase.from("meeting_attendees").upsert(
-                [
-                  {
-                    meeting_id: meeting.id,
-                    email: attendee.email,
-                    organizer: attendee.organizer || false,
-                    response_status: attendee.responseStatus,
-                  },
-                ],
-                { returning: "minimal" }
-              );
-
-            if (upsertAttendeeError) {
-              console.error("Upsert Attendee Error:", upsertAttendeeError);
-            } else {
-              // console.log("Upsert Attendee Data:", upsertAttendeeData);
-            }
-          })
-        );
-      } catch (error) {
-        console.error("Upsert process error:", error);
+    const chunkArray = (array, size) => {
+      const chunked_arr = [];
+      let index = 0;
+      while (index < array.length) {
+        chunked_arr.push(array.slice(index, size + index));
+        index += size;
       }
+      return chunked_arr;
+    };
+
+    // Breaking the meetings array into chunks of 1,000
+    const meetingChunks = chunkArray(meetings, 1000);
+
+    const upsertChunksPromises = meetingChunks.map(async (meetingChunk) => {
+      const upsertMeetingChunkPromises = meetingChunk.map(async (meeting) => {
+        const attendees = meeting.attendees.filter(
+          (attendee) => attendee.email.trim() !== userEmail.trim()
+        );
+
+        const meetingData = {
+          id: meeting.id,
+          summary: meeting.summary,
+          description: meeting.description,
+          creator_email: meeting.creator.email,
+          organizer_email: meeting.organizer.email,
+          start_dateTime: meeting.start.dateTime,
+          end_dateTime: meeting.end.dateTime,
+          start_time_zone: meeting.start.timeZone,
+          end_time_zone: meeting.end.timeZone,
+          collab_user_id: userId,
+        };
+
+        try {
+          // Directly upsert the meeting
+          const { data: upsertMeetingData, error: upsertMeetingError } =
+            await supabase
+              .from("meetings")
+              .upsert([meetingData], { returning: "minimal" });
+
+          if (upsertMeetingError) {
+            console.error("Upsert Meeting Error:", upsertMeetingError);
+            return;
+          }
+
+          // Upsert attendees
+          await Promise.all(
+            attendees.map(async (attendee) => {
+              const { data: upsertAttendeeData, error: upsertAttendeeError } =
+                await supabase.from("meeting_attendees").upsert(
+                  [
+                    {
+                      meeting_id: meeting.id,
+                      email: attendee.email,
+                      organizer: attendee.organizer || false,
+                      response_status: attendee.responseStatus,
+                    },
+                  ],
+                  { returning: "minimal" }
+                );
+
+              if (upsertAttendeeError) {
+                console.error("Upsert Attendee Error:", upsertAttendeeError);
+              }
+            })
+          );
+        } catch (error) {
+          console.error("Upsert process error:", error);
+        }
+      });
+
+      // Ensure all meetings in this chunk are upserted
+      return Promise.all(upsertMeetingChunkPromises);
     });
 
-    await Promise.all(upsertPromises);
+    // Ensure all chunks are processed
+    await Promise.all(upsertChunksPromises);
+
+    // const upsertPromises = meetings.map(async (meeting) => {
+    //   const attendees = meeting.attendees.filter(
+    //     (attendee) => attendee.email.trim() !== userEmail.trim()
+    //   );
+
+    //   const meetingData = {
+    //     id: meeting.id,
+    //     summary: meeting.summary,
+    //     description: meeting.description,
+    //     creator_email: meeting.creator.email,
+    //     organizer_email: meeting.organizer.email,
+    //     start_dateTime: meeting.start.dateTime,
+    //     end_dateTime: meeting.end.dateTime,
+    //     start_time_zone: meeting.start.timeZone,
+    //     end_time_zone: meeting.end.timeZone,
+    //     collab_user_id: userId,
+    //   };
+
+    //   try {
+    //     // Directly upsert the meeting without using limiter
+    //     const { data: upsertMeetingData, error: upsertMeetingError } =
+    //       await supabase
+    //         .from("meetings")
+    //         .upsert([meetingData], { returning: "minimal" });
+
+    //     if (upsertMeetingError) {
+    //       console.error("Upsert Meeting Error:", upsertMeetingError);
+    //       return;
+    //     }
+
+    //     // console.log("Upsert Meeting Data:", upsertMeetingData);
+
+    //     // Now that the meeting has been upserted, upsert attendees without using limiter
+    //     await Promise.all(
+    //       attendees.map(async (attendee) => {
+    //         const { data: upsertAttendeeData, error: upsertAttendeeError } =
+    //           await supabase.from("meeting_attendees").upsert(
+    //             [
+    //               {
+    //                 meeting_id: meeting.id,
+    //                 email: attendee.email,
+    //                 organizer: attendee.organizer || false,
+    //                 response_status: attendee.responseStatus,
+    //               },
+    //             ],
+    //             { returning: "minimal" }
+    //           );
+
+    //         if (upsertAttendeeError) {
+    //           console.error("Upsert Attendee Error:", upsertAttendeeError);
+    //         } else {
+    //           // console.log("Upsert Attendee Data:", upsertAttendeeData);
+    //         }
+    //       })
+    //     );
+    //   } catch (error) {
+    //     console.error("Upsert process error:", error);
+    //   }
+    // });
+
+    // await Promise.all(upsertPromises);
     console.log("Finished upserting data into Supabase.");
-
-    // Verify a few records...
-    if (meetings.length > 0) {
-      const lastMeeting = meetings[meetings.length - 1];
-      // console.log("lastMeeting and id:", lastMeeting, lastMeeting.id);
-      const { data: savedMeeting, error: fetchMeetingError } = await supabase
-        .from("meetings")
-        .select("*")
-        .eq("id", lastMeeting.id);
-
-      if (fetchMeetingError) {
-        console.error("Error fetching meeting:", fetchMeetingError);
-      } else if (!savedMeeting || savedMeeting.length === 0) {
-        console.error(
-          `Meeting with ID ${lastMeeting.id} not found in database`
-        );
-      } else {
-        // console.log(`Verified meeting with ID ${lastMeeting.id} in database`);
-      }
-    } else {
-      // console.log("No meetings found to verify.");
-    }
 
     console.log("Starting analyzeMeetings...");
     const analyzedMeetings = await analyzeMeetings(userId);
