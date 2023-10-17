@@ -123,19 +123,14 @@ const getGoogleCal = async (userId) => {
       return true;
     });
 
-    console.log(
-      "Meeting attendees:",
-      meetings.map((meeting) => {
-        meeting.attendees.email;
-      })
-    );
-
     console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
     const upsertPromises = meetings.map(async (meeting) => {
       const attendees = meeting.attendees.filter(
         (attendee) => attendee.email.trim() !== userEmail.trim()
       );
+
+      console.log("Meeting attendees:", attendees);
 
       const meetingData = {
         id: meeting.id,
