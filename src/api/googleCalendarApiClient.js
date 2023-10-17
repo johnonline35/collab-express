@@ -124,8 +124,10 @@ const getGoogleCal = async (userId) => {
     });
 
     console.log(
-      "Finished fetching Google Calendar events... here is meetings post filtered:",
-      meetings
+      "Meeting attendees:",
+      meetings.map((meeting) => {
+        meeting.attendees.email;
+      })
     );
 
     console.log("Starting to upsert data into Supabase...");
