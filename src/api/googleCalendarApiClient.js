@@ -3,6 +3,7 @@ const { loadClient } = require("../api/googleCalendar");
 const { analyzeMeetings } = require("../services/meetingAnalysis");
 const limiter = require("../utils/limiter");
 const { collabWorkspaceLinkToAppend } = require("../data/collabUrls");
+const fetchPublicEmailDomains = require("../data/listOfEmailDomains");
 const {
   getUserEmailFromDB,
   saveSyncTokenForUser,
@@ -11,6 +12,7 @@ const {
 } = require("../utils/database");
 
 const getGoogleCal = async (userId) => {
+  let publicEmailDomains = await fetchPublicEmailDomains();
   console.log("Just called getGoogleCal, here is the userId:", userId);
   const calendar = await loadClient(userId);
 
@@ -96,7 +98,10 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
-    console.log("Finished fetching Google Calendar events...");
+    console.log(
+      "Finished fetching Google Calendar events... here is allEvents pre filtered:",
+      allEvents
+    );
 
     // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
@@ -112,9 +117,13 @@ const getGoogleCal = async (userId) => {
       const eventDateTime = new Date(event.start.dateTime);
       const sixMonthsFromNow = new Date();
       sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
       if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
         return false;
       }
+
+      // if userEmail domain not on publicEmailDomains list then filter out all attendees and meetings who have the same domain.
+      // The goal is that we do not want any meeting id that only has attendees from the same domain as the user.
 
       return true;
     });
