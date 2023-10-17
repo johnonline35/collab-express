@@ -12,7 +12,12 @@ const {
 } = require("../utils/database");
 
 const getGoogleCal = async (userId) => {
+  const extractDomainFromEmail = (email) => {
+    return email.substring(email.lastIndexOf("@") + 1);
+  };
   let publicEmailDomains = await fetchPublicEmailDomains();
+  let publicEmailDomainsSet = new Set(publicEmailDomains);
+
   console.log("Just called getGoogleCal, here is the userId:", userId);
   const calendar = await loadClient(userId);
 
@@ -24,6 +29,8 @@ const getGoogleCal = async (userId) => {
   } else {
     // console.log("userEmail:", userEmail);
   }
+
+  const userEmailDomain = extractDomainFromEmail(userEmail);
 
   let allEvents = [];
   let nextPageToken = undefined;
@@ -100,6 +107,7 @@ const getGoogleCal = async (userId) => {
 
     // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
+      // Condition 1: Event should have attendees, and their count should be between 2 and 10
       if (
         !event.attendees ||
         event.attendees.length <= 1 ||
@@ -108,20 +116,62 @@ const getGoogleCal = async (userId) => {
         return false;
       }
 
-      // Check if the meeting starts more than 6 months from now
+      // Condition 2: Meeting shouldn't start more than 6 months from now
       const eventDateTime = new Date(event.start.dateTime);
       const sixMonthsFromNow = new Date();
       sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
-
       if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
         return false;
       }
 
-      // if userEmail domain not on publicEmailDomains list then filter out all attendees and meetings who have the same domain.
-      // The goal is that we do not want any meeting id that only has attendees from the same domain as the user.
+      // Condition 3: If userEmail domain isn't in publicEmailDomains,
+      // the event shouldn't have all attendees from the same domain as the user
+      if (!publicEmailDomainsSet.has(userEmailDomain)) {
+        let allSameDomain = event.attendees.every(
+          (attendee) =>
+            extractDomainFromEmail(attendee.email) === userEmailDomain
+        );
+        if (allSameDomain) return false;
+      }
 
       return true;
     });
+
+    // const meetings = allEvents.filter((event) => {
+    //   if (
+    //     !event.attendees ||
+    //     event.attendees.length <= 1 ||
+    //     event.attendees.length >= 11
+    //   ) {
+    //     return false;
+    //   }
+
+    //   // Check if the meeting starts more than 6 months from now
+    //   const eventDateTime = new Date(event.start.dateTime);
+    //   const sixMonthsFromNow = new Date();
+    //   sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
+    //   if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
+    //     return false;
+    //   }
+
+    //   if (!publicEmailDomainsSet.has(userEmailDomain)) {
+    //     // Filter out meetings where all attendees are from the user's domain
+    //     let allSameDomain = true;
+    //     for (let attendee of event.attendees) {
+    //       if (extractDomainFromEmail(attendee.email) !== userEmailDomain) {
+    //         allSameDomain = false;
+    //         break;
+    //       }
+    //     }
+    //     if (allSameDomain) return false;
+    //   }
+
+    //   // if userEmail domain not on publicEmailDomains list then filter out all attendees and meetings who have the same domain.
+    //   // The goal is that we do not want any meeting id that only has attendees from the same domain as the user.
+
+    //   return true;
+    // });
 
     console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
