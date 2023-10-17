@@ -98,11 +98,6 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
-    console.log(
-      "Finished fetching Google Calendar events... here is allEvents pre filtered:",
-      allEvents
-    );
-
     // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
       if (
@@ -127,6 +122,11 @@ const getGoogleCal = async (userId) => {
 
       return true;
     });
+
+    console.log(
+      "Finished fetching Google Calendar events... here is meetings post filtered:",
+      meetings
+    );
 
     console.log("Starting to upsert data into Supabase...");
     // Insert data into the database for each meeting
