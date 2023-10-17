@@ -113,6 +113,15 @@ const getGoogleCal = async (userId) => {
         event.attendees.length <= 1 ||
         event.attendees.length >= 11
       ) {
+        console.log(
+          `Filtered out meeting ID: ${
+            event.id
+          } due to attendee count. Attendees: ${
+            event.attendees
+              ? event.attendees.map((a) => a.email).join(", ")
+              : "None"
+          }`
+        );
         return false;
       }
 
@@ -121,6 +130,13 @@ const getGoogleCal = async (userId) => {
       const sixMonthsFromNow = new Date();
       sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
       if (eventDateTime.getTime() > sixMonthsFromNow.getTime()) {
+        console.log(
+          `Filtered out meeting ID: ${
+            event.id
+          } due to date beyond 6 months. Attendees: ${event.attendees
+            .map((a) => a.email)
+            .join(", ")}`
+        );
         return false;
       }
 
@@ -131,7 +147,16 @@ const getGoogleCal = async (userId) => {
           (attendee) =>
             extractDomainFromEmail(attendee.email) === userEmailDomain
         );
-        if (allSameDomain) return false;
+        if (allSameDomain) {
+          console.log(
+            `Filtered out meeting ID: ${
+              event.id
+            } as all attendees from user's domain. Attendees: ${event.attendees
+              .map((a) => a.email)
+              .join(", ")}`
+          );
+          return false;
+        }
       }
 
       return true;
