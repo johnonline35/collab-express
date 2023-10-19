@@ -80,7 +80,9 @@ const getUserEmailFromDB = async (userId) => {
 const checkIfWatchIsSetup = async (userId) => {
   const { data, error } = await supabase
     .from("collab_users")
-    .select("*")
+    .select(
+      "google_cal_channel_id, google_cal_resource_id, initial_enrichment_complete"
+    )
     .eq("id", userId);
 
   if (error) {
@@ -91,12 +93,38 @@ const checkIfWatchIsSetup = async (userId) => {
     };
   }
 
-  // If the field is null or undefined, consider the watch as not set up
+  const user = data[0];
+
+  const isWatchSetup = Boolean(
+    user.google_cal_channel_id && user.google_cal_resource_id
+  );
+
   return {
-    isWatchSetup: data[0].is_watch_setup || false,
-    initialEnrichmentComplete: data[0].initial_enrichment_complete || false,
+    isWatchSetup: isWatchSetup,
+    initialEnrichmentComplete: user.initial_enrichment_complete || false,
   };
 };
+
+// const checkIfWatchIsSetup = async (userId) => {
+//   const { data, error } = await supabase
+//     .from("collab_users")
+//     .select("*")
+//     .eq("id", userId);
+
+//   if (error) {
+//     console.error("Error fetching user data:", error);
+//     return {
+//       isWatchSetup: false,
+//       initialEnrichmentComplete: false,
+//     };
+//   }
+
+//   // If the field is null or undefined, consider the watch as not set up
+//   return {
+//     isWatchSetup: data[0].is_watch_setup || false,
+//     initialEnrichmentComplete: data[0].initial_enrichment_complete || false,
+//   };
+// };
 
 const setWatchSetup = async (userId) => {
   const { error } = await supabase
