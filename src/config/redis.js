@@ -5,7 +5,9 @@ const client = new Redis(
 );
 
 await client.set("foo", "bar");
+let x = await client.get("foo");
+console.log(x);
 
-module.exports = {
+export default {
   client,
 };
