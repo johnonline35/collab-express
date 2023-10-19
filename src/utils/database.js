@@ -81,7 +81,7 @@ const checkIfWatchIsSetup = async (userId) => {
   const { data, error } = await supabase
     .from("collab_users")
     .select(
-      "google_cal_channel_id, google_cal_resource_id, initial_enrichment_complete"
+      "goog_cal_channel_id, goog_cal_resource_id, initial_enrichment_complete"
     )
     .eq("id", userId);
 
