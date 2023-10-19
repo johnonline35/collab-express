@@ -4,5 +4,6 @@ module.exports = {
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   OpenAiApiKey: process.env.YOUR_OPENAI_API_KEY,
+  REDIS_URL: process.env.REDIS_URL,
   REDIRECT_URL: "https://collab-express-production.up.railway.app/",
 };
