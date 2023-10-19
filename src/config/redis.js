@@ -1,5 +1,6 @@
 import Redis from "ioredis";
 const { REDIS_URL } = require("../config");
+console.log("REDIS_URL:", REDIS_URL);
 
 const redis = new Redis(REDIS_URL);
 
