@@ -7,6 +7,7 @@ const {
   saveGoogleCalendarWatchDetailsForUser,
   fetchGoogleCalendarWatchDetailsForUser,
 } = require("../utils/database");
+const { deleteGoogCalTokens } = require("../utils/database");
 
 async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);
@@ -69,17 +70,7 @@ async function stopWatchGoogleCalendar(userId) {
   if (res.status === 204 || !res.status) {
     // 204 is the typical HTTP status code for a successful delete operation.
     // Clear the channelId and resourceId in the database
-    const { error } = await supabase
-      .from("collab_users")
-      .update({
-        goog_cal_resource_id: null,
-        goog_cal_channel_id: null,
-      })
-      .eq("id", userId);
-
-    if (error) {
-      console.error("Error clearing Google Calendar watch details:", error);
-    }
+    const confirmDbTokenDeletion = await deleteGoogCalTokens(userId);
   }
 }
 
