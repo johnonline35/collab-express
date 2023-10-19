@@ -1,8 +1,7 @@
 import Redis from "ioredis";
+const { REDIS_URL } = require("../config");
 
-const client = new Redis(
-  "rediss://default:********@usw1-workable-pangolin-34300.upstash.io:34300"
-);
+const client = new Redis(REDIS_URL);
 
 await client.set("foo", "bar");
 let x = await client.get("foo");
