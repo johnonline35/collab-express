@@ -78,27 +78,6 @@ async function stopWatchGoogleCalendar(userId) {
   }
 }
 
-// async function stopWatchGoogleCalendar(userId) {
-//   const watchDetails = await fetchGoogleCalendarWatchDetailsForUser(userId);
-//   if (!watchDetails) {
-//     console.error("No watch details found for user", userId);
-//     return;
-//   }
-
-//   const { resourceId, channelId } = watchDetails;
-//   const calendar = await loadClient(userId);
-
-//   const res = await calendar.channels.stop({
-//     requestBody: {
-//       // The channel id and resource id of the subscription to stop.
-//       id: channelId,
-//       resourceId: resourceId,
-//     },
-//   });
-
-//   console.log("stopWatch:", res);
-// }
-
 module.exports = {
   watchGoogleCalendar,
   stopWatchGoogleCalendar,

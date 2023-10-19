@@ -171,9 +171,9 @@ router.post("/google-calendar-watch", async (req, res) => {
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
   const channelId = req.headers["x-goog-channel-id"];
-  console.log(
-    `&&&&&&&&&&&&&&&&&&& /google-calendar-watch endpoint called, here is the resourceId ${resourceId}, and the channelId ${channelId}`
-  );
+  // console.log(
+  //   `&&&&&&&&&&&&&&&&&&& /google-calendar-watch endpoint called, here is the resourceId ${resourceId}, and the channelId ${channelId}`
+  // );
 
   // If the X-Goog-Channel-Token header is missing or not formatted as expected, handle it gracefully
   if (!channelToken || !channelToken.includes("userId=")) {
@@ -187,6 +187,8 @@ router.post("/google-calendar-watch", async (req, res) => {
 
   const currentChannelId = await fetchCurrentChannelId(userId);
 
+  // There is the possibility of duplicate endpoint calls - this if check ensures only the current channel
+  // is being listened to before changing any data in the db
   if (currentChannelId === channelId) {
     console.log(`Channel Id's match - updating google calendar`);
     try {
