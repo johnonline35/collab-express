@@ -186,15 +186,17 @@ router.post("/google-calendar-watch", async (req, res) => {
   const userId = channelToken.split("=")[1];
 
   const currentChannelId = await fetchCurrentChannelId(userId);
-  console.log({ currentChannelId: currentChannelId });
 
-  try {
-    const updateStatus = await updateGoogleCal(userId);
-    // console.log("updateStatus:", updateStatus);
-    // res.sendStatus(200);
-  } catch (error) {
-    console.error("Error in google calendar watch: ", error);
-    res.sendStatus(500);
+  if (currentChannelId === channelId) {
+    console.log(`Channel Id's match - updating google calendar`);
+    try {
+      const updateStatus = await updateGoogleCal(userId);
+      console.log("updateStatus:", updateStatus);
+      // res.sendStatus(200);
+    } catch (error) {
+      console.error("Error in google calendar watch: ", error);
+      res.sendStatus(500);
+    }
   }
 });
 
