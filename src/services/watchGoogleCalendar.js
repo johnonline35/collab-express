@@ -64,8 +64,45 @@ async function stopWatchGoogleCalendar(userId) {
     },
   });
 
-  console.log("stopWatch:", res);
+  console.log(`Response status from stop goog cal watch: ${res.status}`);
+
+  if (res.status === 204 || !res.status) {
+    // 204 is the typical HTTP status code for a successful delete operation.
+    // Clear the channelId and resourceId in the database
+    const { error } = await supabase
+      .from("collab_users")
+      .update({
+        goog_cal_resource_id: null,
+        goog_cal_channel_id: null,
+      })
+      .eq("id", userId);
+
+    if (error) {
+      console.error("Error clearing Google Calendar watch details:", error);
+    }
+  }
 }
+
+// async function stopWatchGoogleCalendar(userId) {
+//   const watchDetails = await fetchGoogleCalendarWatchDetailsForUser(userId);
+//   if (!watchDetails) {
+//     console.error("No watch details found for user", userId);
+//     return;
+//   }
+
+//   const { resourceId, channelId } = watchDetails;
+//   const calendar = await loadClient(userId);
+
+//   const res = await calendar.channels.stop({
+//     requestBody: {
+//       // The channel id and resource id of the subscription to stop.
+//       id: channelId,
+//       resourceId: resourceId,
+//     },
+//   });
+
+//   console.log("stopWatch:", res);
+// }
 
 module.exports = {
   watchGoogleCalendar,
