@@ -57,6 +57,10 @@ async function stopWatchGoogleCalendar(userId) {
   const { resourceId, channelId } = watchDetails;
   const calendar = await loadClient(userId);
 
+  console.log(
+    `Stopping google calendar watch for channelId: ${channelId} and resourceId: ${resourceId}`
+  );
+
   const res = await calendar.channels.stop({
     requestBody: {
       // The channel id and resource id of the subscription to stop.
