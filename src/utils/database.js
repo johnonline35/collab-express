@@ -461,6 +461,22 @@ async function updateInitialEnrichmentComplete(userId) {
   }
 }
 
+async function deleteGoogCalTokens(userId) {
+  const { error } = await supabase
+    .from("collab_users")
+    .update({
+      goog_cal_resource_id: null,
+      goog_cal_channel_id: null,
+    })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error clearing Google Calendar watch details:", error);
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -477,4 +493,5 @@ module.exports = {
   fetchWorkspacesToEnrich,
   fetchAttendeesToEnrich,
   updateInitialEnrichmentComplete,
+  deleteGoogCalTokens,
 };
