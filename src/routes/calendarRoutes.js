@@ -206,7 +206,7 @@ router.post("/stop-google-calendar-watch", async (req, res) => {
     await stopWatchGoogleCalendar(userId);
 
     // Call removeWatchSetup to update the is_watch_setup flag
-    await removeWatchSetup(userId);
+    // await removeWatchSetup(userId);
 
     res
       .status(200)
