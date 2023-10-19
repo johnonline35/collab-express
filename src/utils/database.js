@@ -477,6 +477,19 @@ async function deleteGoogCalTokens(userId) {
   return true;
 }
 
+async function fetchCurrentChannelId(userId) {
+  const { data: channelId, error } = await supabase
+    .from("collab_users")
+    .select(goog_cal_channel_id)
+    .eq("id", userId);
+
+  if (error) {
+    console.error("Error clearing Google Calendar watch details:", error);
+    return null;
+  }
+  return channelId;
+}
+
 module.exports = {
   getRefreshTokenFromDB,
   getUserEmailFromDB,
@@ -494,4 +507,5 @@ module.exports = {
   fetchAttendeesToEnrich,
   updateInitialEnrichmentComplete,
   deleteGoogCalTokens,
+  fetchCurrentChannelId,
 };

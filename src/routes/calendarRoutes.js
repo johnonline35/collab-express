@@ -11,6 +11,7 @@ const {
   removeWatchSetup,
   fetchWorkspacesToEnrich,
   fetchAttendeesToEnrich,
+  fetchCurrentChannelId,
 } = require("../utils/database");
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
@@ -163,8 +164,10 @@ router.post("/update-meeting-description", async (req, res) => {
 
 // Webhook endpoint called by Google Calendar when there is a calendar change event
 router.post("/google-calendar-watch", async (req, res) => {
+  // Send 200 request recieved response
   res.sendStatus(200);
-  const reqHeaders = req.headers;
+
+  // Retrieve the relevant header properties
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
   const channelId = req.headers["x-goog-channel-id"];
@@ -172,21 +175,18 @@ router.post("/google-calendar-watch", async (req, res) => {
     `&&&&&&&&&&&&&&&&&&& /google-calendar-watch endpoint called, here is the resourceId ${resourceId}, and the channelId ${channelId}`
   );
 
-  // console.log("Called Google calendar watch endpoint reqHeaders", reqHeaders); comment
-  // console.log("Called Google calendar watch endpoint channelId", channelId);
-  // console.log("Called Google calendar watch endpoint resourceId", resourceId);
-
   // If the X-Goog-Channel-Token header is missing or not formatted as expected, handle it gracefully
   if (!channelToken || !channelToken.includes("userId=")) {
     console.error("Invalid or missing X-Goog-Channel-Token");
     // Still respond with a 200 status to prevent Google from trying to resend the notification
-    res.sendStatus(200);
     return;
   }
 
   // Extract the userId from the channel token
   const userId = channelToken.split("=")[1];
-  // console.log("google-calendar-watch userId:", userId);
+
+  const currentChannelId = await fetchCurrentChannelId(userId);
+  console.log({ currentChannelId: currentChannelId });
 
   try {
     const updateStatus = await updateGoogleCal(userId);
