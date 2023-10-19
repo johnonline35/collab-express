@@ -165,7 +165,7 @@ router.post("/update-meeting-description", async (req, res) => {
 router.post("/google-calendar-watch", async (req, res) => {
   res.sendStatus(200);
   const reqHeaders = req;
-  console.log("/google-calendar-watch endpoint called", reqHeaders);
+  console.log("&&&&&&&&&&&&&&&&&&& /google-calendar-watch endpoint called");
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
   const channelId = req.headers["x-goog-channel-id"];
