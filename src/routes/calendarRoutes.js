@@ -164,7 +164,7 @@ router.post("/update-meeting-description", async (req, res) => {
 // Webhook endpoint called by Google Calendar when there is a calendar change event
 router.post("/google-calendar-watch", async (req, res) => {
   res.sendStatus(200);
-  const reqHeaders = req.headers;
+  const reqHeaders = req;
   console.log("/google-calendar-watch endpoint called", reqHeaders);
   const resourceId = req.headers["x-goog-resource-id"];
   const channelToken = req.headers["x-goog-channel-token"];
