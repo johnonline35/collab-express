@@ -8,7 +8,7 @@ const {
   fetchGoogleCalendarWatchDetailsForUser,
 } = require("../utils/database");
 const { deleteGoogCalTokens } = require("../utils/database");
-const tokenExpiryQueue = require("../services/removeTimedCalendarToken");
+const tokenExpiryQueue = require("./tokenExpiryQueue");
 
 async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);

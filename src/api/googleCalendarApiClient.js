@@ -8,8 +8,10 @@ const {
   getUserEmailFromDB,
   saveSyncTokenForUser,
   loadSyncTokenForUser,
+  fetchWorkspacesToEnrich,
   saveUserTimeZone,
 } = require("../utils/database");
+const { enrichWorkspacesAndAttendees } = require("../api/dataEnrichment");
 
 const getGoogleCal = async (userId) => {
   const extractDomainFromEmail = (email) => {
@@ -485,9 +487,24 @@ const updateGoogleCal = async (userId) => {
   await Promise.all(updatePromises);
 
   // Call getGoogleCal at the end to make sure all meetings and attendees have a workspace_id:
-  await getGoogleCal(userId);
+  // await getGoogleCal(userId);
+  const meetingsData = await getGoogleCal(userId);
+
+  const workspacesToEnrich = await fetchWorkspacesToEnrich(
+    userId,
+    meetingsData
+  );
+
+  const enrichedWorkspacesAndAttendees = await enrichWorkspacesAndAttendees(
+    workspacesToEnrich.uniqueWorkspaces,
+    workspacesToEnrich.uniqueAttendees,
+    userId
+  );
 
   // For each new meeting, insert a collab space link if the user has enabled it:
+  const uuidRegex =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+
   for (const id of newMeetingIds) {
     // Fetch the workspace_id for the given meeting id from the Supabase "meetings" table
     const { data, error } = await supabase
@@ -502,24 +519,63 @@ const updateGoogleCal = async (userId) => {
     }
 
     const workspace_id = data.workspace_id;
-    const { data: linkEnabledData, error: linkEnabledError } = await supabase
-      .from("workspaces")
-      .select("workspace_attendee_enable_calendar_link")
-      .eq("workspace_id", workspace_id)
-      .single();
 
-    if (linkEnabledError) {
-      console.error(
-        `Error fetching workspace_attendee_enable_calendar_link for workspace_id ${workspace_id}:`,
-        linkEnabledError
-      );
-      continue; // Skip to next iteration in case of an error.
-    }
+    // Only run the following segment if workspace_id is a valid UUID
+    if (uuidRegex.test(workspace_id)) {
+      const { data: linkEnabledData, error: linkEnabledError } = await supabase
+        .from("workspaces")
+        .select("workspace_attendee_enable_calendar_link")
+        .eq("workspace_id", workspace_id)
+        .single();
 
-    if (linkEnabledData.workspace_attendee_enable_calendar_link) {
-      await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
+      if (linkEnabledError) {
+        console.error(
+          `Error fetching workspace_attendee_enable_calendar_link for workspace_id ${workspace_id}:`,
+          linkEnabledError
+        );
+        continue; // Skip to next iteration in case of an error.
+      }
+
+      if (linkEnabledData.workspace_attendee_enable_calendar_link) {
+        await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
+      }
+    } else {
+      console.error(`Invalid workspace_id (not a UUID): ${workspace_id}`);
     }
   }
+
+  // for (const id of newMeetingIds) {
+  //   // Fetch the workspace_id for the given meeting id from the Supabase "meetings" table
+  //   const { data, error } = await supabase
+  //     .from("meetings")
+  //     .select("workspace_id")
+  //     .eq("id", id)
+  //     .single();
+
+  //   if (error) {
+  //     console.error(`Error fetching workspace_id for meeting ID ${id}:`, error);
+  //     continue; // Skip to next iteration in case of an error
+  //   }
+
+  //   const workspace_id = data.workspace_id;
+  //   const { data: linkEnabledData, error: linkEnabledError } = await supabase
+  //     .from("workspaces")
+  //     .select("workspace_attendee_enable_calendar_link")
+  //     .eq("workspace_id", workspace_id)
+  //     .single();
+
+  //   if (linkEnabledError) {
+  //     console.error(
+  //       `Error fetching workspace_attendee_enable_calendar_link for workspace_id ${workspace_id}:`,
+  //       linkEnabledError
+  //     );
+  //     continue; // Skip to next iteration in case of an error.
+  //   }
+
+  //   if (linkEnabledData.workspace_attendee_enable_calendar_link) {
+  //     await enableCalendarLinkForNewMeeting(id, userId, workspace_id);
+  //   }
+  // }
   return "Updated and/or deleted meetings and attendees successfully";
 };
 
