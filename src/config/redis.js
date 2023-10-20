@@ -15,6 +15,6 @@ redis.set("foo", "bar", (err, result) => {
   }
 });
 
-export default {
+module.exports = {
   redis,
 };
