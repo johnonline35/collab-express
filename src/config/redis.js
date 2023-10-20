@@ -4,6 +4,7 @@ console.log("REDIS_URL:", REDIS_URL);
 
 const redis = new Redis(REDIS_URL);
 
+// Test
 async function testRedis() {
   try {
     await redis.set("foo", "bar");
