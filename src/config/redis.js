@@ -1,4 +1,4 @@
-import Redis from "ioredis";
+const Redis = require("ioredis");
 const { REDIS_URL } = require("../config");
 console.log("Loading Redis setup...");
 console.log("REDIS_URL:", REDIS_URL);
