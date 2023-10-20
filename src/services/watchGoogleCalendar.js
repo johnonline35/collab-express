@@ -8,10 +8,12 @@ const {
   fetchGoogleCalendarWatchDetailsForUser,
 } = require("../utils/database");
 const { deleteGoogCalTokens } = require("../utils/database");
+const tokenExpiryQueue = require("../services/removeTimedCalendarToken");
 
 async function watchGoogleCalendar(userId) {
   const userEmail = await getUserEmailFromDB(userId);
   const calendar = await loadClient(userId);
+  const ttl = 604800000;
 
   const syncToken = await loadSyncTokenForUser(userId);
 
@@ -21,7 +23,7 @@ async function watchGoogleCalendar(userId) {
     address: railwayCalendarWatchEndpoint, // your webhook
     token: `userId=${userId}`, // token carrying the userId
     params: {
-      ttl: "604800000", // time to live in seconds; adjust as needed
+      ttl: ttl.toString(),
     },
   };
 
@@ -45,6 +47,16 @@ async function watchGoogleCalendar(userId) {
   const channelId = res.data.id;
 
   await saveGoogleCalendarWatchDetailsForUser(userId, resourceId, channelId);
+
+  // Remove the channelId and resourceId tokena once the expiration time is reached
+  tokenExpiryQueue.add(
+    "checkTokenExpiry",
+    { userId: userId },
+    {
+      delay: ttl,
+      attempts: 3,
+    }
+  );
 }
 
 async function stopWatchGoogleCalendar(userId) {
