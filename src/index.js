@@ -37,6 +37,7 @@ server.listen(port, host, () => {
   console.log(`App is listening on IP ${host} and port ${port}!`);
 });
 
+// Shut down Redis:
 process.on("SIGTERM", () => {
   console.info("SIGTERM signal received. Shutting down gracefully.");
 
