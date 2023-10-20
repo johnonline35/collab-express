@@ -7,6 +7,7 @@ const socketIoModule = require("./config/io");
 // Initialize dotenv
 dotenv.config();
 
+// Redis
 const redisSetup = require("./config/redis");
 
 // Initialize Express
