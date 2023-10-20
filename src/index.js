@@ -8,7 +8,7 @@ const socketIoModule = require("./config/io");
 dotenv.config();
 
 // Redis
-const redisSetup = require("./config/redis");
+const redis = require("./config/redis");
 
 // Initialize Express
 const app = express();
@@ -35,4 +35,30 @@ const port = process.env.PORT || 3000;
 const host = "0.0.0.0";
 server.listen(port, host, () => {
   console.log(`App is listening on IP ${host} and port ${port}!`);
+});
+
+process.on("SIGTERM", () => {
+  console.info("SIGTERM signal received. Shutting down gracefully.");
+
+  server.close(() => {
+    console.log("HTTP server closed.");
+
+    redis.client.quit(() => {
+      console.log("Redis client closed.");
+      process.exit(0);
+    });
+  });
+});
+
+process.on("SIGINT", () => {
+  console.info("SIGINT signal received. Shutting down gracefully.");
+
+  server.close(() => {
+    console.log("HTTP server closed.");
+
+    redis.client.quit(() => {
+      console.log("Redis client closed.");
+      process.exit(0);
+    });
+  });
 });
