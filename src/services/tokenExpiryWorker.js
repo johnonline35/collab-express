@@ -1,12 +1,12 @@
 const { Worker } = require("bullmq");
 const { redis } = require("../config/redis");
-const { deleteGoogCalTokens } = require("../utils/database");
+const { stopWatchGoogleCalendar } = require("../services/watchGoogleCalendar");
 
 const worker = new Worker(
   "tokenExpiryQueue",
   async (job) => {
     const userId = job.data.userId;
-    await deleteGoogCalTokens(userId);
+    await stopWatchGoogleCalendar(userId);
   },
   {
     connection: redis,
