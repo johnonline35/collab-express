@@ -203,7 +203,7 @@ router.post("/google-calendar-watch", async (req, res) => {
         error.response.data.error === "invalid_grant"
       ) {
         console.log("error.response.data.error", error.response.data.error);
-        await stopWatchGoogleCalendar(userId);
+        await deleteGoogCalTokens(userId);
       }
       res.sendStatus(500);
     }
