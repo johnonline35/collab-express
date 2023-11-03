@@ -16,6 +16,7 @@ const {
 const { loadClient } = require("../api/googleCalendar");
 const { updateGoogleCal } = require("../api/googleCalendarApiClient");
 const { enrichWorkspacesAndAttendees } = require("../api/dataEnrichment");
+const { deleteGoogCalTokens } = require("../utils/database");
 
 // Fetch the Google calendar for the initial sync
 router.post("/", async (req, res) => {
@@ -203,6 +204,7 @@ router.post("/google-calendar-watch", async (req, res) => {
         error.response.data.error === "invalid_grant"
       ) {
         console.log("error.response.data.error", error.response.data.error);
+        // don't stop the google calendar watch as this will also cause an error - simply delete tokens
         await deleteGoogCalTokens(userId);
       }
       res.sendStatus(500);
