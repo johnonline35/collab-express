@@ -211,9 +211,10 @@ router.post("/google-calendar-watch", async (req, res) => {
         try {
           const result = await deleteGoogCalTokens(userId);
           console.log(
-            "Because the error was an invalid_grant, this is the confirmation that th Google channel ID token was deleted from the database:",
+            "Because the error was an invalid_grant, this is the confirmation that the Google channel ID token was deleted from the database:",
             result
           );
+          await removeWatchSetup(userId);
         } catch (error) {
           console.error("Error in deleteGoogCalTokens:", error);
         }
