@@ -73,6 +73,22 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.post("/setup-google-calendar-watch", async (req, res) => {
+  const { userId } = req.body;
+  const userResult = await checkIfWatchIsSetup(userId);
+
+  if (userResult.isWatchSetup) {
+    console.log("Watch is already set up, exiting set up watch function");
+  }
+
+  if (!userResult.isWatchSetup) {
+    // Set up the Google Calendar watch
+    await watchGoogleCalendar(userId);
+    // Set the flag in the database indicating a watch is set up.
+    await setWatchSetup(userId);
+  }
+});
+
 // Update the meeting description endpoint - called by webhook on workspaces table
 router.post("/update-meeting-description", async (req, res) => {
   // console.log(
