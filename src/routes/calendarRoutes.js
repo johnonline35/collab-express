@@ -205,7 +205,12 @@ router.post("/google-calendar-watch", async (req, res) => {
       ) {
         console.log("error.response.data.error", error.response.data.error);
         // don't stop the google calendar watch as this will also cause an error - simply delete tokens
-        await deleteGoogCalTokens(userId);
+        try {
+          const result = await deleteGoogCalTokens(userId);
+          console.log("Confirmation that the channel ID was deleted:", result);
+        } catch (error) {
+          console.error("Error in deleteGoogCalTokens:", error);
+        }
       }
       res.sendStatus(500);
     }
