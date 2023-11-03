@@ -463,7 +463,7 @@ async function updateInitialEnrichmentComplete(userId) {
 
 async function deleteGoogCalTokens(userId) {
   const { error } = await supabase
-    .from("collab_÷     qw2a3098u90pl;lo;p89u90iokl users")
+    .from("collab_users")
     .update({
       goog_cal_resource_id: null,
       goog_cal_channel_id: null,
