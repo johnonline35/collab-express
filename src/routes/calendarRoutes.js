@@ -79,13 +79,13 @@ router.post("/setup-google-calendar-watch", async (req, res) => {
 
   if (userResult.isWatchSetup) {
     console.log("Watch is already set up, exiting set up watch function");
-  }
-
-  if (!userResult.isWatchSetup) {
+    return res.status(200).send("Watch is already set up.");
+  } else {
     // Set up the Google Calendar watch
     await watchGoogleCalendar(userId);
     // Set the flag in the database indicating a watch is set up.
     await setWatchSetup(userId);
+    return res.status(200).send("Watch set up successfully.");
   }
 });
 
