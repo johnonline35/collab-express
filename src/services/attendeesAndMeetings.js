@@ -33,6 +33,7 @@ async function updateAttendeesAndMeetings(
   const attendeesToInsert = [];
   const meetingsToUpdate = [];
   const workspacesToCreate = [];
+  const notesToCreate = [];
 
   for (let meeting of meetings) {
     const attendeesForThisMeeting = meetingAttendeesMap.get(meeting.id);
@@ -137,8 +138,17 @@ async function updateAttendeesAndMeetings(
         start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
       });
+
+      notesToCreate.push({
+        meeting_id: meeting.id,
+        workspace_id: workspaceId,
+        collab_user_id: userId,
+      });
     }
   }
+  notesToCreate.forEach((note) => {
+    console.log({ notesToCreate: note });
+  });
   console.log(
     "attendeesToInsert.length before supabase:",
     attendeesToInsert.length
