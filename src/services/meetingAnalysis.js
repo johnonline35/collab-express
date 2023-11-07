@@ -83,7 +83,7 @@ async function analyzeMeetings(userId) {
 
   // Fetch all existing collab attendees, so that the new meetings and meeting attendees can be filtered against them. A new collab attendee from a meeting is only created if it does not exist in this list:
   let existingAttendees = [];
-  const chunkSize = 200; // Adjust as necessary
+  const chunkSize = 1000;
   const attendeeEmailsArray = Array.from(attendeeEmails);
   for (let i = 0; i < attendeeEmailsArray.length; i += chunkSize) {
     const chunk = attendeeEmailsArray.slice(i, i + chunkSize);
@@ -115,9 +115,9 @@ async function analyzeMeetings(userId) {
   console.log("existingNotesMeetingIds:", existingNotesMeetingIds);
 
   // if (data) {
-  //   // existingNotesMeetingIds = existingNotesMeetingIds.concat(data);
+  //   existingNotesMeetingIds = existingNotesMeetingIds.concat(data);
   //   console.log("existingNotesMeetingIds:", existingNotesMeetingIds);
-  // }
+  // } else
   if (error) {
     console.error("Error retrieving existing notes:", error);
   }
