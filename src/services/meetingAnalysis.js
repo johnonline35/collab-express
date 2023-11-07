@@ -107,14 +107,10 @@ async function analyzeMeetings(userId) {
 
   // insert FETCH for note data HERE and pass into updateAttendeesAndMeetings
   // let existingNotesMeetingIds = [];
-  const { data, error } = await supabase
+  const { data: existingNotesMeetingIds, error } = await supabase
     .from("collab_users_notes")
     .select("meeting_id")
-    .eq("collab_user_id", userId)
-    .then((response) => response.data.map((note) => note.meeting_id));
-
-  // Now data contains only the meeting IDs, not objects
-  const existingNotesMeetingIds = data || [];
+    .eq("collab_user_id", userId);
 
   console.log(existingNotesMeetingIds);
 
@@ -125,6 +121,12 @@ async function analyzeMeetings(userId) {
   if (error) {
     console.error("Error retrieving existing notes:", error);
   }
+  const existingMeetingIds = existingNotesMeetingIds.map(
+    (note) => note.meeting_id
+  );
+  existingMeetingIds.forEach((id) => {
+    console.log(id);
+  });
 
   // Update attendees and meetings in batch
   const updatedMeetings = await updateAttendeesAndMeetings(
