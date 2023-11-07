@@ -139,13 +139,20 @@ async function updateAttendeesAndMeetings(
         start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
       });
-      let meetingIdStr = String(meeting.id).trim();
-      if (!existingNotesMeetingIds.includes(meetingIdStr)) {
+      console.log("Current Meeting ID:", meeting.id);
+
+      // Now perform the check
+      if (!existingNotesMeetingIds.includes(meeting.id)) {
+        // Log a message if it's supposed to be pushed
+        console.log("Pushing to notesToCreate:", meeting.id);
         notesToCreate.push({
-          meeting_id: meetingIdStr,
+          meeting_id: meeting.id,
           workspace_id: workspaceId,
           collab_user_id: userId,
         });
+      } else {
+        // Log a message if it's correctly skipped
+        console.log("Already exists, not pushing:", meeting.id);
       }
     }
   }
