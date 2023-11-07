@@ -140,38 +140,16 @@ async function updateAttendeesAndMeetings(
         workspace_id: workspaceId,
       });
 
-      // Before the includes check
-      console.log("Checking ID:", meeting.id, "Length:", meeting.id.length);
-      console.log(
-        "Existing in array:",
-        existingNotesMeetingIdsSet.has(meeting.id)
-      );
-      existingNotesMeetingIdsSet.forEach((id) => {
-        console.log({ id, length: id.length });
-      });
-
-      // Now perform the check
       if (!existingNotesMeetingIdsSet.has(meeting.id) && workspaceId) {
-        // Log a message if it's supposed to be pushed
-        console.log("Pushing to notesToCreate:", meeting.id);
         notesToCreate.push({
           meeting_id: meeting.id,
           workspace_id: workspaceId,
           collab_user_id: userId,
         });
-      } else {
-        // Log a message if it's correctly skipped or if there's no workspaceId
-        if (!workspaceId) {
-          console.log("No workspace_id found, not pushing:", meeting.id);
-        } else {
-          console.log("Already exists, not pushing:", meeting.id);
-        }
       }
     }
   }
-  // notesToCreate.forEach((note) => {
-  //   console.log({ notesToCreate: note });
-  // });
+
   if (notesToCreate.length === 0) {
     console.log("No new meeting id's to create a note for");
   }
