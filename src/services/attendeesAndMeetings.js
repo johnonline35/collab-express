@@ -12,7 +12,8 @@ async function updateAttendeesAndMeetings(
   meetingAttendeesMap,
   userId,
   userDetails,
-  publicEmailDomains
+  publicEmailDomains,
+  existingNotesMeetingIds
 ) {
   const existingAttendeesMap = new Map();
   const existingDomainsMap = new Map();
