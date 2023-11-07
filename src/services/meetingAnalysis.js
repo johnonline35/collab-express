@@ -112,7 +112,7 @@ async function analyzeMeetings(userId) {
     .select("meeting_id")
     .eq("collab_user_id", userId);
 
-  // console.log("existingNotesMeetingIds:", existingNotesMeetingIds);
+  console.log(existingNotesMeetingIds);
 
   // if (data) {
   //   existingNotesMeetingIds = existingNotesMeetingIds.concat(data);
