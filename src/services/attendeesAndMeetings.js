@@ -13,7 +13,7 @@ async function updateAttendeesAndMeetings(
   userId,
   userDetails,
   publicEmailDomains,
-  existingNotesMeetingIds
+  existingNotesMeetingIdsSet
 ) {
   const existingAttendeesMap = new Map();
   const existingDomainsMap = new Map();
@@ -144,15 +144,14 @@ async function updateAttendeesAndMeetings(
       console.log("Checking ID:", meeting.id, "Length:", meeting.id.length);
       console.log(
         "Existing in array:",
-        existingNotesMeetingIds.includes(meeting.id)
+        existingNotesMeetingIdsSet.has(meeting.id)
       );
-      console.log(
-        "Array contains (for comparison):",
-        existingNotesMeetingIds.map((id) => ({ id, length: id.length }))
-      );
+      existingNotesMeetingIdsSet.forEach((id) => {
+        console.log({ id, length: id.length });
+      });
 
       // Now perform the check
-      if (!existingNotesMeetingIds.includes(meeting.id)) {
+      if (!existingNotesMeetingIdsSet.has(meeting.id) && workspaceId) {
         // Log a message if it's supposed to be pushed
         console.log("Pushing to notesToCreate:", meeting.id);
         notesToCreate.push({
@@ -161,8 +160,12 @@ async function updateAttendeesAndMeetings(
           collab_user_id: userId,
         });
       } else {
-        // Log a message if it's correctly skipped
-        console.log("Already exists, not pushing:", meeting.id);
+        // Log a message if it's correctly skipped or if there's no workspaceId
+        if (!workspaceId) {
+          console.log("No workspace_id found, not pushing:", meeting.id);
+        } else {
+          console.log("Already exists, not pushing:", meeting.id);
+        }
       }
     }
   }
