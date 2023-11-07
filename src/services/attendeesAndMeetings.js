@@ -139,7 +139,17 @@ async function updateAttendeesAndMeetings(
         start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
       });
-      console.log("Current Meeting ID:", meeting.id);
+
+      // Before the includes check
+      console.log("Checking ID:", meeting.id, "Length:", meeting.id.length);
+      console.log(
+        "Existing in array:",
+        existingNotesMeetingIds.includes(meeting.id)
+      );
+      console.log(
+        "Array contains (for comparison):",
+        existingNotesMeetingIds.map((id) => ({ id, length: id.length }))
+      );
 
       // Now perform the check
       if (!existingNotesMeetingIds.includes(meeting.id)) {
