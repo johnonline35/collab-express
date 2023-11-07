@@ -142,6 +142,7 @@ async function updateAttendeesAndMeetings(
 
       if (!existingNotesMeetingIdsSet.has(meeting.id) && workspaceId) {
         notesToCreate.push({
+          collab_user_note_id: uuidv4(),
           meeting_id: meeting.id,
           workspace_id: workspaceId,
           collab_user_id: userId,
