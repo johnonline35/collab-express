@@ -140,16 +140,21 @@ async function updateAttendeesAndMeetings(
         workspace_id: workspaceId,
       });
 
-      notesToCreate.push({
-        meeting_id: meeting.id,
-        workspace_id: workspaceId,
-        collab_user_id: userId,
-      });
+      if (!existingNotesMeetingIds.includes(meeting.id)) {
+        notesToCreate.push({
+          meeting_id: meeting.id,
+          workspace_id: workspaceId,
+          collab_user_id: userId,
+        });
+      }
     }
   }
   notesToCreate.forEach((note) => {
     console.log({ notesToCreate: note });
   });
+  if (notesToCreate.length === 0) {
+    console.log("No new meeting id's to create a note for");
+  }
   console.log(
     "attendeesToInsert.length before supabase:",
     attendeesToInsert.length
