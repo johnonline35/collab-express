@@ -150,13 +150,16 @@ async function updateAttendeesAndMeetings(
     }
   }
 
-  if (notesToCreate.length === 0) {
-    console.log("No new meeting id's to create a note for");
+  if (notesToCreate.length > 0) {
+    let { data, error } = await supabase
+      .from("collab_users_notes")
+      .upsert(notesToCreate)
+      .select();
+
+    if (error) console.log("Error inserting notesToCreate:", error);
+    // console.log("Supabase insertResult length:", insertResult.length);
   }
-  console.log(
-    "attendeesToInsert.length before supabase:",
-    attendeesToInsert.length
-  );
+
   if (attendeesToInsert.length > 0) {
     let { data: insertResult, error } = await supabase
       .from("attendees")
@@ -187,11 +190,6 @@ async function updateAttendeesAndMeetings(
     if (error) console.log("Error in creating workspace: ", error);
     // else console.log("Workspaces created successfully: ", data);
   }
-
-  // console.log({
-  //   meetingsToUpdate: meetingsToUpdate,
-  //   attendeesToInsert: attendeesToInsert,
-  // });
 
   return {
     meetingsToUpdate: meetingsToUpdate,
