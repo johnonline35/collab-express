@@ -120,7 +120,7 @@ async function analyzeMeetings(userId) {
     ? notesIds.map((note) => note.meeting_id)
     : [];
 
-  console.log("Existing Notes Meeting IDs:", existingNotesMeetingIds);
+  const existingNotesMeetingIdsSet = new Set(existingNotesMeetingIds);
 
   // existingMeetingIds.forEach((id) => {
   //   console.log(id);
@@ -134,7 +134,7 @@ async function analyzeMeetings(userId) {
     userId,
     userDetails,
     publicEmailDomains,
-    existingNotesMeetingIds
+    existingNotesMeetingIdsSet
   );
   console.log("Attendees and meetings updated.");
 
