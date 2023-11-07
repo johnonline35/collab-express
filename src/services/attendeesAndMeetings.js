@@ -13,7 +13,7 @@ async function updateAttendeesAndMeetings(
   userId,
   userDetails,
   publicEmailDomains,
-  existingNotesMeetingIds
+  existingMeetingIds
 ) {
   const existingAttendeesMap = new Map();
   const existingDomainsMap = new Map();
@@ -140,7 +140,7 @@ async function updateAttendeesAndMeetings(
         workspace_id: workspaceId,
       });
 
-      if (!existingNotesMeetingIds.includes(meeting.id)) {
+      if (!existingMeetingIds.includes(meeting.id)) {
         notesToCreate.push({
           meeting_id: meeting.id,
           workspace_id: workspaceId,

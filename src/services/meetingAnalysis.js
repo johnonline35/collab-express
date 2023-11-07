@@ -112,21 +112,15 @@ async function analyzeMeetings(userId) {
     .select("meeting_id")
     .eq("collab_user_id", userId);
 
-  console.log(existingNotesMeetingIds);
-
-  // if (data) {
-  //   existingNotesMeetingIds = existingNotesMeetingIds.concat(data);
-  //   console.log("existingNotesMeetingIds:", existingNotesMeetingIds);
-  // } else
   if (error) {
     console.error("Error retrieving existing notes:", error);
   }
   const existingMeetingIds = existingNotesMeetingIds.map(
     (note) => note.meeting_id
   );
-  existingMeetingIds.forEach((id) => {
-    console.log(id);
-  });
+  // existingMeetingIds.forEach((id) => {
+  //   console.log(id);
+  // });
 
   // Update attendees and meetings in batch
   const updatedMeetings = await updateAttendeesAndMeetings(
@@ -136,7 +130,7 @@ async function analyzeMeetings(userId) {
     userId,
     userDetails,
     publicEmailDomains,
-    existingNotesMeetingIds
+    existingMeetingIds
   );
   console.log("Attendees and meetings updated.");
 
