@@ -106,15 +106,15 @@ async function analyzeMeetings(userId) {
   // 3. pass into the next function
 
   // insert FETCH for note data HERE and pass into updateAttendeesAndMeetings
-  let existingNotes = [];
+  let existingNotesMeetingIds = [];
   const { data, error } = await supabase
     .from("collab_users_notes")
-    .select("*")
+    .select("meeting_id")
     .eq("collab_user_id", userId);
 
   if (data) {
-    existingNotes = existingNotes.concat(data);
-    console.log("existingNotes:", existingNotes);
+    existingNotesMeetingIds = existingNotesMeetingIds.concat(data);
+    console.log("existingNotesMeetingIds:", existingNotesMeetingIds);
   } else if (error) {
     console.error("Error retrieving existing notes:", error);
   }
@@ -127,7 +127,7 @@ async function analyzeMeetings(userId) {
     userId,
     userDetails,
     publicEmailDomains,
-    existingNotes
+    existingNotesMeetingIds
   );
   console.log("Attendees and meetings updated.");
 
