@@ -166,9 +166,9 @@ async function updateAttendeesAndMeetings(
       }
     }
   }
-  notesToCreate.forEach((note) => {
-    console.log({ notesToCreate: note });
-  });
+  // notesToCreate.forEach((note) => {
+  //   console.log({ notesToCreate: note });
+  // });
   if (notesToCreate.length === 0) {
     console.log("No new meeting id's to create a note for");
   }
