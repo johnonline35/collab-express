@@ -139,10 +139,10 @@ async function updateAttendeesAndMeetings(
         start_dateTime: meeting.start_dateTime,
         workspace_id: workspaceId,
       });
-
-      if (!existingNotesMeetingIds.includes(meeting.id)) {
+      let meetingIdStr = String(meeting.id).trim();
+      if (!existingNotesMeetingIds.includes(meetingIdStr)) {
         notesToCreate.push({
-          meeting_id: meeting.id,
+          meeting_id: meetingIdStr,
           workspace_id: workspaceId,
           collab_user_id: userId,
         });
