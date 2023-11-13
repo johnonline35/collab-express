@@ -96,7 +96,7 @@ const checkIfWatchIsSetup = async (userId) => {
   const user = data[0];
 
   const isWatchSetup = Boolean(
-    user.google_cal_channel_id && user.google_cal_resource_id
+    user.goog_cal_channel_id && user.goog_cal_resource_id
   );
 
   return {
