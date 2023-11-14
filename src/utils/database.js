@@ -126,29 +126,29 @@ const checkIfWatchIsSetup = async (userId) => {
 //   };
 // };
 
-const setWatchSetup = async (userId) => {
-  const { error } = await supabase
-    .from("collab_users")
-    .update({ is_watch_setup: true })
-    .eq("id", userId);
+// const setWatchSetup = async (userId) => {
+//   const { error } = await supabase
+//     .from("collab_users")
+//     .update({ is_watch_setup: true })
+//     .eq("id", userId);
 
-  if (error) {
-    console.error("Error setting watch setup:", error);
-    throw error;
-  }
-};
+//   if (error) {
+//     console.error("Error setting watch setup:", error);
+//     throw error;
+//   }
+// };
 
-const removeWatchSetup = async (userId) => {
-  const { error } = await supabase
-    .from("collab_users")
-    .update({ is_watch_setup: false })
-    .eq("id", userId);
+// const removeWatchSetup = async (userId) => {
+//   const { error } = await supabase
+//     .from("collab_users")
+//     .update({ is_watch_setup: false })
+//     .eq("id", userId);
 
-  if (error) {
-    console.error("Error setting watch setup:", error);
-    throw error;
-  }
-};
+//   if (error) {
+//     console.error("Error setting watch setup:", error);
+//     throw error;
+//   }
+// };
 
 // Save the resourceId and channelId for a user
 async function saveGoogleCalendarWatchDetailsForUser(
