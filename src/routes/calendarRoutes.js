@@ -42,7 +42,7 @@ router.post("/", async (req, res) => {
       // Set up the Google Calendar watch
       await watchGoogleCalendar(userId);
       // Set the flag in the database indicating a watch is set up.
-      await setWatchSetup(userId);
+      // await setWatchSetup(userId);
     }
 
     if (!userResult.initialEnrichmentComplete) {
@@ -84,7 +84,7 @@ router.post("/setup-google-calendar-watch", async (req, res) => {
     // Set up the Google Calendar watch
     await watchGoogleCalendar(userId);
     // Set the flag in the database indicating a watch is set up.
-    await setWatchSetup(userId);
+    // await setWatchSetup(userId);
     return res.status(200).send("Watch set up successfully.");
   }
 });
