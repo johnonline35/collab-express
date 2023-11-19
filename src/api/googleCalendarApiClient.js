@@ -107,8 +107,24 @@ const getGoogleCal = async (userId) => {
       } while (nextPageToken);
     }
 
+    const unwantedDomains = [
+      "resource.calendar.google.com",
+      "group.calendar.google.com",
+    ];
+
     // Filter out meetings with no attendees, more than 11 attendees and more than 6 months in the future
     const meetings = allEvents.filter((event) => {
+      if (event.attendees) {
+        const isUnwantedDomain = event.attendees.some((attendee) =>
+          unwantedDomains.includes(extractDomainFromEmail(attendee.email))
+        );
+        if (isUnwantedDomain) {
+          // Optional: console.log for debugging
+          // console.log(`Filtered out meeting ID: ${event.id} due to unwanted domain.`);
+          return false;
+        }
+      }
+
       // Condition 1: Event should have attendees, and their count should be between 2 and 10
       if (
         !event.attendees ||
