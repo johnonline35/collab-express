@@ -217,11 +217,7 @@ router.post("/google-calendar-watch", async (req, res) => {
       // res.sendStatus(200);
     } catch (error) {
       console.error("There was an error in google calendar watch");
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error === "invalid_grant"
-      ) {
+      if (error.response.data.error === "invalid_grant") {
         console.log("error.response.data.error:", error.response.data.error);
         // don't stop the google calendar watch as this will also cause an error - simply delete tokens
         try {
@@ -230,7 +226,7 @@ router.post("/google-calendar-watch", async (req, res) => {
             "Because the error was an invalid_grant, this is the confirmation that the Google channel ID token was deleted from the database:",
             result
           );
-          await removeWatchSetup(userId);
+          // await removeWatchSetup(userId);
         } catch (error) {
           console.error("Error in deleteGoogCalTokens:", error);
         }
