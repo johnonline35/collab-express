@@ -193,7 +193,7 @@ const getGoogleCal = async (userId) => {
     };
 
     // Breaking the meetings array into chunks of 1,000
-    const meetingChunks = chunkArray(meetings, 1000);
+    const meetingChunks = chunkArray(meetings, 300);
 
     const upsertChunksPromises = meetingChunks.map(async (meetingChunk) => {
       const upsertMeetingChunkPromises = meetingChunk.map(async (meeting) => {
