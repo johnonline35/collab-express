@@ -231,7 +231,7 @@ router.post("/google-calendar-watch", async (req, res) => {
           console.error("Error in deleteGoogCalTokens:", error);
         }
       }
-      res.sendStatus(500);
+      // res.sendStatus(500);
     }
   }
 });
